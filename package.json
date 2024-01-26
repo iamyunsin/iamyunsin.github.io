@@ -2,6 +2,7 @@
   "name": "blog",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@8.14.3",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -13,9 +14,15 @@
     "@astrojs/mdx": "^2.1.0",
     "@astrojs/rss": "^4.0.3",
     "@astrojs/sitemap": "^3.0.5",
-    "astro": "^4.2.4"
+    "astro": "^4.2.4",
+    "astro-diagram": "^0.7.0",
+    "less": "^4.2.0",
+    "mermaid": "^9.4.3",
+    "puppeteer": "^21.9.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "@unocss/reset": "^0.58.4",
+    "typescript": "^5.3.3",
+    "unocss": "^0.58.4"
   }
 }
