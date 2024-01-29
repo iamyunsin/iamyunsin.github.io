@@ -14,19 +14,17 @@ const { sticky = true } = Astro.props;
 
 <header class={`w-full lg:w-1024 m-auto${sticky ? ' sticky-top top--320 lt-md:top--440' : ''}`}>
 	<div class="w-full h-400 mt--160 lg:w-1024 m-auto overflow-clip" style="background-image: url(/site-images/top-banner.jpeg); background-position: 50% 50%;"></div>
-  <nav class="pl-40 pr-40 lt-md:pr-34 h-100 bg-white position-relative" style="box-shadow: 1px 4px 8px rgba(0,0,0,0.1);">
+  <nav class="pl-40 pr-40 lt-md:pr-34 h-84 bg-white position-relative" style="box-shadow: 1px 4px 8px rgba(0,0,0,0.1);">
     <Avatar class="mt--80 position-absolute lt-md:hidden"/>
-    <nav class="pl-200 lt-md:pl-0 pt-12 pb-12 w-full h-full flex flex-col">
+    <nav class="pl-200 lt-md:pl-0 pt-12 pb-12 w-full flex flex-col">
       <header class="w-full sm:flex gap-12 flex-items-center">
         <h1 onclick="location.href='/'" class="font-size-22 font-weight-600 w-mc m-0 p-0 cursor-pointer hover-color-blue">{SITE_TITLE}</h1>
         <h2 class="font-size-14 font-weight-600 flex-1 lt-sm:hidden">{SITE_DESCRIPTION}</h2>
       </header>
-      <div class="flex-1">
-        <SearchArea>
-          <OutsideLink href={GITHUB_LINK} title="跳转到Github">
-            <IconGithub size="24" />
-          </OutsideLink>
-        </SearchArea>
+      <div class="flex-1 text-right">
+        <OutsideLink href={GITHUB_LINK} title="跳转到Github">
+          <IconGithub size="24" />
+        </OutsideLink>
       </div>
     </nav>
   </nav>
