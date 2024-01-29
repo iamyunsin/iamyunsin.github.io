@@ -203,4 +203,27 @@ hr {
     border: none;
     border-top: 1px solid rgb(var(--gray-light));
   }
+
+  table {
+    thead {
+      th {
+        border: 1px solid #ccc;
+        border-left: none;
+        background-color: #999;
+        color: white;
+        &:first-child {
+          border-left: 1px solid #ccc;
+        }
+      }
+    }
+    tbody {
+      td {
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        &:first-child {
+          border-left: 1px solid #ccc;
+        }
+      }
+    }
+  }
 }
