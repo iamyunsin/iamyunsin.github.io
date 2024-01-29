@@ -5,7 +5,9 @@ import FormattedDate from '@/components/FormattedDate.astro';
 const blogs = await getCollection('blog');
 const lifes = await getCollection('life');
 
-const posts = ([...blogs, ...lifes]).filter(({ data }) => data.draft !== true).sort(
+const posts = ([...blogs, ...lifes])
+  .filter(({ data }) => data.draft !== true)
+  .sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 ---

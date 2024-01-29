@@ -17,11 +17,29 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 		<BaseHead title={title} description={description} />
     <script>
       window.addEventListener('scroll', (event) => {
+        const articleHeader = document.getElementById('article-header');
         if(document.documentElement.scrollTop >= 320) {
-          document.getElementById('article-header')?.classList.add('sticky-top');
+          articleHeader?.classList.add('sticky-top');
         } else {
-          document.getElementById('article-header')?.classList.remove('sticky-top');
+          articleHeader?.classList.remove('sticky-top');
         }
+      });
+      window.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementsByClassName('toc')[0].addEventListener('click', (event) => {
+          const targetEl = event.target! as HTMLAnchorElement;
+          if(targetEl.tagName === 'A') {
+            requestAnimationFrame(() => {
+              const distEl = document.getElementById(targetEl.getAttribute('href')!.slice(1));
+              const scrollRoot = document.documentElement;
+              distEl?.scrollIntoView(true);
+              scrollRoot.scrollTo({
+                left: scrollRoot!.scrollLeft,
+                top: distEl!.offsetTop - document.getElementById('article-header')!.getBoundingClientRect().height,
+              });
+            })
+
+          }
+        });
       });
     </script>
 	</head>

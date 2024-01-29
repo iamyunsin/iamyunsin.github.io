@@ -41,6 +41,10 @@ body {
 	color: rgb(var(--gray-dark));
 }
 
+time {
+  font-size: 12px;
+}
+
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
@@ -132,6 +136,18 @@ hr {
 
   ul > li {
     list-style: disc;
+  }
+
+  nav.toc {
+    // position: fixed;
+    // right: 0;
+    // top: 100px;
+    // width: 200px;
+    // height: calc(100vh - 200px);
+    // overflow: auto;
+    li {
+      list-style: none;
+    }
   }
 
   /** 行内代码 */
