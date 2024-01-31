@@ -5,6 +5,7 @@ import remarkMermaid from 'astro-diagram/remark-mermaid';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkheadings from 'rehype-autolink-headings'
 import rehypeToc from 'rehype-toc';
+import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
@@ -25,6 +26,8 @@ export default defineConfig({
       rehypeSlug,
       [rehypeAutolinkheadings, { behavior: 'append' }],
       [rehypeToc, { headings: ['h1', 'h2', 'h3'] }],
+      rehypeAccessibleEmojis,
     ],
+    gfm: true,
   },
 });
