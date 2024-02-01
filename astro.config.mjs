@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import UnoCSS from 'unocss/astro';
 import mdx from '@astrojs/mdx';
+import icon from "astro-icon";
 import remarkMermaid from 'astro-diagram/remark-mermaid';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkheadings from 'rehype-autolink-headings'
@@ -17,6 +18,7 @@ export default defineConfig({
 		}),
 		mdx(),
 		sitemap(),
+    icon(),
 	],
   markdown: {
     remarkPlugins: [

@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '@/layouts/BlogPost.astro';
-import IconBacktop from '@/components/icons/backtop.astro';
+import { Icon } from 'astro-icon/components';
 
 export async function getStaticPaths() {
 	const posts = (await Promise.all([getCollection('blog'), getCollection('life')])).flat().filter(({ data }) => data.draft !== true);
@@ -20,6 +20,7 @@ const { Content } = await post.render();
 <BlogPost {...post.data}>
 	<Content />
   <i class="backtop" onclick="window.scrollTo({left: 0, top: 0, behavior: 'smooth'})">
-    <IconBacktop />
+    <Icon name="mdi:arrow-top-bold" size={32} />
   </i>
+
 </BlogPost>

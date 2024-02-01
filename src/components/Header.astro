@@ -1,8 +1,8 @@
 ---
 import Avatar from './Avatar.astro';
 import OutsideLink from './OutsideLink.astro';
-import IconGithub from './icons/github.astro';
-import SearchArea from './SearchArea.astro';
+import { Icon } from 'astro-icon/components';
+// import SearchArea from './SearchArea.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_LINK } from '@/consts';
 
 type Props = {
@@ -23,7 +23,7 @@ const { sticky = true } = Astro.props;
       </header>
       <div class="flex-1 text-right">
         <OutsideLink href={GITHUB_LINK} title="跳转到Github">
-          <IconGithub size="24" />
+          <Icon name="mdi:github" size={24} />
         </OutsideLink>
       </div>
     </nav>
