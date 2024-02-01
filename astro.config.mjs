@@ -8,6 +8,9 @@ import rehypeAutolinkheadings from 'rehype-autolink-headings'
 import rehypeToc from 'rehype-toc';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import sitemap from '@astrojs/sitemap';
+// 数学公式支持
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,12 +26,14 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [
       remarkMermaid,
+      remarkMath,
     ],
     rehypePlugins: [
       rehypeSlug,
       [rehypeAutolinkheadings, { behavior: 'append' }],
       [rehypeToc, { headings: ['h1', 'h2', 'h3'] }],
       rehypeAccessibleEmojis,
+      rehypeKatex,
     ],
     gfm: true,
   },
