@@ -304,7 +304,7 @@ export AppLauncher;
 > `runtime.js`
 
 ```js
-// 获取当前运行时的用户代理标识
+// 获取当前运行时的用户代理标识
 const userAgent = navigator.userAgent;
 
 // 初始化运行时检查探针
