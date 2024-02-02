@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import icon from "astro-icon";
 import remarkMermaid from 'astro-diagram/remark-mermaid';
 import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkheadings from 'rehype-autolink-headings'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeToc from 'rehype-toc';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import sitemap from '@astrojs/sitemap';
@@ -30,7 +30,7 @@ export default defineConfig({
     ],
     rehypePlugins: [
       rehypeSlug,
-      [rehypeAutolinkheadings, { behavior: 'append' }],
+      [rehypeAutolinkHeadings, { behavior: 'append' }],
       [rehypeToc, { headings: ['h1', 'h2', 'h3'] }],
       rehypeAccessibleEmojis,
       rehypeKatex,

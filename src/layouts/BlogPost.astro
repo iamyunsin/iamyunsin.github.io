@@ -28,16 +28,16 @@ const { title, description, pubDate, updatedDate } = Astro.props;
         document.getElementsByClassName('toc')[0].addEventListener('click', (event) => {
           const targetEl = event.target! as HTMLAnchorElement;
           if(targetEl.tagName === 'A') {
-            requestAnimationFrame(() => {
-              const distEl = document.getElementById(targetEl.getAttribute('href')!.slice(1));
-              const scrollRoot = document.documentElement;
-              distEl?.scrollIntoView(true);
-              scrollRoot.scrollTo({
-                left: scrollRoot!.scrollLeft,
-                top: distEl!.offsetTop - document.getElementById('article-header')!.getBoundingClientRect().height,
-              });
-            })
-
+            event.preventDefault();
+            event.stopPropagation();
+            const distEl = document.getElementById(targetEl.getAttribute('href')!.slice(1));
+            const scrollRoot = document.documentElement;
+            distEl?.scrollIntoView(true);
+            scrollRoot.scrollTo({
+              left: scrollRoot!.scrollLeft,
+              top: distEl!.offsetTop - document.getElementById('article-header')!.getBoundingClientRect().height,
+              behavior: 'smooth',
+            });
           }
         });
       });
