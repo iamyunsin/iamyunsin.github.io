@@ -29,6 +29,7 @@ html {
 html, body {
 	padding: 0;
 	margin: 0;
+  font-family: -apple-system,system-ui,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Arial!important;
 }
 body {
   font-family: 'Atkinson', "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
@@ -57,25 +58,37 @@ hr {
   h4,
   h5,
   h6 {
-    padding: 2rem 0 1rem 0;
-    color: rgb(var(--black));
-    line-height: 1.2;
-    font-weight: 500;
+    line-height: 1.5;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
   }
   h1 {
-    font-size: 4rem;
+    font-size: 24px;
+    line-height: 38px;
+    margin-bottom: 5px;
   }
   h2 {
-    font-size: 3.8rem;
+    font-size: 22px;
+    line-height: 34px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ececec;
   }
   h3 {
-    font-size: 3.5rem;
+    font-size: 20px;
+    line-height: 28px;
   }
   h4 {
-    font-size: 3.25rem;
+    font-size: 18px;
+    line-height: 26px;
   }
   h5 {
-    font-size: 3rem;
+    font-size: 17px;
+    line-height: 24px;
+  }
+  h6 {
+    font-size: 16px;
+    line-height: 24px;
   }
   strong,
   b {
@@ -90,16 +103,16 @@ hr {
   }
   p {
     // font-family: 'San Francisco', 'Microsoft Yahei', Tahoma, Arial,  'Courier New', Courier, monospace;
-    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-    margin-bottom: 1.5rem;
-    font-size: 14px;
+    // font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    margin: 16px 0;
+    font-size: 16px;
     font-weight: 300;
-    line-height: 1.5;
+    line-height: 28px;
     color: #000;
 
-    & > * {
-      font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-    }
+    // & > * {
+    //   font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    // }
   }
   textarea {
     width: 100%;
@@ -111,22 +124,23 @@ hr {
   table {
     width: 100%;
   }
-  img {
+
+  img, svg {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
-    margin: 0 auto;
+    margin: 20px auto;
   }
 
   /** 无序列表，有序列表，菜单 */
   ol, ul, menu {
     list-style: auto;
     margin: auto;
-    padding: 0 0rem 2rem 4rem;
+    padding-left: 28px;
+    font-size: 16px;
 
     li {
-      padding: 0 1rem;
-      font-size: 14px;
+      padding-left: 6px;
       font-weight: 400;
       & > p:first-child {
         font-weight: 400;
@@ -152,17 +166,20 @@ hr {
 
   /** 行内代码 */
   code {
-    position: relative;
-    padding: 0px 2px;
-    font-weight: 400;
-    color: #f43f5e;
+    word-break: break-word;
+    border-radius: 2px;
+    overflow-x: auto;
+    background-color: #fff5f5;
+    color: #ff502c;
+    font-size: .87em;
+    padding: 0.065em 0.4em;
   }
 
   /** 代码块 */
   pre {
     padding: 2rem 1rem;
     border-radius: 1rem;
-    margin: 14px 5px;
+    margin: 16px 5px;
 
     & > code {
       all: unset;
@@ -194,9 +211,22 @@ hr {
 
   blockquote {
     border-left: 4px solid var(--accent);
-    padding: 0 0 0 12px;
-    margin: 2rem 0 2rem 0;
-    font-size: 1.333em;
+    color: #666;
+    padding: 1px 23px;
+    margin: 22px 0;
+    border-left: 4px solid #cbcbcb;
+    background-color: #f8f8f8;
+    line-height: 16px;
+
+    &::after {
+      display: block;
+      content: "";
+    }
+
+    p {
+      margin: 10px 0;
+      color: #666;
+    }
   }
 
   /** 横线 */

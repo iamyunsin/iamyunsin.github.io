@@ -125,7 +125,7 @@ export const createApp = ((...args) => {
 }) as CreateAppFunction<Element>
 ```
 
-`createApp()`函数会创建会通过渲染器创建一个应用（[查看源码](https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/runtime-dom/src/index.ts#L67)），而`ensureRenderer()`会获得渲染器，创建应用之后，代码中还重写了`app.mount`函数，这里我们先跳过。
+`createApp()`函数会通过渲染器创建一个应用（[查看源码](https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/runtime-dom/src/index.ts#L67)），而`ensureRenderer()`会获得渲染器，创建应用之后，代码中还重写了`app.mount`函数，这里我们先跳过。
 
 接下来，我们先看看渲染器是怎么获取的！
 
