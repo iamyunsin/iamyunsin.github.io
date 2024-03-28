@@ -15,85 +15,6 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
-    <script>
-      window.addEventListener('scroll', (event) => {
-        const articleHeader = document.getElementById('article-header');
-        if(document.documentElement.scrollTop >= 320) {
-          articleHeader?.classList.add('sticky-top');
-        } else {
-          articleHeader?.classList.remove('sticky-top');
-        }
-      });
-      window.addEventListener('DOMContentLoaded', (event) => {
-        // toc导航
-        document.getElementsByClassName('toc')[0].addEventListener('click', (event) => {
-          const targetEl = event.target! as HTMLAnchorElement;
-          if(targetEl.tagName === 'A') {
-            event.preventDefault();
-            event.stopPropagation();
-            const distEl = document.getElementById(targetEl.getAttribute('href')!.slice(1));
-            const scrollRoot = document.documentElement;
-            distEl?.scrollIntoView(true);
-            scrollRoot.scrollTo({
-              left: scrollRoot!.scrollLeft,
-              top: distEl!.offsetTop - document.getElementById('article-header')!.getBoundingClientRect().height,
-              behavior: 'smooth',
-            });
-          }
-        });
-
-        function processAnchorEl(anchorEl: HTMLAnchorElement | null){
-          if(!anchorEl) return;
-          const href = anchorEl.href;
-          if(!href.startsWith(window.origin)) {
-            anchorEl.target = '_blank';
-          }
-        }
-
-        function processImgEl(targetEl: HTMLElement) {
-          if(!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]')) {
-            return;
-          }
-
-          const overlayEl = document.createElement('div');
-          Object.assign(overlayEl.style, {
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            overflow: 'auto',
-            background: 'rgba(0, 0, 0, 0.2)',
-            zIndex: '100',
-          });
-          overlayEl.dataset.preview = 'Y';
-          const cloneImg = targetEl.cloneNode(true) as HTMLImageElement;
-          
-          Object.assign(cloneImg.style, {
-            margin: '20px auto',
-            boxShadow: 'rgba(0, 0, 0, .5) 6px 7px 11px 5px',
-            padding: '16px',
-            background: '#fff',
-            borderRadius: '4px',
-            zIndex: 101,
-          });
-          overlayEl.appendChild(cloneImg);
-          overlayEl.onclick = function() {
-            document.body.style.overflow = 'auto';
-            document.body.removeChild(overlayEl);
-          }
-          document.body.style.overflow = 'hidden';
-          document.body.appendChild(overlayEl);
-        }
-
-        // 新标签页打开外链
-        document.body.addEventListener('click', (event) => {
-          if(!event.target) return;
-          processAnchorEl(event.target instanceof HTMLAnchorElement ? event.target : (event.target as HTMLElement).closest('a'));
-          processImgEl(event.target as HTMLElement);
-        });
-      });
-    </script>
 	</head>
 	<body>
     <Header sticky={false} />
@@ -119,5 +40,86 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 			</ArticleContent>
 		</BodyWrapper>
     <Footer />
+    <script is:inline>
+      window.addEventListener('scroll', (event) => {
+        const articleHeader = document.getElementById('article-header');
+        if(document.documentElement.scrollTop >= 320) {
+          articleHeader?.classList.add('sticky-top');
+        } else {
+          articleHeader?.classList.remove('sticky-top');
+        }
+      });
+
+      const onDomLoaded = (event) => {
+        // toc导航
+        document.getElementsByClassName('toc')[0].addEventListener('click', (event) => {
+          const targetEl = event.target;
+          if(targetEl.tagName === 'A') {
+            event.preventDefault();
+            event.stopPropagation();
+            const distEl = document.getElementById(targetEl.getAttribute('href').slice(1));
+            const scrollRoot = document.documentElement;
+            distEl?.scrollIntoView(true);
+            scrollRoot.scrollTo({
+              left: scrollRoot.scrollLeft,
+              top: distEl.offsetTop - document.getElementById('article-header').getBoundingClientRect().height,
+              behavior: 'smooth',
+            });
+          }
+        });
+
+        function processAnchorEl(anchorEl){
+          if(!anchorEl) return;
+          const href = anchorEl.href;
+          if(!href.startsWith(window.origin)) {
+            anchorEl.target = '_blank';
+          }
+        }
+
+        function processImgEl(targetEl) {
+          if(!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]') || targetEl.closest('header')) {
+            return;
+          }
+
+          const overlayEl = document.createElement('div');
+          Object.assign(overlayEl.style, {
+            position: 'fixed',
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            overflow: 'auto',
+            background: 'rgba(0, 0, 0, 0.2)',
+            zIndex: '100',
+          });
+          overlayEl.dataset.preview = 'Y';
+          const cloneImg = targetEl.cloneNode(true);
+          
+          Object.assign(cloneImg.style, {
+            margin: '20px auto',
+            boxShadow: 'rgba(0, 0, 0, .5) 6px 7px 11px 5px',
+            padding: '16px',
+            background: '#fff',
+            borderRadius: '4px',
+            zIndex: 101,
+          });
+          overlayEl.appendChild(cloneImg);
+          overlayEl.onclick = function() {
+            document.body.style.overflow = 'auto';
+            document.body.removeChild(overlayEl);
+          }
+          document.body.style.overflow = 'hidden';
+          document.body.appendChild(overlayEl);
+        }
+
+        // 新标签页打开外链
+        document.body.addEventListener('click', (event) => {
+          if(!event.target) return;
+          processAnchorEl(event.target instanceof HTMLAnchorElement ? event.target : event.target.closest('a'));
+          processImgEl(event.target);
+        });
+      };
+      onDomLoaded();
+    </script>
 	</body>
 </html>
