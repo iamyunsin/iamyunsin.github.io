@@ -158,7 +158,7 @@ tags: ['Vue', 'Vue3', '架构']
 
 这个例子让我们产生了一个疑问，`setTimeout`和`requestAnimationFrame`的触发顺序是必然是这样的吗？我们再来一个例子，并分别说明其触发时机。
 
-2. `requestAnimationFrame`与`setTimeout`宏任务触发的情况分析
+### （二）`requestAnimationFrame`与`setTimeout`宏任务触发的情况分析
 
 ```html
 <!DOCTYPE html>
@@ -218,13 +218,15 @@ requestAnimationFrame 2
 
 **结论：其实`setTimeout`和`requestAnimationFrame`安装的回调函数被推入宏任务队列的时机，跟浏览器内部状态有关，因此他们并没有其它相关的优先级关系。**
 
-3. 无论是**宏任务**还是**微任务**，其**执行顺序仅与其被加入任务队列的先后有关。**看看下面的例子：
+### （三） 无论是**宏任务**还是**微任务**，其**执行顺序仅与其被加入任务队列的先后有关**
+
+看看下面的例子：
 
 ```ts
 Promise.resolve().then(() => {
   Promise.resolve().then(() => {
     
-    console.log('Promise.then: 3');
+    console.log('Promise.then: 3'); 
   });
   console.log('Promise.then: 1');
 });
@@ -293,9 +295,9 @@ resolveHolder();
 
 其实，我不知道**宏任务**的说法来自哪里（**如果您知道，请在评论区告知**），我全局搜了一下V8的源码，只找到[`TaskQueue`](https://github.com/v8/v8/blob/main/src/libplatform/task-queue.h#L22)和[`MicrotaskQueue`](https://github.com/v8/v8/blob/main/src/execution/microtask-queue.h#L27)，并且[MDN上也只提到了task和microtask](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth)相关的说法。
 
-本次分享就到这里了，如有文章有谬误还请不吝指正，如果有疑问或建议，我们评论区见~~
+本次分享就到这里了，如有文章有谬误还请不吝指正，如果有疑问或建议，请直接微信联系
 
 > **【原创声明】**  
 > 本作品（包括但不限于文字、图片、音频、视频等）为（原心&lt;yunsin@vip.qq.com&gt;）原创作品，版权归原作者所有。未经授权，任何组织、机构、企业、个人不得以任何形式进行复制、转载、摘编、发表、发布、散布、传播等任何行为。  
 任何在未经授权的情况下使用本作品的行为均被视作侵权行为，我们将保留追究法律责任的权利。如需使用本作品，请联系（原心&lt;yunsin@vip.qq.com&gt;）并注明出处及署名，我们将酌情考虑授权。  
-本声明的最终解释权归（原心&lt;yunsin@vip.qq.com&gt;）所有，如有疑问请联系（站内私信 &nbsp; 或  &nbsp; **微信：iamyunsin** &nbsp; **邮箱: yunsin@vip.qq.com**）。
+本声明的最终解释权归（原心&lt;yunsin@vip.qq.com&gt;）所有，如有疑问请联系（&nbsp; **微信：iamyunsin** &nbsp; **邮箱: yunsin@vip.qq.com**）。
