@@ -12,9 +12,9 @@ type Props = {
 const { sticky = true } = Astro.props;
 ---
 
-<header class={`w-full lg:w-1024 m-auto${sticky ? ' sticky-top top--320 lt-md:top--440' : ''}`}>
+<header id="page-header" class={`w-full lg:w-1024 m-auto${sticky ? ' top--320 lt-md:top--440' : ''}`}>
 	<div class="w-full h-400 mt--160 lg:w-1024 m-auto overflow-clip" style="background-image: url(/site-images/top-banner.jpeg); background-position: 50% 50%;"></div>
-  <nav class="pl-40 pr-40 lt-md:pr-34 h-84 bg-white position-relative" style="box-shadow: 1px 4px 8px rgba(0,0,0,0.1);">
+  <nav class="pl-40 pr-40 lt-md:pr-34 h-84 bg-white position-relative">
     <Avatar class="mt--80 position-absolute lt-md:hidden"/>
     <nav class="pl-200 lt-md:pl-0 pt-12 pb-12 w-full flex flex-col">
       <header class="w-full sm:flex gap-12 flex-items-center">
@@ -29,3 +29,13 @@ const { sticky = true } = Astro.props;
     </nav>
   </nav>
 </header>
+<script>
+  window.addEventListener('scroll', (event) => {
+    const pageHeader = document.getElementById('page-header');
+    if(document.documentElement.scrollTop >= 160) {
+      pageHeader?.classList.add('sticky-top');
+    } else {
+      pageHeader?.classList.remove('sticky-top');
+    }
+  });
+</script>

@@ -2,6 +2,19 @@
 const today = new Date();
 ---
 
-<footer class="w-full bg-white text-center font-size-12 position-fixed bottom-0" style="box-shadow: 0px -2px 4px rgba(0,0,0,0.1);">
-	&copy; {today.getFullYear()} 原心. All rights reserved.
+<footer class="w-full bg-white text-center font-size-12 p-12 gap-10">
+  <p class="c-cool-gray-600">
+    Designed & Powerd by <a href="/" target="_top" class="hover-color-blue">原心</a>
+  </p>
+  <p class="c-cool-gray-600">
+    &copy;2024-{today.getFullYear()} 原心的个人主页
+  </p>
+  <p id="beian_info" class="flex w-fit m-auto c-cool-gray-500 hover-color-blue">
+    <a class="ml-10" href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备2022007430号-2</a>
+  </p>
 </footer>
+<script>
+  if(location.origin.indexOf('yunsin.top') === -1) {
+    document.getElementById('beian_info')!.style.display = 'none';
+  }
+</script>
