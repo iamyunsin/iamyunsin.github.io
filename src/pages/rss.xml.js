@@ -13,7 +13,7 @@ export async function GET(context) {
 		site: context.site,
 		items: posts.map((post) => ({
 			...post.data,
-      content: sanitizeHtml(parser.render(post.body)),
+      // content: sanitizeHtml(parser.render(post.body)),
 			link: `/${post.collection}/${post.slug}/`,
 		})),
 	});

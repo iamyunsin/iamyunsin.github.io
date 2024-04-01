@@ -11,6 +11,8 @@ import sitemap from '@astrojs/sitemap';
 // 数学公式支持
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+// 搜索插件
+import pagefind from "astro-pagefind";
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,6 +24,7 @@ export default defineConfig({
 		mdx(),
 		sitemap(),
     icon(),
+    pagefind(),
 	],
   markdown: {
     remarkPlugins: [
