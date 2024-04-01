@@ -2,11 +2,12 @@
 type Props = {
   href: string;
   title: string;
+  style?: string;
 }
 
-const { href, title } = Astro.props;
+const { href, title, style } = Astro.props;
 ---
-<a class="out-side-link" href={href} target="_blank">
+<a class="out-side-link" style={style || ''} href={href} target="_blank">
   <span class="out-side-link-title">{title}</span>
   <slot></slot>
 </a>

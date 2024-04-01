@@ -4,5 +4,5 @@ export const SITE_TITLE = '原心的个人主页';
 export const SITE_DESCRIPTION = '贵有恒，何必三更起五更眠';
 
 // export const SITE_DESCRIPTION = '勤勉身力行，岁月回首心无憾';
-
+export const GITHUB_LINK_OLD = "https://github.com/bullub/"
 export const GITHUB_LINK = 'https://github.com/iamyunsin/';
