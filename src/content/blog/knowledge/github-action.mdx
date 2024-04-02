@@ -1,0 +1,143 @@
+---
+title: '通过Github Action打包部署到Linux服务器'
+description: '最近想重新开始写博客了，于是基于`Astro`搭建博客系统，开始只是将博客发布到`github.io`，后来自己申请域名，就有了通过`Github Actions`将博客部署到云服务器的需求。'
+draft: false
+pubDate: '2024-04-02'
+tags: ['github action', 'github', 'ci', 'ci/cd']
+---
+
+最近想重新开始写博客了，于是基于`Astro`搭建博客系统，开始只是将博客发布到github.io，后来自己申请了域名，就有了通过`Github Actions`将博客部署到云服务器的需求。  
+
+由于之前没有经验，在这个过程中遇到了一些问题，所以在这里记录一下这些问题及解决过程。  
+
+## 一、部署过程
+
+整个部署过程如下图：
+
+![部署过程](/blog/knowledge/github-action/deploy.svg)
+
+部署过程一共经过五个步骤：
+1. **推送代码：** 开发人员将代码推送到github
+2. **触发构建：** `Github Actions`服务被push事件触发，并开始执行时间定义的工作流（**.github/workflows/*.yml**）
+3. **执行构建：** 在`yml`文件中定义的工作流任务被执行，包括**拉取镜像、安装依赖、构建等**
+4. **执行部署：** 当构建完成后，通过`yml`文件中声明的部署步骤，将资源部署到云服务器
+5. **查看变更：** 当以上四步都完成了，我们打开[博客站点](https://yunsin.top)，就可以看到最新的页面  
+
+* 对应上面的过程，我们的`yml`文件如下：
+
+```yml
+name: Deploy to mysite
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository using git
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm run build:mysite
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          # 本地.ssh文件下的私钥id_rsa，存在secrets的PRIVATE_KEY中
+          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          # 复制操作的参数。"-avzr --delete"意味部署时清空服务器目标目录下的文件
+          ARGS: "-avz --delete"
+          # 源目录
+          SOURCE: "./dist/"
+          # 部署目标主机
+          REMOTE_HOST: ${{ secrets.HOST }}
+          # 部署目标主机端口
+          REMOTE_PORT: ${{ secrets.PORT }}
+          # 登录用户
+          REMOTE_USER: ${{ secrets.USER }}
+          # 部署目标目录
+          TARGET: ${{ secrets.TARGET }}
+```
+
+上面文件中的`${{ secrets.PRIVATE_KEY }}`代码，表示引用一个`Github`仓库中的一个密码配置，每个`Github`仓库都有这个配置项，可以自定义多个配置，下文会详细介绍如何配置。
+
+## 二、用到的工具库和遇到的问题
+
+|序号| 工具名称 | 工具类型 | 问题及原因  |
+|:---:|:--------|:---------|:--------|
+|1| `github` | 代码托管平台 | 不知道ssh key和环境变量在哪配 |
+|2| `easingthemes/ssh-deploy` | SSH文件上传 | SSH登录失败，配置的私钥格式不对 |
+|3| `ssh` & `ssh-keygen` | Linux远程登录 | 生成的秘钥对格式不对 |
+
+上面列举了我在配置的过程中遇到的一些问题，接下来我们就一个一个地解决上述问题。
+
+## 三、SSH免密登录
+
+由于部署过程我们需要让运行`Github Action`的服务器能够将文件上传到云服务器，需要通过`SSH`（**`scp`和`rsync`都是基于`SSH`进行数据传输的**）进行数据传输。  
+为了保障云服务器安全，我们不能直接将密码暴露给`Github Action`，因此我们需要实现`SSH`免密登录。
+### （一） SSH免密登录原理
+
+* SSH免密登录原理图
+
+![SSH免密登录](/blog/knowledge/github-action/ssh-np-login.jpg)
+
+可以看出，`SSH`免密登录共分为六个步骤，其中**前两个步骤是我们需要关注**，而后面的**四步**是`SSH`协议的内部实现，我们不用太关注。
+
+### （二）SSH秘钥对生成（**坑点**）
+
+* [官方文档](https://github.com/easingthemes/ssh-deploy/blob/main/README.md)中给的生成方式（免密登录会失败，**对应问题序号3**）如下：
+
+```bash
+ssh-keygen -m PEM -t rsa -b 4096
+```
+
+* 后来在[issue](https://github.com/easingthemes/ssh-deploy/issues/175)中找到的成功的生成方式
+
+```bash
+ssh-keygen -t rsa -b 4096
+```
+
+执行完上面的命令，会生成两个文件，分别为`~/.ssh/id_rsa`（私钥）和`~/.ssh/id_rsa.pub`（公钥）。
+
+### （三）秘钥部署和验证
+
+1. **服务端部署：** 我们将公钥拷贝到服务器上，并存到`~/.ssh/authorized_keys`文件中。
+2. **验证：** 我们通过`ssh`命令登录对应服务器，不再需要密码，则**SSH免密登录**已成功启用了。
+
+## 四、秘钥配置
+
+现在，云服务器已经配置好了，接下来我们需要将生成秘钥以及部署到云服务器的相关配置配到`Github`上。
+
+1. 找到配置页面（位于`Repository --> Settings --> Secrets And Variables --> Actions`页面中），如下图：
+
+![Github秘钥配置](/blog/knowledge/github-action/github-secrets-config.jpg)
+
+2. 点击`New Secret`按钮，进入新增页，填写并新增即可新增一个`键值对`，如下图：
+
+![Github秘钥新增](/blog/knowledge/github-action/github-new-secret.jpg)
+
+3. **坑点**：配置公钥的时候，公钥内容必须在最后添加回车换行，否则授权会失败（**对应问题序号2**）
+
+我们通过这个步骤配置的`键值对`，可以在我们的`yml`文件中通过`${{ secrets.SOME_KEY }}`来引用名为`SOME_KEY`的值，且这个值在yml中无法打印，如果尝试打印则看到的是`***`，以保障我们秘钥的安全。
+
+
+## 总结
+
+至此，我们的`Github Action`打包并部署到云服务之旅就圆满结束啦，在这个过程中我的主要收获：
+
+1. 学会了`Github Action`的基本使用
+2. 掌握了`Github Action`工作流配置文件（`yml`）访问密码键值对的配置及代码写法
+3. 了解了`SSH`免密登录的工作原理和实践知识
+4. 学会通过查阅`github issue`找到对应工具坑点及解决方案
+
+**由于笔者的水平所限，文章可能存在不足和谬误，恳请不吝指正^_^**
