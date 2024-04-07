@@ -9,20 +9,15 @@
 	--box-shadow: 0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
 }
+
 @font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-regular.woff') format('woff');
+	font-family: 'MyTitle';
+	src: url('/fonts/MyTitle.ttf');
 	font-weight: 400;
 	font-style: normal;
-	font-display: swap;
+	font-display: block;
 }
-@font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-bold.woff') format('woff');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
+
 html {
 	font-size: 4px;
 }
@@ -186,9 +181,10 @@ hr {
 
   /** 代码块 */
   pre {
-    padding: 2rem 1rem;
+    padding: 2rem 0rem;
     border-radius: 1rem;
-    margin: 16px 5px;
+    margin: 16px 0px;
+    max-width: calc(100vw - 48px);
 
     & > code {
       all: unset;
@@ -201,9 +197,14 @@ hr {
           background-color: #444;
           &::before {
             color: #fcfcfc;
+            background-color: #444;
           }
         }
         &::before {
+          position: sticky;
+          left: 0;
+          z-index: 2;
+          background-color: #24292e;
           display: inline-block;
           width: 10rem;
           text-align: right;
@@ -273,8 +274,9 @@ hr {
 
 .backtop {
   position: fixed;
-  right: ~"max(calc((100vw - 1024px) / 2 - 48px), 0px)";
-  bottom: 40px; cursor: pointer;
+  bottom: 60px; 
+  right: 24px;
+  cursor: pointer;
   color:rgba(var(--gray), 40%);
 
   &:hover {

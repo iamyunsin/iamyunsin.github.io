@@ -2,8 +2,11 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import "/node_modules/katex/dist/katex.min.css";
+import '@/styles/iconfont.css'
 import '@/styles/global.less';
 import '@/styles/pagefind.less';
+import '@/styles/toc.less';
+
 import { ViewTransitions } from 'astro:transitions';
 interface Props {
 	title: string;
@@ -24,9 +27,10 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <!-- Font preloads -->
-<link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-<link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
-
+<link rel="prefetch" href="/fonts/MyTitle.ttf" as="font" crossorigin />
+<link rel="prefetch" href="/fonts/iconfont.ttf" as="font" crossorigin />
+<link rel="prefetch" href="/fonts/iconfont.woff" as="font" crossorigin />
+<link rel="prefetch" href="/fonts/iconfont.woff2" as="font" crossorigin />
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 

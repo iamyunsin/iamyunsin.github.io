@@ -1,0 +1,41 @@
+#aside-article-nav {
+  max-height: calc(100vh - 250px);
+  overflow: auto;
+  border-radius: 4px;
+
+  .nav-title {
+    font-size: 16px;
+  }
+
+  nav.toc {
+    margin-left: -14px;
+    ol, ul {
+      list-style: auto;
+      margin: auto;
+      padding-left: 14px;
+      font-size: 14px;
+    
+      li {
+        padding-left: 6px;
+        font-weight: 300;
+        list-style: none;
+        & > p:first-child {
+          font-weight: 300;
+        }
+      }
+    }
+    
+ 
+    
+    ul > li {
+      list-style: disc;
+    }
+
+    a.active {
+      // color: #006c7d;
+      color: #0d96ce;
+      font-weight: 600;
+    }
+  }
+}
+

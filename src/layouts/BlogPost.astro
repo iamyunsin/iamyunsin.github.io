@@ -6,6 +6,8 @@ import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import FormattedDate from '@/components/FormattedDate.astro';
 import ArticleContent from '@/components/ArticleContent.astro';
+import { Icon } from 'astro-icon/components';
+import Iconfont from '@/components/Iconfont.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -17,109 +19,152 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 		<BaseHead title={title} description={description} />
 	</head>
 	<body>
-    <Header sticky={false} />
+    <Header sticky={false}/>
 		<BodyWrapper>
-      <div id="article-header" class="w-full h-full bg-white top-0 p-12 pb-0">
-        <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
-        <div class="text-right">
-          <FormattedDate date={pubDate} />
-          {
-            updatedDate && (
-              <div class="last-updated-on">
-                Last updated on <FormattedDate date={updatedDate} />
-              </div>
-            )
-          }
-        </div>
+      <div class="flex gap-16">
+        <section class="flex-1">
+          <div class="bg-white top-0 p-12 pb-0">
+            <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
+            <div class="text-right">
+              <FormattedDate date={pubDate} />
+              {
+                updatedDate && (
+                  <div class="last-updated-on">
+                    Last updated on <FormattedDate date={updatedDate} />
+                  </div>
+                )
+              }
+            </div>
+          </div>
+          <hr />
+          <ArticleContent>
+            <slot />
+          </ArticleContent>
+        </section>
+        <aside class="w-290 relative lt-md:hidden">
+          <section id="aside-article-nav" class="fixed top-96 w-290 p-16 bg-white br-4 scroll-m-5xl">
+            <div class="font-900 font-size-16 b-b-1 p-b-16 m-b-16 pointer"><Iconfont name="catalogue" color="#0d96ce" />&nbsp;&nbsp;目录</div>
+          </section>
+          <i class="backtop" onclick="window.scrollTo({left: 0, top: 0, behavior: 'smooth'})">
+            <Icon name="mdi:arrow-top-bold" size={32} />
+          </i>
+        </aside>
       </div>
-      <hr />
-			<ArticleContent>
-        <article class="article-content">
-          <slot />
-        </article>
-			</ArticleContent>
 		</BodyWrapper>
     <Footer />
     <script is:inline>
-      window.addEventListener('scroll', (event) => {
-        const articleHeader = document.getElementById('article-header');
-        if(document.documentElement.scrollTop >= 320) {
-          articleHeader?.classList.add('sticky-top');
-        } else {
-          articleHeader?.classList.remove('sticky-top');
-        }
-      });
+      (function() {
+        const onDomLoaded = () => {
+          const tocEl = document.querySelector('nav.toc');
+          document.getElementById('aside-article-nav').appendChild(tocEl);
+          const allTocLinks =  Array.from(tocEl.querySelectorAll('a'));
+          const allHElements = allTocLinks.map(el => document.getElementById(el.getAttribute('href').slice(1)));
 
-      const onDomLoaded = (event) => {
-        // toc导航
-        document.getElementsByClassName('toc')[0].addEventListener('click', (event) => {
-          const targetEl = event.target;
-          if(targetEl.tagName === 'A') {
-            event.preventDefault();
-            event.stopPropagation();
-            const distEl = document.getElementById(targetEl.getAttribute('href').slice(1));
-            const scrollRoot = document.documentElement;
-            distEl?.scrollIntoView(true);
-            scrollRoot.scrollTo({
-              left: scrollRoot.scrollLeft,
-              top: distEl.offsetTop - document.getElementById('article-header').getBoundingClientRect().height,
-              behavior: 'smooth',
+          function activeTocLink(activeLink){
+            allTocLinks.forEach((el) => el.classList.remove('active'));
+            activeLink.classList.add('active');
+          };
+
+          function activeTocWithHEl(hEl){
+            const activeTocHref = `#${hEl.getAttribute('id')}`;
+            const activeLink = allTocLinks.find((el) => el.getAttribute('href') === activeTocHref);
+            allTocLinks.forEach((el) => el.classList.remove('active'));
+            activeLink.classList.add('active');
+          };
+
+          const hElementObserver = new IntersectionObserver((entries) => {
+            const intersectingEntry = entries.find((entry) => entry.isIntersecting);
+            if (intersectingEntry) {
+              activeTocWithHEl(intersectingEntry.target);
+            } else {
+              const rootRect = entries[0].rootBounds;
+              for(let i = allHElements.length - 1; i >=0; i --) {
+                const hEl = allHElements[i];
+                const hElRect = hEl.getBoundingClientRect();
+                if(hElRect.bottom < rootRect.top) {
+                  activeTocWithHEl(hEl);
+                  break;
+                }
+              }
+            }
+          });
+          allHElements.forEach((el) => {
+            hElementObserver.observe(el);
+          });
+          // toc导航
+          tocEl.addEventListener('click', (event) => {
+            const targetEl = event.target;
+            if(targetEl.tagName === 'A') {
+              event.preventDefault();
+              event.stopPropagation();
+              const distEl = document.getElementById(targetEl.getAttribute('href').slice(1));
+              const scrollRoot = document.documentElement;
+              distEl?.scrollIntoView(true);
+              scrollRoot.scrollTo({
+                left: scrollRoot.scrollLeft,
+                top: distEl.offsetTop - document.getElementById('page-header').getBoundingClientRect().height,
+                behavior: 'smooth',
+              });
+              activeTocLink(targetEl);
+            }
+          });
+
+          // 处理点击导航链接跳转
+          function processAnchorEl(anchorEl){
+            if(!anchorEl) return;
+            const href = anchorEl.href;
+            if(!href.startsWith(window.origin)) {
+              anchorEl.target = '_blank';
+            }
+          }
+
+          // 处理图片预览
+          function processImgEl(targetEl) {
+            if(!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]') || targetEl.closest('header')) {
+              return;
+            }
+
+            const overlayEl = document.createElement('div');
+            Object.assign(overlayEl.style, {
+              position: 'fixed',
+              left: 0,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              overflow: 'auto',
+              background: 'rgba(0, 0, 0, 0.2)',
+              zIndex: '100',
             });
+            overlayEl.dataset.preview = 'Y';
+            const cloneImg = targetEl.cloneNode(true);
+            
+            Object.assign(cloneImg.style, {
+              margin: '20px auto',
+              boxShadow: 'rgba(0, 0, 0, .5) 6px 7px 11px 5px',
+              padding: '16px',
+              background: '#fff',
+              borderRadius: '4px',
+              zIndex: 101,
+            });
+            overlayEl.appendChild(cloneImg);
+            overlayEl.onclick = function() {
+              document.body.style.overflow = 'auto';
+              document.body.removeChild(overlayEl);
+            }
+            document.body.style.overflow = 'hidden';
+            document.body.appendChild(overlayEl);
           }
-        });
 
-        function processAnchorEl(anchorEl){
-          if(!anchorEl) return;
-          const href = anchorEl.href;
-          if(!href.startsWith(window.origin)) {
-            anchorEl.target = '_blank';
-          }
-        }
-
-        function processImgEl(targetEl) {
-          if(!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]') || targetEl.closest('header')) {
-            return;
-          }
-
-          const overlayEl = document.createElement('div');
-          Object.assign(overlayEl.style, {
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            overflow: 'auto',
-            background: 'rgba(0, 0, 0, 0.2)',
-            zIndex: '100',
+          // 处理打开外链
+          document.body.addEventListener('click', (event) => {
+            if(!event.target) return;
+            processAnchorEl(event.target instanceof HTMLAnchorElement ? event.target : event.target.closest('a'));
+            processImgEl(event.target);
           });
-          overlayEl.dataset.preview = 'Y';
-          const cloneImg = targetEl.cloneNode(true);
-          
-          Object.assign(cloneImg.style, {
-            margin: '20px auto',
-            boxShadow: 'rgba(0, 0, 0, .5) 6px 7px 11px 5px',
-            padding: '16px',
-            background: '#fff',
-            borderRadius: '4px',
-            zIndex: 101,
-          });
-          overlayEl.appendChild(cloneImg);
-          overlayEl.onclick = function() {
-            document.body.style.overflow = 'auto';
-            document.body.removeChild(overlayEl);
-          }
-          document.body.style.overflow = 'hidden';
-          document.body.appendChild(overlayEl);
-        }
-
-        // 新标签页打开外链
-        document.body.addEventListener('click', (event) => {
-          if(!event.target) return;
-          processAnchorEl(event.target instanceof HTMLAnchorElement ? event.target : event.target.closest('a'));
-          processImgEl(event.target);
-        });
-      };
-      onDomLoaded();
+        };
+        onDomLoaded();
+        
+      })();
     </script>
 	</body>
 </html>

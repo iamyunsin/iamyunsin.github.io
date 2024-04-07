@@ -21,15 +21,15 @@ const posts = ([...blogs, ...lifes])
 <ul class="grid grid-cols-3 lt-md:grid-cols-2 lt-sm:grid-cols-1 gap-12 lt-lg:pl-12 lt-lg:pr-12">
   {
     posts.map((post) => (
-							<li class="article-item p-12 bg-white border-rounded-4 hover-bg-blue">
-								<a href={`${post.collection}/${post.slug}/`} class="flex flex-col justify-between h-full">
-									<h4 class="font-size-16">{post.data.title}</h4>
-                  <p class="flex-1 font-size-12 color-cool-gray">{post.data.description}</p>
-									<p class="text-right">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
+      <li class="article-item p-12 bg-white border-rounded-4 hover-bg-blue">
+        <a href={`${post.collection}/${post.slug}/`} class="flex flex-col justify-between h-full">
+          <h4 class="font-size-16">{post.data.title}</h4>
+          <p class="flex-1 font-size-12 color-cool-gray">{post.data.description}</p>
+          <p class="text-right">
+            <FormattedDate date={post.data.pubDate} />
+          </p>
+        </a>
+      </li>
+    ))
   }
 </ul>
