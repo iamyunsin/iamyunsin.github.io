@@ -59,17 +59,23 @@ const { title, description, pubDate, updatedDate } = Astro.props;
           document.getElementById('aside-article-nav').appendChild(tocEl);
           const allTocLinks =  Array.from(tocEl.querySelectorAll('a'));
           const allHElements = allTocLinks.map(el => document.getElementById(el.getAttribute('href').slice(1)));
-
-          function activeTocLink(activeLink){
+          let lockTocOnClick = 0;
+          function activeTocLink(activeLink, fromClick = false){
+            if(lockTocOnClick) return;
+            if(fromClick) {
+              lockTocOnClick = true;
+            }
             allTocLinks.forEach((el) => el.classList.remove('active'));
             activeLink.classList.add('active');
+            setTimeout(() => {
+              lockTocOnClick = false;
+            }, 200);
           };
 
           function activeTocWithHEl(hEl){
             const activeTocHref = `#${hEl.getAttribute('id')}`;
             const activeLink = allTocLinks.find((el) => el.getAttribute('href') === activeTocHref);
-            allTocLinks.forEach((el) => el.classList.remove('active'));
-            activeLink.classList.add('active');
+            activeTocLink(activeLink);
           };
 
           const hElementObserver = new IntersectionObserver((entries) => {
@@ -81,7 +87,9 @@ const { title, description, pubDate, updatedDate } = Astro.props;
               for(let i = allHElements.length - 1; i >=0; i --) {
                 const hEl = allHElements[i];
                 const hElRect = hEl.getBoundingClientRect();
-                if(hElRect.bottom < rootRect.top) {
+                
+                if(hElRect.top <= rootRect.bottom) {
+                  console.log(hElRect, rootRect)
                   activeTocWithHEl(hEl);
                   break;
                 }
@@ -105,7 +113,7 @@ const { title, description, pubDate, updatedDate } = Astro.props;
                 top: distEl.offsetTop - document.getElementById('page-header').getBoundingClientRect().height,
                 behavior: 'smooth',
               });
-              activeTocLink(targetEl);
+              activeTocLink(targetEl, true);
             }
           });
 
