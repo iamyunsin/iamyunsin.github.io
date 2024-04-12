@@ -1,0 +1,41 @@
+---
+---
+<div class="hover-popup relative w-fit font-size-16">
+  <slot></slot>
+  <div class="hover-popup-content">
+    <slot name="content"></slot>
+  </div>
+</div>
+<style lang="less">
+  .hover-popup {
+    &-content {
+      position: absolute;
+      display: none;
+      margin-top: 6px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      width: max-content;
+      height: max-content;
+      padding: 10px;
+      z-index: 100;
+      &::before {
+        content: ' ';
+        position: absolute;
+        top: -12px;
+        left: calc(50% - 6px);
+        width: 0;
+        height: 0;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent white transparent;
+      }
+    }
+    &:hover .hover-popup-content {
+      display: block;
+    }
+  }
+</style>

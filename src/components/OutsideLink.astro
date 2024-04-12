@@ -1,4 +1,6 @@
 ---
+import HoverPopup from './HoverPopup.astro';
+
 type Props = {
   href: string;
   title: string;
@@ -7,44 +9,9 @@ type Props = {
 
 const { href, title, style } = Astro.props;
 ---
-<a class="out-side-link" style={style || ''} href={href} target="_blank">
-  <span class="out-side-link-title">{title}</span>
-  <slot></slot>
+<a style={style || ''} href={href} target="_blank">
+  <HoverPopup>
+    <slot></slot>
+    <div slot="content" class="w-max text-3xl">{title}</div>
+  </HoverPopup>
 </a>
-<style lang="less">
-  .out-side-link {
-    position: relative;
-    display: inline-block;
-    width: fit-content;
-    font-size: 16px;
-    &-title {
-      position: absolute;
-      left: 50%;
-      bottom: -32px;
-      transform: translateX(-50%);
-      width: max-content;
-      font-size: 12px;
-      background-color: black;
-      color: white;
-      padding: 4px;
-      border-radius: 4px;
-      display: none;
-      &::before {
-        content: ' ';
-        position: absolute;
-        top: -12px;
-        left: calc(50% - 6px);
-        width: 0;
-        height: 0;
-        border-width: 6px;
-        border-style: solid;
-        border-color: transparent transparent black  transparent;
-      }
-    }
-    &:hover {
-      .out-side-link-title {
-        display: block;
-      }
-    }
-  }
-</style>

@@ -3,8 +3,10 @@ type Props = {
   name: string;
   color?: string;
   size?: number
+  class?: string;
 }
 
 const { size = 16, name, color = 'inherit' } = Astro.props;
+const className = Astro.props['class'] || '';
 ---
-<i class={`iconfont icon-${name}`} style={`font-size: ${size}px; color: ${color}`} />
+<i class={`iconfont icon-${name} ${className}`} style={`font-size: ${size}px; color: ${color}`} />

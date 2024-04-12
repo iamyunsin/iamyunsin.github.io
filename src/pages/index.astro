@@ -2,21 +2,25 @@
 import BaseHead from '@/components/BaseHead.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
+import { SITE } from '@/consts';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import ArticleList from '@/components/ArticleList.astro';
+import Author from '@/components/Author.astro';
 
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE.title} image={SITE.logo} description={SITE.description} />
 	</head>
 	<body>
 		<Header />
-		<BodyWrapper>
-			<section>
+		<BodyWrapper class="flex gap-20">
+      <aside class="w-280 lt-sm:hidden">
+        <Author />
+      </aside>
+			<section class="flex-1">
         <ArticleList />
 			</section>
 		</BodyWrapper>

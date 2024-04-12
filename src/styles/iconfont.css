@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4497575 */
-  src: url('/fonts/iconfont.woff2?t=1712492699754') format('woff2'),
-       url('/fonts/iconfont.woff?t=1712492699754') format('woff'),
-       url('/fonts/iconfont.ttf?t=1712492699754') format('truetype');
+  src: url('/fonts/iconfont.woff2?t=1712894983937') format('woff2'),
+       url('/fonts/iconfont.woff?t=1712894983937') format('woff'),
+       url('/fonts/iconfont.ttf?t=1712894983937') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-wechat:before {
+  content: "\e606";
+}
+
+.icon-juejin:before {
+  content: "\e605";
 }
 
 .icon-shrink:before {

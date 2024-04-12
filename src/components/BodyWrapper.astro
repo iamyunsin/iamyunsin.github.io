@@ -1,11 +1,11 @@
 ---
 type Props = {
-  className?: string;
+  'class'?: string;
 };
 
-const { className } = Astro.props;
+const className = Astro.props['class'] || '';
 ---
 
-<main class={`w-full max-w-1200 m-auto mt-12 mb-12 main ${className || ''}`}>
+<main class={`w-full max-w-1400 m-auto p-12 main ${className}`}>
   <slot />
 </main>

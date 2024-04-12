@@ -1,32 +1,17 @@
 ---
 import Avatar from './Avatar.astro';
-import OutsideLink from './OutsideLink.astro';
-import { Icon } from 'astro-icon/components';
-// import SearchArea from './SearchArea.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_LINK, GITHUB_LINK_OLD } from '@/consts';
+import { SITE } from '@/consts';
 import PageFindSearch from "./PageFindSearch.astro";
 
-
-type Props = {
-  sticky?: boolean;
-};
-
-const { sticky = true } = Astro.props;
 ---
 
-<header id="page-header" class="w-full top-0">
+<header id="page-header" class="w-full top-0 shadow">
   <nav class="pl-40 pr-40 lt-md:pr-34 h-60 bg-white position-relative flex gap-8 items-center">
-    <Avatar class="w-40 h-40"/>
-    <div onclick="location.href='/'" class="font-size-22 font-weight-600 w-mc m-0 p-0 cursor-pointer hover-color-blue lt-md:hidden" style="font-family: MyTitle;">{SITE_TITLE}</div>
+    <Avatar src={SITE.logo} class="w-40 h-40 b-rd-8"/>
+    <div onclick="location.href='/'" class="font-size-22 font-weight-600 w-mc m-0 p-0 cursor-pointer hover-color-blue lt-md:hidden" style="font-family: MyTitle;">{SITE.title}</div>
     <div class="w-mc ml-auto">
       <PageFindSearch />
     </div>
-    <OutsideLink href={GITHUB_LINK_OLD} title="跳转到Github（旧）">
-      <Icon name="mdi:github" color="gray" size={24} />
-    </OutsideLink>
-    <OutsideLink href={GITHUB_LINK} title="跳转到Github">
-      <Icon name="mdi:github" size={24} />
-    </OutsideLink>
   </nav>
 </header>
 <script>

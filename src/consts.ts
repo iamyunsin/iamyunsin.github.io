@@ -1,8 +1,16 @@
-export const SITE_TITLE = '原心的个人主页';
-// export const SITE_DESCRIPTION = '历尽沧桑犹勤勉；岁月回溯心自安';
-// export const SITE_DESCRIPTION = '已过而立当慎行，岁月回首须无憾。';
-export const SITE_DESCRIPTION = '贵有恒，何必三更起五更眠';
+export const SITE = {
+  title: '原心的个人主页',
+  description: '原心的个人博客，专注Web、web3、小程序和App等领域技术分享',
+  logo: '/site-images/avatar.jpeg',
+};
 
-// export const SITE_DESCRIPTION = '勤勉身力行，岁月回首心无憾';
-export const GITHUB_LINK_OLD = "https://github.com/bullub/"
-export const GITHUB_LINK = 'https://github.com/iamyunsin/';
+export const AUTHOR = {
+  name: '原心',
+  avatar: '/site-images/avatar.jpeg',
+  description: '贵有恒，何必三更起五更眠',
+  juejin: 'https://juejin.cn/user/3227821870955495',
+  github: 'https://github.com/iamyunsin/',
+  github_old: 'https://github.com/bullub/',
+  email: 'mailto:yunsin@vip.qq.com',
+  wechat: '/site-images/wechat-qr.png',
+};
