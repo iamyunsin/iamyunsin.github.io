@@ -2,9 +2,9 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 // import MarkdownIt from 'markdown-it';
 // const parser = new MarkdownIt();
-import { SITE } from '@/consts.ts';
+import { SITE } from '../consts';
 
-export async function GET(context) {
+export async function GET(context: any) {
 	const posts = (await Promise.all([getCollection('blog'), getCollection('life')])).flat().filter(({ data }) => data.draft !== true);
 	return rss({
 		title: SITE.title,

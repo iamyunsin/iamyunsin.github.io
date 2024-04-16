@@ -24,11 +24,4 @@ export const EXPERIMENTS = [
       path: '/experiments/vue/vue3-compilation-visualization',
     }]
   },
-  // {
-  //   name: 'ECMAScript',
-  //   list: [{
-  //     title: 'Vue3编译过程呈现',
-  //     path: '/vue/vue3-compiler',
-  //   }]
-  // },
 ];
