@@ -2,12 +2,12 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "strictNullChecks": true,
-    "baseUrl": "/Users/bullub/个人中心/项目/blog",
+    "baseUrl": "./",
+    "jsx": "preserve",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
-    "jsx": "preserve"
   }
 }
