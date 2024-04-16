@@ -2,7 +2,7 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 // import MarkdownIt from 'markdown-it';
 // const parser = new MarkdownIt();
-import { SITE } from '@/consts';
+import { SITE } from '@/consts.ts';
 
 export async function GET(context) {
 	const posts = (await Promise.all([getCollection('blog'), getCollection('life')])).flat().filter(({ data }) => data.draft !== true);

@@ -27,9 +27,16 @@ export default defineConfig({
   devToolbar: {
     enabled: false
   },
-  integrations: [UnoCSS({
-    injectReset: true
-  }), mdx(), sitemap(), icon(), pagefind(), vue()],
+  integrations: [
+    UnoCSS({
+      injectReset: true
+    }), 
+    mdx(), 
+    sitemap(), 
+    icon(), 
+    pagefind(), 
+    vue()
+  ],
   markdown: {
     remarkPlugins: [remarkReadingTime, remarkMermaid, remarkMath],
     rehypePlugins: [
