@@ -14,11 +14,11 @@ const className = Astro.props[`class`] || '';
 ---
 
 <Card class={`flex flex-col items-center gap-20 shadow p-22 ${className}`}>
-  <Avatar src={AUTHOR.avatar} size="120" class="b-rd-[50%] shadow"/>
+  <Avatar href="/about" src={AUTHOR.avatar} size="120" class="b-rd-[50%] shadow"/>
   <div class="text-6xl font-semibold">{AUTHOR.name}</div>
   <div>
-    <p class="text-5xl">
-      {AUTHOR.description}
+    <p class="text-5xl line-height-20">
+      {AUTHOR.motto}
     </p>
   </div>
   <div class="flex items-center gap-14">
@@ -32,8 +32,8 @@ const className = Astro.props[`class`] || '';
     <OutsideLink href={AUTHOR.github} title="Github">
       <Icon name="mdi:github" size={24} />
     </OutsideLink>
-    <OutsideLink href={AUTHOR.github_old} title="Github（旧）">
-      <Icon name="mdi:github" color="gray" size={24} />
+    <OutsideLink href={AUTHOR.email} title="发送邮件">
+      <Icon name="mdi:email" color="orange" size={24} />
     </OutsideLink>
   </div>
 </Card>

@@ -7,10 +7,28 @@ export const SITE = {
 export const AUTHOR = {
   name: '原心',
   avatar: '/site-images/avatar.jpeg',
-  description: '贵有恒，何必三更起五更眠',
+  motto: '贵有恒，何必三更起五更眠',
+  description: '前端开发工程师，专注Web、web3、小程序和App等技术领域',
   juejin: 'https://juejin.cn/user/3227821870955495',
   github: 'https://github.com/iamyunsin/',
-  github_old: 'https://github.com/bullub/',
   email: 'mailto:yunsin@vip.qq.com',
   wechat: '/site-images/wechat-qr.png',
 };
+
+// 小实验模块
+export const EXPERIMENTS = [
+  {
+    name: 'Vue',
+    list: [{
+      title: 'Vue3编译过程可视化工具',
+      path: '/experiments/vue/vue3-compilation-visualization',
+    }]
+  },
+  // {
+  //   name: 'ECMAScript',
+  //   list: [{
+  //     title: 'Vue3编译过程呈现',
+  //     path: '/vue/vue3-compiler',
+  //   }]
+  // },
+];

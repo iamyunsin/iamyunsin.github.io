@@ -11,7 +11,7 @@ import Iconfont from '@/components/Iconfont.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate } = Astro.props;
+const { title, description, pubDate, updatedDate, minutes, words } = Astro.props;
 ---
 
 <html lang="en">
@@ -22,20 +22,29 @@ const { title, description, pubDate, updatedDate } = Astro.props;
     <Header sticky={false}/>
 		<BodyWrapper>
       <div class="flex gap-16">
-        <section class="flex-1">
-          <div class="bg-white top-0 p-12 pb-0">
+        <section class="flex-1 overflow-hidden">
+          <header class="bg-white top-0 p-12 pb-4">
             <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
-            <div class="text-right">
-              <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Last updated on <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="flex justify-between items-center">
+              <div>
+                <span>共{words}字，</span>
+                <span>预计阅读{minutes?.toFixed(0)}分钟</span>
+              </div>
+              <div>
+                <span>于</span>
+                <FormattedDate date={pubDate} />
+                {
+                  updatedDate && (
+                    <div class="last-updated-on">
+                      Last updated on <FormattedDate date={updatedDate} />
+                    </div>
+                  )
+                }
+                发表，累计阅读<span id="busuanzi_value_page_pv"></span>次
+              </div>
             </div>
-          </div>
+          </header>
           <hr />
           <ArticleContent>
             <slot />
@@ -89,7 +98,6 @@ const { title, description, pubDate, updatedDate } = Astro.props;
                 const hElRect = hEl.getBoundingClientRect();
                 
                 if(hElRect.top <= rootRect.bottom) {
-                  console.log(hElRect, rootRect)
                   activeTocWithHEl(hEl);
                   break;
                 }

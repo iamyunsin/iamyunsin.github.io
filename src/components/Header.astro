@@ -2,14 +2,17 @@
 import Avatar from './Avatar.astro';
 import { SITE } from '@/consts';
 import PageFindSearch from "./PageFindSearch.astro";
+import NavLink from './NavLink.astro';
 
 ---
 
 <header id="page-header" class="w-full top-0 shadow">
   <nav class="pl-40 pr-40 lt-md:pr-34 h-60 bg-white position-relative flex gap-8 items-center">
     <Avatar src={SITE.logo} class="w-40 h-40 b-rd-8"/>
-    <div onclick="location.href='/'" class="font-size-22 font-weight-600 w-mc m-0 p-0 cursor-pointer hover-color-blue lt-md:hidden" style="font-family: MyTitle;">{SITE.title}</div>
-    <div class="w-mc ml-auto">
+    <div onclick="location.href='/'" class="font-size-22 font-weight-600 w-mc m-0 p-0 cursor-pointer hover-color-blue-500 lt-md:hidden" style="font-family: MyTitle;">{SITE.title}</div>
+    <NavLink href="/" class="ml-auto">首页</NavLink>
+    <NavLink href="/experiment">小实验</NavLink>
+    <div class="w-mc">
       <PageFindSearch />
     </div>
   </nav>

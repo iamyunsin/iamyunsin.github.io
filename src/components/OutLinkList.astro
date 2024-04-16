@@ -1,0 +1,41 @@
+---
+import OutsideLink from './OutsideLink.astro';
+interface ListItem {
+  title: string;
+  path: string;
+}
+
+interface Props {
+  class?: string;
+  items: ListItem[];
+}
+
+const className = Astro.props.class || '';
+const { items } = Astro.props;
+---
+
+<ul class={`pt-16 ${className}`}>
+  {items.map((item) => (
+    <li class={`flex justify-between mb-8 text-5xl`}>
+      <a href={item.path} target="_blank">{ item.title }</a>
+    </li>
+  ))}
+</ul>
+<style lang="less">
+  .card-title {
+    width: 100%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 8px;
+    &::before {
+      content: ' ';
+      display: block;
+      width: 4px;
+      height: 100%;
+      background-color: #FFC107;
+    }
+  }
+</style>

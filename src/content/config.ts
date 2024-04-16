@@ -11,6 +11,8 @@ const articleCollection = defineCollection({
 		// Transform string to Date object
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
+    words: z.number().optional(),
+    minutes: z.number().optional(),
 	}),
 });
 

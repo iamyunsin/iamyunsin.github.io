@@ -1,0 +1,22 @@
+---
+import BaseHead from '@/components/BaseHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { SITE } from '@/consts';
+import BodyWrapper from '@/components/BodyWrapper.astro';
+import V3CompileVisual from './components/V3CompileVisual.vue';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Vue3编译过程可视化工具·原心的个人主页" description={SITE.description} />
+	</head>
+	<body>
+		<Header />
+		<BodyWrapper >
+      <V3CompileVisual client:only />
+		</BodyWrapper>
+		<Footer />
+	</body>
+</html>

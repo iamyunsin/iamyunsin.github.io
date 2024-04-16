@@ -3,10 +3,11 @@ interface Props {
   'class'?: string;
   size?: number | string;
   src?: string;
+  href?: string;
 }
 
 const className = Astro.props[`class`] || '';
-const { size, src = '/site-images/avatar.jpeg' } = Astro.props;
+const { size, src = '/site-images/avatar.jpeg', href='/' } = Astro.props;
 ---
 
-<img onclick="location.href='/'" class={`w-160 h-160 border-4 border-color-white cursor-pointer hover-border-blue-300 ${className}`} src={src} style={size ? `width: ${size}px;height: ${size}px` : ''}/>
+<img onclick={`location.href='${href}'`}" class={`w-160 h-160 border-3 border-color-white cursor-pointer hover-border-blue-500 ${className}`} src={src} style={size ? `width: ${size}px;height: ${size}px` : ''}/>

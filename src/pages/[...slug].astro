@@ -4,7 +4,6 @@ import BlogPost from '@/layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
 	const posts = (await Promise.all([getCollection('blog'), getCollection('life')])).flat().filter(({ data }) => data.draft !== true);
-
 	return posts.map((post) => ({
 		params: { slug: `${post.collection}/${post.slug}` },
 		props: post,
@@ -13,9 +12,9 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await post.render();
+const { Content, remarkPluginFrontmatter } = await post.render();
 ---
 
-<BlogPost {...post.data}>
+<BlogPost { ...{...remarkPluginFrontmatter, ...post.data } }>
 	<Content />
 </BlogPost>
