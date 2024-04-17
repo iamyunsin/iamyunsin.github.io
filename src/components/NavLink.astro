@@ -9,7 +9,7 @@ const { href } = Astro.props;
 const path = Astro.url.pathname;
 ---
 
-<a href={href} class={`nav-link text-6xl pt-4 pb-6 mr-16 ${className} ${path === href ? 'nav-link-active' : ''}`} data-astro-prefetch>
+<a href={href} class={`nav-link text-6xl pt-4 pb-6 mr-16 lt-md:mr-0 ${className} ${path === href ? 'nav-link-active' : ''}`} data-astro-prefetch>
   <slot></slot>
 </a>
 <style lang="less">
