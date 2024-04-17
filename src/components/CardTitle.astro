@@ -3,7 +3,7 @@ interface Props {
   'class'?: string;
 }
 
-const className = Astro.props[`class`];
+const className = Astro.props.class || '';
 ---
 
 <h3 class={`card-title ${className}`}>
