@@ -25,7 +25,7 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
         <section class="flex-1 bg-white overflow-hidden">
           <header class="bg-white top-0 p-12 pb-4 b-b-dashed b-b-[#cdcdcd] b-b-1">
             <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center lt-xs:flex-col">
               <div>
                 <span>共{words}字，</span>
                 <span>预计阅读{minutes?.toFixed(0)}分钟</span>
