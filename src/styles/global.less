@@ -201,6 +201,10 @@ hr {
             background-color: #444;
           }
         }
+        // markdown-it 生成的代码最后总会多一行空行，这里隐藏掉
+        &:last-child:empty {
+          display: none;
+        }
         &::before {
           position: sticky;
           left: 0;
