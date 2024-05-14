@@ -25,7 +25,7 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
         <section class="flex-1 bg-white overflow-hidden">
           <header class="bg-white top-0 p-12 pb-4 b-b-dashed b-b-[#cdcdcd] b-b-1">
             <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
-            <div class="flex justify-between items-center lt-xs:flex-col font-200">
+            <div class="flex justify-between items-center lt-xs:flex-col font-200 font-size-12">
               <div>
                 <span>共{words}字，</span>
                 <span>预计阅读{minutes?.toFixed(0)}分钟</span>
@@ -40,7 +40,7 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
                     </div>
                   )
                 }
-                发表，累计阅读<span id="busuanzi_value_page_pv"></span>次
+                发表，已被<span class="color-green-700 pl-2 pr-2" data-sinsuan-uv></span>人阅读<span class="color-green-700 pl-2 pr-2" data-sinsuan-pv></span>次
               </div>
             </div>
           </header>
@@ -112,7 +112,7 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
                 const hEl = allHElements[i];
                 const hElRect = hEl.getBoundingClientRect();
                 
-                if(hElRect.top <= rootRect.bottom) {
+                if(hElRect.top <= rootRect?.bottom) {
                   activeTocWithHEl(hEl);
                   break;
                 }

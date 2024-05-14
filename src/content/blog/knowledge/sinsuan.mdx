@@ -1,0 +1,112 @@
+---
+title: '心算：静态站点统计新星'
+description: '静态站点统计工具中，最受程序员欢迎的肯定是大名鼎鼎的不蒜子，不过不蒜子只提供了在线服务，作者没有开放自建服务的能力，于是就有了...'
+draft: false
+pubDate: '2024-05-14'
+tags: ['心算', '静态站点统计']
+---
+
+静态站点统计工具中，最受程序员欢迎的当数大名鼎鼎的[不蒜子](http://ibruce.info/2015/04/04/busuanzi/)，不过不蒜子只提供了在线服务，并没有开放自建服务的能力，于是就有了[心算](https://github.com/iamyunsin/sinsuan)。  
+
+心算作为新一代静态站点统计工具，设计上参考了前辈不蒜子，只是既支持在线服务接入，也支持自建服务；同时心算还支持hash路由和history路由模式的SPA站点的统计。  
+
+## 一、在线服务接入
+
+心算在线服务接入方式参考了不蒜子，下面我们就详细说明心算在线服务的使用步骤。
+
+### (一) 安装依赖
+
+```bash
+npm i sinsuan
+```
+
+### (二) 启动统计
+
+```ts
+import { bootstrap } from 'sinsuan'
+
+// 启动统计
+bootstrap();
+```
+
+上面的代码会开启页面统计功能，`bootstrap`函数未传入参数，意味着使用默认配置启动，那么要呈现数据，就需要在页面上声明承载数据的html节点，如下所示：
+
+```html
+当前页面PV: <span data-sinsuan-pv></span>
+当前页面UV: <span data-sinsuan-uv></span>
+站点PV: <span data-sinsuan-site-pv></span>
+站点UV: <span data-sinsuan-site-uv></span>
+```
+
+### (三) `bootstrap`参数详解
+
+`bootstrap`函数的参数类型如下：
+
+```ts
+/**
+ * 配置信息
+ */
+export type SinSuanConfig = {
+  /** 服务器接口地址 */
+  serverUrl?: string;
+  /** 传递ID值的请求头 */
+  idHeaderKey?: string;
+  /** 传递统计地址的请求头，由于需要支持单页形式的hash模式路由的请求和避免no-referer页面服务器无法获取Referer头的情况 */
+  countUrlHeaderKey?: string;
+  /** 用于存储信息的实例，可以由使用方实现，默认实现使用localStorage */
+  storage?: Storage;
+  /** 是否启用hash路由统计模式 */
+  hashMode?: boolean;
+  /** 是否启用history路由统计模式 */
+  historyMode?: boolean;
+  /** 当收到数据时要执行的处理 */
+  onReceiveData?: OnReceiveDataHandler;
+};
+```
+
+如上所示，我们常用的参数有：
+* **serverUrl**：当我们使用自建服务时，在启动的时候首先要配置的就是这个服务器地址，此地址使用全路径  
+* **hashMode**：用于指定当页面hash变化的时候是否执行统计，默认值：`false`  
+* **historyMode**：当通过history api改变url时是否统计，默认值：`true`  
+* **onReceiveData**：自定义数据接收函数，请求后端接口并收到响应后触发，默认会将数据填入到页面上的填值占位符（如：`<span data-sinsuan-pv></span>`这样的节点）中  
+
+
+## 二、自建服务
+
+### （一）Linux系统  
+
+对于linux系统，可以直接下载[sinsuan-x86_64-unknown-linux-musl-v0.1.0.zip](https://github.com/iamyunsin/sinsuan/releases/download/v0.1.0/sinsuan-x86_64-unknown-linux-musl-v0.1.0.zip)资源包，解压并执行`./sinsuan`来启动服务。  
+解压后的目录结构：
+
+```bash
+├── sinsuan
+└── Rocket.yaml
+```
+
+当我们执行`./sinsuan`命令后，会在当前目录中生成`db.sqlite`文件，这就是数据文件。  
+当然我们可以通过[sqlite3](https://sqlite.org/index.html)命令行工具管理我们的数据。  
+
+**如果希望更改服务监听的地址、数据库文件存放路径，以及数据库连接池调优，也可以通过修改`Rocket.yaml`文件来达到目的**。
+
+### （二）其它操作系统
+
+其它操作系统会稍微麻烦一点，我们需要安装rust环境，然后从github下载源码自行编译，这里就不详述了，有需要可以联系我（微信：iamyunsin）。
+
+### （三）项目集成
+
+集成时，与在线服务模式的集成相似，仅仅需修改`bootstrap`函数的入参，将`serverUrl`改为您自己的服务地址即可。
+
+```ts
+import { bootstrap } from 'sinsuan'
+
+// 启动统计
+bootstrap({
+  serverUrl: 'https://your.host/path/to/count'
+});
+```
+
+## 结语
+
+大家可以看到，心算的使用方式与不蒜子非常类似，只是有了更多选择空间。  
+
+欢迎大家使用，也欢迎大家给作者[反馈](https://github.com/iamyunsin/sinsuan/issues/new)意见、建议和问题，再次感谢您的耐心阅读，谢谢^_^

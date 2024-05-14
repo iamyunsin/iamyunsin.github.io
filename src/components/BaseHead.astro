@@ -6,8 +6,8 @@ import '@/styles/iconfont.css'
 import '@/styles/global.less';
 import '@/styles/pagefind.less';
 import '@/styles/toc.less';
-
 import { ViewTransitions } from 'astro:transitions';
+
 interface Props {
 	title: string;
 	description: string;
@@ -52,4 +52,7 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" data-astro-rerun></script>
+<script>
+  import { bootstrap } from "sinsuan";
+  bootstrap();
+</script>

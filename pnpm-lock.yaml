@@ -44,6 +44,9 @@ importers:
       reading-time:
         specifier: ^1.5.0
         version: 1.5.0
+      sinsuan:
+        specifier: ^0.1.0
+        version: 0.1.0
       vue:
         specifier: ^3.4.21
         version: 3.4.21(typescript@5.4.3)
@@ -2625,6 +2628,9 @@ packages:
 
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
+
+  sinsuan@0.1.0:
+    resolution: {integrity: sha512-w4L1rZ9FgJL+P0994KKemasXhB2g1l7yt8Sg5QTOOqxzOpQoNIoQlliex0KjkhbBNC1NYzhm2PZKtjh/HSpJBw==, tarball: https://registry.npmjs.org/sinsuan/-/sinsuan-0.1.0.tgz}
 
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
@@ -6453,6 +6459,8 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
     optional: true
+
+  sinsuan@0.1.0: {}
 
   sirv@2.0.4:
     dependencies:

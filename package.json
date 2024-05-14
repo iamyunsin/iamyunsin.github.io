@@ -24,6 +24,7 @@
     "mdast-util-to-string": "^4.0.0",
     "pagefind": "^1.0.4",
     "reading-time": "^1.5.0",
+    "sinsuan": "^0.1.0",
     "vue": "^3.4.21",
     "vue-codemirror": "^6.1.1"
   },
