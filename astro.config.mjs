@@ -2,8 +2,6 @@ import { defineConfig } from 'astro/config';
 import UnoCSS from 'unocss/astro';
 import mdx from '@astrojs/mdx';
 import icon from "astro-icon";
-// mermaid绘图
-import remarkMermaid from 'astro-diagram/remark-mermaid';
 // toc索引
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -20,6 +18,11 @@ import pagefind from "astro-pagefind";
 
 import vue from "@astrojs/vue";
 import { remarkReadingTime } from './remark-reading-time.mjs';
+import { rehypeShiki } from '@astrojs/markdown-remark'
+import rehypeMermaid from 'rehype-mermaid';
+import remarkMermaid from 'remark-mermaidjs'
+
+import expressiveCode from 'astro-expressive-code';
 
 // https://astro.build/config
 export default defineConfig({
@@ -27,20 +30,14 @@ export default defineConfig({
   devToolbar: {
     enabled: false
   },
-  integrations: [
-    UnoCSS({
-      injectReset: true
-    }), 
-    mdx(), 
-    sitemap(), 
-    icon(), 
-    pagefind(), 
-    vue()
-  ],
+  integrations: [expressiveCode(), UnoCSS({
+    injectReset: true
+  }), mdx(), sitemap(), icon(), pagefind(), vue()],
   markdown: {
-    remarkPlugins: [remarkReadingTime, remarkMermaid, remarkMath],
+    remarkPlugins: [remarkReadingTime, remarkMath, remarkMermaid],
     rehypePlugins: [
       rehypeSlug, 
+      rehypeShiki,
       [rehypeAutolinkHeadings, {
         behavior: 'append'
       }], 

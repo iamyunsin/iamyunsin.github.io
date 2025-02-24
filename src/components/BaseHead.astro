@@ -6,7 +6,7 @@ import '@/styles/iconfont.css'
 import '@/styles/global.less';
 import '@/styles/pagefind.less';
 import '@/styles/toc.less';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
 	title: string;
@@ -35,7 +35,7 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
-<ViewTransitions />
+<ClientRouter />
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
