@@ -9,7 +9,8 @@
     "build": "astro build",
     "build:mysite": "astro build --site=https://yunsin.top",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "postinstall": "npx playwright install --with-deps chromium"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.8",
