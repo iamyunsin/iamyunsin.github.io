@@ -32,7 +32,10 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <link rel="prefetch" href="/fonts/iconfont.woff2" as="font" crossorigin />
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
-
+<script>
+  import { bootstrap } from "sinsuan";
+  bootstrap();
+</script>
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <ClientRouter />
@@ -52,7 +55,4 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
-<script>
-  import { bootstrap } from "sinsuan";
-  bootstrap();
-</script>
+
