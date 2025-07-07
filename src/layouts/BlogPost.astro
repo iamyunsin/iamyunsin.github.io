@@ -8,6 +8,8 @@ import FormattedDate from '@/components/FormattedDate.astro';
 import ArticleContent from '@/components/ArticleContent.astro';
 import { Icon } from 'astro-icon/components';
 import Iconfont from '@/components/Iconfont.astro';
+import LoadingAnimation from '@/components/LoadingAnimation.astro';
+import PageTransition from '@/components/PageTransition.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -19,6 +21,7 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
 		<BaseHead title={title} description={description} />
 	</head>
 	<body>
+    <LoadingAnimation />
     <Header sticky={false}/>
 		<BodyWrapper>
       <div class="flex gap-16">
@@ -197,5 +200,6 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
         
       })();
     </script>
+    <PageTransition />
 	</body>
 </html>

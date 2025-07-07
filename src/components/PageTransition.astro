@@ -1,0 +1,104 @@
+---
+// Page transition component for smooth navigation between pages
+---
+
+<style>
+/* Page transition styles */
+.page-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.page-content.page-exit {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.page-content.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-content.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Navigation link hover effects */
+.nav-link {
+  transition: color 0.2s ease-out;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+/* Article list item transition effects */
+.article-item {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.article-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+  // Page transition functionality
+  function initPageTransitions() {
+    // Add page-content class to main content areas
+    const mainContent = document.querySelector('main') || document.querySelector('.main');
+    if (mainContent) {
+      mainContent.classList.add('page-content');
+    }
+
+    // Handle navigation link clicks for smooth transitions
+    const navigationLinks = document.querySelectorAll('a[href^="/"], a[href^="blog/"]');
+    
+    navigationLinks.forEach(link => {
+      link.classList.add('nav-link');
+      
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        
+        // Only handle internal navigation (not external links)
+        if (href && (href.startsWith('/') || href.startsWith('blog/'))) {
+          e.preventDefault();
+          
+          // Add exit animation
+          if (mainContent) {
+            mainContent.classList.add('page-exit');
+          }
+          
+          // Navigate after animation
+          setTimeout(() => {
+            window.location.href = href.startsWith('/') ? href : '/' + href;
+          }, 150);
+        }
+      });
+    });
+
+    // Add hover effects to article items
+    const articleItems = document.querySelectorAll('.article-item, [href^="blog/"], [href^="/blog/"]');
+    articleItems.forEach(item => {
+      if (item.closest('a') || item.tagName.toLowerCase() === 'a') {
+        item.classList.add('article-item');
+      }
+    });
+
+    // Page enter animation
+    setTimeout(() => {
+      if (mainContent) {
+        mainContent.classList.add('page-enter');
+        requestAnimationFrame(() => {
+          mainContent.classList.add('page-enter-active');
+        });
+      }
+    }, 50);
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initPageTransitions);
+</script>

@@ -8,6 +8,8 @@ import ArticleList from '@/components/ArticleList.astro';
 import Author from '@/components/Author.astro';
 import Card from '@/components/Card.astro';
 import CardTitle from '@/components/CardTitle.astro';
+import LoadingAnimation from '@/components/LoadingAnimation.astro';
+import PageTransition from '@/components/PageTransition.astro';
 
 ---
 
@@ -17,6 +19,7 @@ import CardTitle from '@/components/CardTitle.astro';
 		<BaseHead title={SITE.title} image={SITE.logo} description={SITE.description} />
 	</head>
 	<body>
+		<LoadingAnimation />
 		<Header />
 		<BodyWrapper class="flex gap-20 lt-sm:flex-col lt-sm:gap-12">
       <aside class="w-280 flex flex-col gap-12 lt-sm:w-auto">
@@ -41,5 +44,6 @@ import CardTitle from '@/components/CardTitle.astro';
 			</section>
 		</BodyWrapper>
 		<Footer />
+		<PageTransition />
 	</body>
 </html>
