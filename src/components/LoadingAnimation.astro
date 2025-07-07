@@ -60,7 +60,7 @@
 
 <script>
   // Hide loading animation when page is fully loaded
-  document.addEventListener('DOMContentLoaded', () => {
+  function hideLoadingAnimation() {
     const loadingOverlay = document.getElementById('loading-overlay');
     if (loadingOverlay) {
       // Add a small delay to ensure all content is rendered
@@ -72,5 +72,14 @@
         }, 500);
       }, 300);
     }
-  });
+  }
+
+  // Handle both initial page load and navigation via JavaScript
+  if (document.readyState === 'loading') {
+    // If DOM is still loading, wait for DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', hideLoadingAnimation);
+  } else {
+    // If DOM is already loaded (e.g., navigated via JavaScript), hide immediately
+    hideLoadingAnimation();
+  }
 </script>
