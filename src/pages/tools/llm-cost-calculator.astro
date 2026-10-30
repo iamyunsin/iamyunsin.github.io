@@ -1,0 +1,98 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import LlmCostCalculator from '@/components/tools/LlmCostCalculator.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔥 免海外卡聚合网关',
+    highlight: '支持 200+ 模型',
+    title: 'OpenRouter 统一大模型 API 网关',
+    description: '只需 1 个 API Key 即可无缝切换调用 Claude 3.7 Sonnet、GPT-4o、Gemini 2.5 Pro 与 DeepSeek-R1，按量透明计费，彻底告别多平台封号与绑卡烦恼。',
+    ctaText: '免费注册获取聚合 API Key',
+    url: 'https://openrouter.ai/',
+  },
+  {
+    badge: '🇨🇳 国内高并发首选',
+    highlight: '满血 DeepSeek + 云服务器',
+    title: '腾讯云大模型 API 与轻量应用服务器特惠',
+    description: '国内直连零延迟调用满血版 DeepSeek-R1 / V3 接口，搭配高性价比轻量云服务器快速部署企业级 AI Agent 与 RAG 知识库。',
+    ctaText: '领取腾讯云开发者专属代金券',
+    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  },
+  {
+    badge: '🎁 百万免费 Token',
+    highlight: '通义千问 Qwen 官方',
+    title: '阿里云百炼大模型服务平台',
+    description: '新用户开通即送超百万免费 Token 额度，支持 Qwen-Max、Qwen-Plus 与 DeepSeek 全系列模型，兼容 OpenAI SDK 一行代码平滑迁移。',
+    ctaText: '前往阿里云百炼领取免费额度',
+    url: 'https://www.aliyun.com/product/bailian',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '1 个中文汉字或 1 个英文单词分别等于多少个 LLM Token？',
+    answer:
+      '不同大模型的分词器（Tokenizer）差异很大：在 DeepSeek-V3/R1 和通义千问 Qwen 等针对中文深度优化的词表中，1 个常用汉字通常仅消耗约 0.6 ~ 0.68 个 Token（即两个汉字经常合并为一个词根 Token）；而在 OpenAI o200k_base (GPT-4o) 中，1 个汉字约合 0.85 个 Token；在 Claude 3.5/3.7 中，1 个汉字约消耗 1.1 ~ 1.2 个 Token。英文常见单词通常 1 词 ≈ 1.3 Tokens。',
+  },
+  {
+    question: '什么是 Prompt Caching（上下文缓存）？为什么能让 API 账单直降 50%~90%？',
+    answer:
+      '在 RAG 知识库问答、多轮 Agent 对话或长文档分析场景中，每次请求的 System Prompt（系统提示词）和前置背景文档往往是重复的。开启 Prompt Caching 后（DeepSeek 与阿里云默认自动开启硬盘/内存缓存，OpenAI 与 Claude 支持前缀自动/显式缓存），命中的重复输入 Token 单价可享受 50% 至 90% 的大幅折扣（如 Claude 3.7 Sonnet 缓存读取单价仅为原价的 10%）。',
+  },
+  {
+    question: '我粘贴到本工具里的 Prompt 提示词或代码会上传到服务器吗？',
+    answer:
+      '绝对不会。本工具的核心分词切片与成本核算引擎由 Rust 编写并编译为仅 28.5 KB 的 WebAssembly (Wasm) 模块，100% 在您的浏览器本地沙箱内存中直接运行，即使断开网络也能正常分词计算，确保企业级系统提示词与私有代码零泄露。',
+  },
+  {
+    question: '为什么实际大模型 API 账单往往比只看“输入单价”贵很多？',
+    answer:
+      '有两个常被忽略的隐形成本：第一，几乎所有主流模型的「输出 Token（Output）」单价都是输入单价的 3 到 5 倍；第二，像 DeepSeek-R1、OpenAI o3-mini 这类推理模型（Reasoning Models），在输出最终答案前会生成大量思维链（Chain-of-Thought）Token，这些思维链全部按高昂的「输出单价」计费。因此在测算推理模型成本时，建议将单次输出 Token 设为普通模型的 3 倍以上。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="ai-cost"
+  title="全球大模型 (LLM API) Token 分词可视化与实时成本对比计算器"
+  description="基于 Rust + WebAssembly 纯本地运行的 BPE/CJK 分词可视化与 API 月度账单精算工具，一键对比 DeepSeek-V3/R1、GPT-4o、Claude 3.7 Sonnet、Gemini 2.5 Pro 与通义千问的真实调用成本及 Prompt 缓存立省金额。"
+  alternateZh="/tools/llm-cost-calculator/"
+  alternateEn="/en/tools/llm-cost-calculator/"
+  wasmSizeLabel="28.5 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <LlmCostCalculator client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>如何使用本工具精准预估大模型 API 成本？</h2>
+    <p>
+      在进行 AI 应用架构选型（如搭建企业级 RAG 知识库、AI 编程助手、自动化客服 Agent 或批量文档翻译流水线）时，开发者最容易踩的坑就是<strong>只看官方宣传的“每百万输入单价”</strong>，却忽略了不同模型分词器（Tokenizer）对中英文的压缩率差异，以及高频调用下输出 Token 与上下文缓存（Prompt Caching）带来的巨大成本分野。
+    </p>
+    <ul>
+      <li>
+        <strong>第一步：实测你的真实 Prompt Token 消耗</strong> —— 将你的系统提示词（System Prompt）、Few-Shot 示例或 JSON Schema 粘贴到上方的「实时分词切片器」中，切换不同厂商的分词配置，直观查看中文、英文与代码符号是如何被切分为 BPE Token 的，并点击「同步至下方账单计算器」。
+      </li>
+      <li>
+        <strong>第二步：模拟日均调用量与缓存命中率</strong> —— 如果是长设定对话或知识库检索，通常有 50%~80% 的输入前缀是重复的。拖动「Prompt 缓存命中率」滑块，即可实时看到开启上下文缓存后每月能省下多少真金白银。
+      </li>
+      <li>
+        <strong>第三步：组合选型（路由分发策略）</strong> —— 实战中最省钱的方案往往不是“全用同一个模型”，而是通过统一网关（如 OpenRouter 或百炼），将简单意图识别/分类交由 <code>GPT-4o-mini</code>、<code>Gemini 2.5 Flash</code> 或 <code>Qwen-Plus</code> 处理，将复杂推理与代码生成路由给 <code>DeepSeek-R1</code> 或 <code>Claude 3.7 Sonnet</code>。
+      </li>
+    </ul>
+
+    <h3>主流大模型计费公式说明</h3>
+    <p>
+      本工具底层的 Rust WebAssembly 精算引擎采用各厂商官方公开的标准计费模型（按 30 天自然月折算）：
+    </p>
+    <ul>
+      <li><strong>单次请求未缓存输入成本</strong> = <code>单次输入 Tokens × (1 - 缓存命中率) × 输入单价 / 1,000,000</code></li>
+      <li><strong>单次请求缓存命中输入成本</strong> = <code>单次输入 Tokens × 缓存命中率 × 缓存读取单价 / 1,000,000</code></li>
+      <li><strong>单次请求输出成本</strong> = <code>单次输出 Tokens × 输出单价 / 1,000,000</code></li>
+      <li><strong>预估月度总账单 (30天)</strong> = <code>(未缓存输入成本 + 缓存命中成本 + 输出成本) × 每日调用次数 × 30</code></li>
+    </ul>
+  </div>
+</ToolLayout>

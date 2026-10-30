@@ -7,16 +7,28 @@ import '@/styles/global.less';
 import '@/styles/pagefind.less';
 import '@/styles/toc.less';
 import { ClientRouter } from 'astro:transitions';
+import { ANALYTICS, SITE } from '@/consts';
 
 interface Props {
 	title: string;
 	description: string;
 	image?: string;
+  alternateZh?: string;
+  alternateEn?: string;
+  jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const baseSite = Astro.site || SITE.domain;
+const canonicalURL = new URL(Astro.url.pathname, baseSite);
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const {
+  title,
+  description,
+  image = '/blog-placeholder-1.jpg',
+  alternateZh,
+  alternateEn,
+  jsonLd,
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -49,12 +61,13 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <link rel="prefetch" href="/fonts/iconfont.ttf" as="font" crossorigin />
 <link rel="prefetch" href="/fonts/iconfont.woff" as="font" crossorigin />
 <link rel="prefetch" href="/fonts/iconfont.woff2" as="font" crossorigin />
-<!-- Canonical URL -->
+
+<!-- Canonical & Multilingual Hreflang -->
 <link rel="canonical" href={canonicalURL} />
-<script>
-  import { bootstrap } from "sinsuan";
-  bootstrap();
-</script>
+{alternateZh && <link rel="alternate" hreflang="zh-CN" href={new URL(alternateZh, baseSite)} />}
+{alternateEn && <link rel="alternate" hreflang="en" href={new URL(alternateEn, baseSite)} />}
+{alternateEn && <link rel="alternate" hreflang="x-default" href={new URL(alternateEn, baseSite)} />}
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <ClientRouter />
@@ -74,3 +87,31 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<!-- Structured Data (JSON-LD) for Rich Snippets & Tool SEO -->
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}
+
+<!-- Free Zero-Maintenance Analytics: Cloudflare Web Analytics -->
+{ANALYTICS.cloudflareToken && (
+  <script
+    defer
+    src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon={JSON.stringify({ token: ANALYTICS.cloudflareToken })}
+  />
+)}
+
+<!-- Free Heatmaps & Session Insights: Microsoft Clarity -->
+{ANALYTICS.clarityProjectId && (
+  <script
+    is:inline
+    define:vars={{ clarityId: ANALYTICS.clarityProjectId }}
+  >
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", clarityId);
+  </script>
+)}

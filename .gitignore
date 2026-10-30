@@ -19,3 +19,8 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# Rust Wasm build cache (uncomment `rust-wasm/` if repo is public and you want to hide Rust source)
+rust-wasm/target/
+# rust-wasm/
+

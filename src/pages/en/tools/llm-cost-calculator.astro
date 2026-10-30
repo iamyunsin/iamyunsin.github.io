@@ -1,0 +1,95 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import LlmCostCalculator from '@/components/tools/LlmCostCalculator.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔥 Unified LLM Gateway',
+    highlight: '200+ Models · 1 API Key',
+    title: 'OpenRouter — One API for Claude 3.7, GPT-4o, Gemini & DeepSeek',
+    description: 'Route requests across OpenAI, Anthropic, Google Gemini, and DeepSeek with automatic fallback, transparent pay-as-you-go pricing, and built-in prompt caching support.',
+    ctaText: 'Get Free OpenRouter API Key',
+    url: 'https://openrouter.ai/',
+  },
+  {
+    badge: '⚡ Zero-Egress Cloud',
+    highlight: 'Free Tier Available',
+    title: 'Cloudflare Workers & AI Gateway',
+    description: 'Cache LLM responses at the edge, enforce rate limits, and monitor token spend across all providers in real time with zero added latency.',
+    ctaText: 'Explore Cloudflare AI Gateway',
+    url: 'https://www.cloudflare.com/developer-platform/products/ai-gateway/',
+  },
+  {
+    badge: '🌏 High-Speed Asian Cloud',
+    highlight: 'DeepSeek & Qwen Hosting',
+    title: 'Alibaba Cloud Model Studio (Bailian)',
+    description: 'Official enterprise hosting for Qwen-Max, Qwen-Plus, and DeepSeek-R1 with 1M+ free trial tokens and OpenAI-compatible SDK endpoints.',
+    ctaText: 'Claim Free Trial Credits',
+    url: 'https://www.aliyun.com/product/bailian',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How are LLM tokens calculated across OpenAI, Claude, Gemini, and DeepSeek?',
+    answer:
+      'Modern LLMs use Byte-Pair Encoding (BPE) or SentencePiece tokenizers to split text into subword units. In English, 1 token is roughly 4 characters or 0.75 words. For code, indentation and punctuation symbols often merge or split depending on vocabulary size. For CJK (Chinese/Japanese/Korean) text, DeepSeek and Qwen use expanded CJK vocabularies (~0.65 tokens per character), whereas Claude 3.5/3.7 uses ~1.12 tokens per character.',
+  },
+  {
+    question: 'How much money can Prompt Caching save on my monthly API bill?',
+    answer:
+      'If your application sends a repeated system prompt, RAG knowledge base context, or multi-turn conversation history, Prompt Caching discounts cached input tokens by 50% (OpenAI) up to 90% (Anthropic Claude & DeepSeek). Use the "Prompt Cache Hit Rate" slider above to see your exact monthly savings.',
+  },
+  {
+    question: 'Are my prompts or code snippets uploaded to any server when using this tool?',
+    answer:
+      'Never. This calculator runs 100% client-side inside your browser using a custom 28.5 KB Rust WebAssembly (Wasm) micro-module. Your prompts, JSON schemas, and proprietary code never leave your device.',
+  },
+  {
+    question: 'Why do reasoning models (like o3-mini or DeepSeek-R1) cost more than expected?',
+    answer:
+      'Reasoning models generate internal Chain-of-Thought (CoT) reasoning tokens before producing the final visible response. All internal reasoning tokens are billed at the model’s Output Token rate (which is typically 3x to 5x higher than the Input Token rate). When estimating reasoning workloads, set Output Tokens per request to at least 1,500–4,000.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="LLM API Token Visualizer & Real-Time Pricing Calculator"
+  description="100% client-side BPE/CJK token slicer and monthly API bill estimator powered by Rust & WebAssembly. Compare GPT-4o, o3-mini, Claude 3.7 Sonnet, Gemini 2.5 Pro, DeepSeek-V3/R1, and Qwen with live Prompt Caching discounts."
+  alternateZh="/tools/llm-cost-calculator/"
+  alternateEn="/en/tools/llm-cost-calculator/"
+  wasmSizeLabel="28.5 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <LlmCostCalculator client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>How to Estimate & Optimize Your LLM API Spend</h2>
+    <p>
+      When scaling an AI product from prototype to production—whether it is a RAG document assistant, an autonomous coding agent, or a high-volume classification pipeline—relying solely on headline <em>"per 1M input token"</em> prices often leads to surprise cloud bills. Real-world API costs are driven by three factors: <strong>tokenizer efficiency</strong>, <strong>output-to-input token ratios</strong>, and <strong>prompt caching hit rates</strong>.
+    </p>
+    <ul>
+      <li>
+        <strong>1. Inspect Real BPE Token Slices:</strong> Paste your actual system prompt, JSON schema, or code snippet into the live Rust Wasm tokenizer above. Toggle between <code>OpenAI o200k_base</code>, <code>DeepSeek / Qwen</code>, <code>Claude</code>, and <code>Gemini</code> to see how subwords, whitespace, and multilingual characters are segmented, then click <em>"Use Tokens in Cost Simulator"</em>.
+      </li>
+      <li>
+        <strong>2. Model Prompt Caching Savings:</strong> For multi-turn chat and RAG workloads where 50%–90% of the prompt prefix remains static across calls, sliding the <strong>Prompt Cache Hit Rate</strong> reveals which providers reward prefix caching most aggressively.
+      </li>
+      <li>
+        <strong>3. Route Workloads Dynamically:</strong> Production teams rarely use a single frontier model for every request. By pairing lightweight models (like <code>GPT-4o mini</code>, <code>Gemini 2.5 Flash</code>, or <code>DeepSeek-V3</code>) for routing and extraction with frontier models (<code>Claude 3.7 Sonnet</code> or <code>DeepSeek-R1</code>) for complex synthesis, you can cut monthly API bills by over 75%.
+      </li>
+    </ul>
+
+    <h3>Standard LLM Billing Formula Used by Our Wasm Engine</h3>
+    <ul>
+      <li><strong>Uncached Input Cost / Req</strong> = <code>Input Tokens × (1 - Cache Hit Ratio) × (Input Price / 1,000,000)</code></li>
+      <li><strong>Cached Input Cost / Req</strong> = <code>Input Tokens × Cache Hit Ratio × (Cached Input Price / 1,000,000)</code></li>
+      <li><strong>Output Cost / Req</strong> = <code>Output Tokens × (Output Price / 1,000,000)</code></li>
+      <li><strong>Estimated 30-Day Monthly Bill</strong> = <code>(Uncached Input + Cached Input + Output Cost) × Daily Requests × 30</code></li>
+    </ul>
+  </div>
+</ToolLayout>

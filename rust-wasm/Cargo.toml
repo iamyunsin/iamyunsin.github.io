@@ -1,0 +1,13 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/shared-guard",
+  "crates/tool-llm-cost",
+]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

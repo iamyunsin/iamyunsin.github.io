@@ -1,0 +1,345 @@
+---
+import BaseHead from '@/components/BaseHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BodyWrapper from '@/components/BodyWrapper.astro';
+import AdSlot from '@/components/tools/AdSlot.astro';
+import AffiliateCard, { type AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { SITE } from '@/consts';
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  lang: 'zh' | 'en';
+  category: 'ai-cost' | 'media-doc' | 'dev-network' | 'web3';
+  alternateZh: string;
+  alternateEn: string;
+  wasmSizeLabel?: string;
+  offers?: AffiliateOffer[];
+  faqs?: FaqItem[];
+}
+
+const {
+  title,
+  description,
+  lang = 'zh',
+  category,
+  alternateZh,
+  alternateEn,
+  wasmSizeLabel = '28 KB Rust Wasm',
+  offers = [],
+  faqs = [],
+} = Astro.props;
+
+const switchLangUrl = lang === 'en' ? alternateZh : alternateEn;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || SITE.domain).toString();
+
+// Automatic WebApplication + FAQPage JSON-LD Schema for Google Rich Snippets
+const jsonLdSchemas: Record<string, any>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: title,
+    description,
+    url: canonicalUrl,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'All',
+    inLanguage: lang === 'en' ? 'en' : 'zh-CN',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  },
+];
+
+if (faqs.length > 0) {
+  jsonLdSchemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.answer,
+      },
+    })),
+  });
+}
+---
+
+<!doctype html>
+<html lang={lang === 'en' ? 'en' : 'zh-CN'}>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      alternateZh={alternateZh}
+      alternateEn={alternateEn}
+      jsonLd={jsonLdSchemas}
+    />
+  </head>
+  <body>
+    <Header lang={lang} switchLangUrl={switchLangUrl} />
+    <BodyWrapper>
+      <!-- Top Breadcrumb & Language Bar -->
+      <nav class="tool-breadcrumb" aria-label="Breadcrumb">
+        <div class="crumb-links">
+          <a href={lang === 'en' ? '/en/tools/' : '/tools/'}>
+            {lang === 'en' ? '🛠️ Indie Tools' : '🛠️ 极客工具箱'}
+          </a>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">{title}</span>
+        </div>
+        <div class="trust-badges">
+          <span class="trust-pill wasm-pill">⚡ {wasmSizeLabel}</span>
+          <span class="trust-pill privacy-pill">
+            {lang === 'en' ? '🔒 100% Client-Side · No Server Upload' : '🔒 100% 浏览器本地计算 · 零上传'}
+          </span>
+          <a href={switchLangUrl} class="trust-pill lang-pill">
+            {lang === 'en' ? '🌐 切换中文版' : '🌐 English Version'}
+          </a>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <header class="tool-hero">
+        <h1 class="tool-h1">{title}</h1>
+        <p class="tool-lead">{description}</p>
+      </header>
+
+      <!-- Main Interactive Tool Workspace (Vue 3 + Rust Wasm) -->
+      <section class="tool-workspace">
+        <slot />
+      </section>
+
+      <!-- Contextual High-Converting Affiliate Offers (AdBlock-Proof) -->
+      <AffiliateCard lang={lang} offers={offers} />
+
+      <!-- Non-Intrusive Fixed Display Ad Slot -->
+      <AdSlot lang={lang} category={category} position="middle" />
+
+      <!-- Deep SEO Guide & Documentation Slot -->
+      <article class="tool-seo-article">
+        <slot name="seo-content" />
+
+        {faqs.length > 0 && (
+          <section class="tool-faq-section">
+            <h2 class="faq-heading">
+              {lang === 'en' ? 'Frequently Asked Questions (FAQ)' : '常见问题与实战解答 (FAQ)'}
+            </h2>
+            <div class="faq-list">
+              {faqs.map((faq) => (
+                <details class="faq-item" open>
+                  <summary class="faq-q">{faq.question}</summary>
+                  <p class="faq-a">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Automatic Zero-Support Legal Disclaimer -->
+        <footer class="tool-disclaimer">
+          <p>
+            {lang === 'en'
+              ? '⚖️ Disclaimer: All tokenization, encoding, and pricing estimations run 100% locally in your browser via WebAssembly. No input prompts or files are ever transmitted to or stored on any server. Pricing data is provided for estimation only; please refer to official vendor billing pages for final invoices.'
+              : '⚖️ 免责声明：本工具所有文本分词、编码与价格测算均通过 WebAssembly 在您的浏览器本地完成，不会向服务器上传或存储任何输入数据。各模型单价与汇率估算仅供参考，实际账单请以各云厂商或官方 API 平台结算为准。'}
+          </p>
+        </footer>
+      </article>
+    </BodyWrapper>
+    <Footer />
+  </body>
+</html>
+
+<style lang="less">
+  .tool-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+
+  .crumb-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .crumb-current {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .trust-badges {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .trust-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .wasm-pill {
+    color: var(--accent);
+    border-color: var(--accent-border);
+    background-color: var(--accent-soft);
+  }
+
+  .lang-pill {
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+  }
+
+  .tool-hero {
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    background: var(--author-banner);
+    border: 1px solid var(--border-color);
+  }
+
+  .tool-h1 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+
+  .tool-lead {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .tool-workspace {
+    margin-bottom: 24px;
+  }
+
+  .tool-seo-article {
+    margin-top: 24px;
+    padding: 28px 32px;
+    border-radius: 16px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 14.5px;
+
+    @media (max-width: 768px) {
+      padding: 20px 16px;
+    }
+
+    :global(h2) {
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    :global(h3) {
+      color: var(--text-primary);
+      font-size: 15.5px;
+      font-weight: 700;
+      margin: 18px 0 8px;
+    }
+
+    :global(ul) {
+      padding-left: 20px;
+      margin: 8px 0 16px;
+    }
+
+    :global(li) {
+      margin-bottom: 6px;
+    }
+  }
+
+  .tool-faq-section {
+    margin-top: 28px;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq-item {
+    padding: 14px 18px;
+    border-radius: 12px;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .faq-q {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .faq-a {
+    margin: 8px 0 0;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .tool-disclaimer {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-color);
+    font-size: 12px;
+    color: var(--text-muted);
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import { ADS_CONFIG } from '@/consts';
+
+interface Props {
+  lang?: 'zh' | 'en';
+  category?: 'ai-cost' | 'media-doc' | 'dev-network' | 'web3';
+  position?: 'top' | 'middle' | 'bottom';
+}
+
+const { lang = 'zh', category = 'ai-cost' } = Astro.props;
+
+const hasWwads = Boolean(ADS_CONFIG.wwadsId) && lang === 'zh';
+const hasEthicalAds = Boolean(ADS_CONFIG.ethicalAdsPublisher) && lang === 'en';
+const hasAads = Boolean(ADS_CONFIG.aadsUnitId) && category === 'web3';
+const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHorizontal);
+---
+
+<aside class="ad-slot-wrapper" aria-label={lang === 'en' ? 'Sponsored Content' : '赞助与推荐'}>
+  <div class="ad-slot-label">
+    <span>{lang === 'en' ? 'SPONSORED · PARTNER' : '赞助推荐 · 合作伙伴'}</span>
+  </div>
+
+  {hasWwads ? (
+    <div class="wwads-cn wwads-horizontal" data-id={ADS_CONFIG.wwadsId} style="max-width:100%"></div>
+  ) : hasEthicalAds ? (
+    <div data-ea-publisher={ADS_CONFIG.ethicalAdsPublisher} data-ea-type="text"></div>
+  ) : hasAads ? (
+    <iframe
+      data-aa={ADS_CONFIG.aadsUnitId}
+      src={`//ad.a-ads.com/${ADS_CONFIG.aadsUnitId}?size=Adaptive`}
+      style="border:0; padding:0; width:100%; height:90px; overflow:hidden; display:block; margin:auto;"
+    />
+  ) : hasAdsense ? (
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={ADS_CONFIG.adsenseClient}
+      data-ad-slot={ADS_CONFIG.adsenseSlotHorizontal}
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    />
+  ) : (
+    <!-- 默认原生兜底推荐位：未配置第三方广告 ID 或开启 AdBlock 时展示，无空白抖动 -->
+    <div class="native-sponsor-fallback">
+      <div class="sponsor-main">
+        <span class="sponsor-tag">{lang === 'en' ? '⚡ Cloud & AI Partner' : '⚡ 开发者云与 AI 特惠'}</span>
+        <p class="sponsor-desc">
+          {lang === 'en'
+            ? 'Deploy static tools on Cloudflare Workers for $0, or access GPT-4o / Claude 3.7 / DeepSeek via unified API gateways with volume discounts.'
+            : '使用统一大模型 API 网关一键调用 DeepSeek / Claude / GPT-4o（免海外卡），或领取腾讯云/阿里云高性价比轻量服务器代金券。'}
+        </p>
+      </div>
+      <a
+        href={lang === 'en' ? 'https://openrouter.ai/' : 'https://cloud.tencent.com/act/cps/redirect?redirect=2446'}
+        target="_blank"
+        rel="nofollow noopener sponsored"
+        class="sponsor-cta"
+      >
+        {lang === 'en' ? 'Explore Unified LLM API →' : '领取开发者云与 API 福利 →'}
+      </a>
+    </div>
+  )}
+</aside>
+
+<style lang="less">
+  .ad-slot-wrapper {
+    position: relative;
+    margin: 20px 0;
+    padding: 16px 20px;
+    min-height: 88px;
+    border-radius: 14px;
+    background-color: var(--bg-surface);
+    border: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .ad-slot-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .native-sponsor-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .sponsor-main {
+    flex: 1;
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sponsor-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .sponsor-desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .sponsor-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+</style>
