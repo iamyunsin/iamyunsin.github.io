@@ -21,10 +21,29 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<!-- <meta name="viewport" content="width=device-width,initial-scale=1" /> -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="/favicon.ico" />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Prevent Theme Flash (FOUC) -->
+<script is:inline>
+  (function () {
+    const STORAGE_KEY = 'blog-theme';
+    const VALID_THEMES = ['daylight', 'obsidian', 'parchment'];
+    function getSavedTheme() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved && VALID_THEMES.includes(saved)) return saved;
+      } catch (e) {}
+      return 'daylight';
+    }
+    document.documentElement.setAttribute('data-theme', getSavedTheme());
+    document.addEventListener('astro:before-swap', (ev) => {
+      ev.newDocument.documentElement.setAttribute('data-theme', getSavedTheme());
+    });
+  })();
+</script>
+
 <!-- Font preloads -->
 <link rel="prefetch" href="/fonts/MyTitle.ttf" as="font" crossorigin />
 <link rel="prefetch" href="/fonts/iconfont.ttf" as="font" crossorigin />
@@ -55,4 +74,3 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
-

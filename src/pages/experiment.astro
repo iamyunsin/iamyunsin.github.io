@@ -10,14 +10,18 @@ import UList from '@/components/OutLinkList.astro';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 	<head>
-		<BaseHead title="小实验·原心的个人主页" description={SITE.description} />
+		<BaseHead title="小实验 · 原心的个人主页" description={SITE.description} />
 	</head>
 	<body>
 		<Header />
-		<BodyWrapper >
-      <section class="grid grid-cols-3 lt-lg:grid-cols-2 lt-md:grid-cols-1 gap-12">
+		<BodyWrapper>
+      <div class="exp-header">
+        <h1 class="exp-title">🧪 交互式技术小实验</h1>
+        <p class="exp-subtitle">探索底层原理、编译过程可视化与前端工程趣味实验</p>
+      </div>
+      <section class="grid grid-cols-3 lt-lg:grid-cols-2 lt-sm:grid-cols-1 gap-16">
         {EXPERIMENTS.map((item) => (
           <Card>
             <CardTitle>{item.name}</CardTitle>
@@ -29,3 +33,26 @@ import UList from '@/components/OutLinkList.astro';
 		<Footer />
 	</body>
 </html>
+
+<style lang="less">
+  .exp-header {
+    margin-bottom: 20px;
+    padding: 20px 24px;
+    border-radius: 14px;
+    background: var(--author-banner);
+    border: 1px solid var(--border-color);
+  }
+
+  .exp-title {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .exp-subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+</style>

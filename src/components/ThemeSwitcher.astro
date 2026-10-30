@@ -1,0 +1,157 @@
+---
+---
+<div class="theme-switcher" role="radiogroup" aria-label="选择主题皮肤">
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="daylight"
+    title="晴空雅白 · Daylight Editorial"
+    aria-label="晴空雅白皮肤"
+  >
+    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2"></path>
+      <path d="M12 20v2"></path>
+      <path d="m4.93 4.93 1.41 1.41"></path>
+      <path d="m17.66 17.66 1.41 1.41"></path>
+      <path d="M2 12h2"></path>
+      <path d="M20 12h2"></path>
+      <path d="m6.34 17.66-1.41 1.41"></path>
+      <path d="m19.07 4.93-1.41 1.41"></path>
+    </svg>
+    <span class="theme-label">晴空</span>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="obsidian"
+    title="曜石暗夜 · Obsidian Carbon"
+    aria-label="曜石暗夜皮肤"
+  >
+    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+    </svg>
+    <span class="theme-label">曜石</span>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="parchment"
+    title="竹韵宣纸 · Matcha Parchment"
+    aria-label="竹韵宣纸皮肤"
+  >
+    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+    </svg>
+    <span class="theme-label">竹韵</span>
+  </button>
+</div>
+
+<script is:inline data-astro-rerun>
+  (function () {
+    const STORAGE_KEY = 'blog-theme';
+    const VALID_THEMES = ['daylight', 'obsidian', 'parchment'];
+
+    function syncGiscusTheme(theme) {
+      const giscusFrame = document.querySelector('iframe.giscus-frame');
+      if (!giscusFrame) return;
+      const giscusTheme = theme === 'obsidian' ? 'dark_dimmed' : 'light';
+      giscusFrame.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: giscusTheme } } },
+        'https://giscus.app'
+      );
+    }
+
+    function applyTheme(theme) {
+      const targetTheme = VALID_THEMES.includes(theme) ? theme : 'daylight';
+      document.documentElement.setAttribute('data-theme', targetTheme);
+      try {
+        localStorage.setItem(STORAGE_KEY, targetTheme);
+      } catch (e) {}
+
+      document.querySelectorAll('.theme-btn').forEach((btn) => {
+        const isCurrent = btn.getAttribute('data-theme-value') === targetTheme;
+        btn.classList.toggle('active', isCurrent);
+        btn.setAttribute('aria-checked', isCurrent ? 'true' : 'false');
+      });
+
+      syncGiscusTheme(targetTheme);
+    }
+
+    function initThemeSwitcher() {
+      let saved = 'daylight';
+      try {
+        saved = localStorage.getItem(STORAGE_KEY) || 'daylight';
+      } catch (e) {}
+      applyTheme(saved);
+
+      document.querySelectorAll('.theme-btn').forEach((btn) => {
+        btn.onclick = () => {
+          const val = btn.getAttribute('data-theme-value');
+          if (val) applyTheme(val);
+        };
+      });
+    }
+
+    initThemeSwitcher();
+    document.addEventListener('astro:after-swap', initThemeSwitcher);
+  })();
+</script>
+
+<style lang="less">
+  .theme-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+    flex-shrink: 0;
+  }
+
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      background-color: var(--bg-surface);
+      color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .theme-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .theme-btn {
+      padding: 5px 8px;
+    }
+    .theme-label {
+      display: none;
+    }
+  }
+</style>

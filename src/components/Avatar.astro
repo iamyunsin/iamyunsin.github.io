@@ -7,7 +7,27 @@ interface Props {
 }
 
 const className = Astro.props[`class`] || '';
-const { size, src = '/site-images/avatar.jpeg', href='/' } = Astro.props;
+const { size, src = '/site-images/avatar.jpeg', href = '/' } = Astro.props;
 ---
 
-<img onclick={`location.href='${href}'`}" class={`w-160 h-160 border-3 border-color-white cursor-pointer hover-border-blue-500 ${className}`} src={src} style={size ? `width: ${size}px;height: ${size}px` : ''}/>
+<img
+  onclick={`location.href='${href}'`}
+  alt="avatar"
+  class={`avatar-img w-160 h-160 cursor-pointer ${className}`}
+  src={src}
+  style={size ? `width: ${size}px;height: ${size}px` : ''}
+/>
+
+<style lang="less">
+  .avatar-img {
+    border: 2px solid var(--bg-surface);
+    box-shadow: 0 0 0 1px var(--border-color), var(--shadow-sm);
+    object-fit: cover;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+
+    &:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 2px var(--accent), var(--shadow-md);
+    }
+  }
+</style>

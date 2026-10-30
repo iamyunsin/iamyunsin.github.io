@@ -12,20 +12,22 @@ const className = Astro.props.class || '';
 <style lang="less">
   .card-title {
     width: 100%;
-    height: 18px;
     display: flex;
     align-items: center;
-    font-size: 14px;
-    font-weight: 500;
-    gap: 6px;
-    padding: 12px 0 18px;
-    border-bottom: 1px dashed #E0E0E0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    gap: 8px;
+    margin: 0;
+    padding: 0 0 12px;
+    border-bottom: 1px dashed var(--border-color);
     &::before {
       content: ' ';
       display: block;
       width: 4px;
-      height: 18px;
-      background-color: #3b82f6;
+      height: 16px;
+      border-radius: 999px;
+      background-color: var(--accent);
     }
   }
 </style>

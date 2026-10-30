@@ -2,11 +2,56 @@
 const today = new Date();
 ---
 
-<footer class="relative w-full bg-white c-gray-600 text-center font-size-12 p-12 gap-10">
-  <p>
-    &copy;2024-{today.getFullYear()} All rights reserved. <a href="//yunsin.top" target="_top" class="hover-c-blue-300">原心</a>
-  </p>
-  <p id="beian_info" class="flex w-fit m-auto hover-c-blue-300">
-    <a class="ml-10" href="https://beian.miit.gov.cn/" target="_blank">蜀ICP备2022007430号-2</a>
-  </p>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copy">
+      &copy; 2024–{today.getFullYear()} All rights reserved ·
+      <a href="//yunsin.top" target="_top" class="footer-link">原心</a>
+    </p>
+    <p id="beian_info" class="footer-beian">
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-link">
+        蜀ICP备2022007430号-2
+      </a>
+    </p>
+  </div>
 </footer>
+
+<style lang="less">
+  .site-footer {
+    position: relative;
+    width: 100%;
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 20px 16px;
+    margin-top: 32px;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .footer-copy,
+  .footer-beian {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+</style>

@@ -7,19 +7,47 @@ interface Props {
 const className = Astro.props[`class`] || '';
 const { href } = Astro.props;
 const path = Astro.url.pathname;
+const isActive = href === '/' ? path === '/' : path.startsWith(href);
 ---
 
-<a href={href} class={`nav-link text-6xl pt-4 pb-6 mr-16 lt-md:mr-0 ${className} ${path === href ? 'nav-link-active' : ''}`} data-astro-prefetch>
+<a
+  href={href}
+  class={`nav-link ${className} ${isActive ? 'nav-link-active' : ''}`}
+  data-astro-prefetch
+>
   <slot></slot>
 </a>
+
 <style lang="less">
   .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
     text-decoration: none;
-    &-active, &:hover {
-      color: #3b82f6;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--accent);
+      background-color: var(--bg-muted);
     }
+
     &-active {
-      border-bottom: 2px solid #3b82f6;
+      color: var(--accent);
+      background-color: var(--accent-soft);
+      font-weight: 600;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nav-link {
+      padding: 5px 8px;
+      font-size: 13px;
     }
   }
 </style>

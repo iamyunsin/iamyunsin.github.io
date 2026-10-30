@@ -1,10 +1,11 @@
 <template>
-  <div class="flex gap-10">
-    <div class="w-400">
+  <div class="compile-visual-layout">
+    <div class="editor-pane">
+      <div class="pane-header">Vue SFC 模板输入</div>
       <CodeMirror 
         v-model="code" 
         placeholder="Code goes here..."
-        :style="{ height: '400px' }"
+        :style="{ height: '420px' }"
         :autofocus="true"
         :indent-with-tab="true"
         :tab-size="2"
@@ -14,7 +15,10 @@
         @focus="log('focus', $event)"
         @blur="log('blur', $event)"/>
     </div>
-    <div class="flex-1">视图区</div>
+    <div class="preview-pane">
+      <div class="pane-header">编译产物 / AST 视图区</div>
+      <div class="pane-body">视图区</div>
+    </div>
   </div>
 </template>
 <script setup name="V3CompileVisual" lang="tsx">
@@ -54,19 +58,42 @@ const log = (type: string, event: unknown) => {
   const handleReady = (payload: any) => {
     view.value = payload.view
   }
-
-  // Status is available at all times via Codemirror EditorView
-  // const getCodemirrorStates = () => {
-  //   const state = view.value.state
-  //   const ranges = state.selection.ranges
-  //   const selected = ranges.reduce((r, range) => r + range.to - range.from, 0)
-  //   const cursor = ranges[0].anchor
-  //   const length = state.doc.length
-  //   const lines = state.doc.lines
-  //   // more state info ...
-  //   // return ...
-  // }
 </script>
 <style lang="less" scoped>
-  
+  .compile-visual-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 460px) 1fr;
+    gap: 16px;
+  }
+
+  .editor-pane,
+  .preview-pane {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .pane-header {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: var(--bg-muted);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .pane-body {
+    padding: 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    min-height: 420px;
+  }
+
+  @media (max-width: 900px) {
+    .compile-visual-layout {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

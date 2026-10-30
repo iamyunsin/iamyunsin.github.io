@@ -9,38 +9,49 @@ import ArticleContent from '@/components/ArticleContent.astro';
 import { Icon } from 'astro-icon/components';
 import Iconfont from '@/components/Iconfont.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+  minutes?: number;
+  words?: number;
+};
 
 const { title, description, pubDate, updatedDate, minutes, words } = Astro.props;
 ---
 
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 	<head>
 		<BaseHead title={title} description={description} />
 	</head>
 	<body>
-    <Header sticky={false}/>
+    <Header />
 		<BodyWrapper>
-      <div class="flex gap-16">
-        <section class="flex-1 bg-white overflow-hidden">
-          <header class="bg-white top-0 p-12 pb-4 b-b-dashed b-b-[#cdcdcd] b-b-1">
-            <h1 class="font-size-18 font-weight-900 text-center">{title}</h1>
-            <div class="flex justify-between items-center lt-xs:flex-col font-200 font-size-12">
-              <div>
-                <span>共{words}字，</span>
-                <span>预计阅读{minutes?.toFixed(0)}分钟</span>
+      <div class="post-layout">
+        <section class="post-main">
+          <header class="post-header">
+            <h1 class="post-title">{title}</h1>
+            <div class="post-meta">
+              <div class="meta-group">
+                <span class="meta-pill">
+                  📝 共 <strong>{words}</strong> 字
+                </span>
+                <span class="meta-pill">
+                  ⏱️ 预计阅读 <strong>{minutes?.toFixed(0)}</strong> 分钟
+                </span>
               </div>
-              <div>
-                <span>于</span>
-                <FormattedDate date={pubDate} />
+              <div class="meta-group">
+                <span class="meta-item">
+                  发布于 <FormattedDate date={pubDate} />
+                </span>
                 {
                   updatedDate && (
-                    <div class="last-updated-on">
-                      Last updated on <FormattedDate date={updatedDate} />
-                    </div>
+                    <span class="meta-item">
+                      · 更新于 <FormattedDate date={updatedDate} />
+                    </span>
                   )
                 }
-                发表，已被<span class="color-green-700 pl-2 pr-2" data-sinsuan-uv></span>人阅读<span class="color-green-700 pl-2 pr-2" data-sinsuan-pv></span>次
+                <span class="meta-item">
+                  · 已被 <strong class="stat-num" data-sinsuan-uv></strong> 人阅读 <strong class="stat-num" data-sinsuan-pv></strong> 次
+                </span>
               </div>
             </div>
           </header>
@@ -48,154 +59,419 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
             <slot />
           </ArticleContent>
           <!-- giscus评论 -->
-          <script src="https://giscus.app/client.js"
-            data-repo="iamyunsin/iamyunsin.github.io"
-            data-repo-id="R_kgDOLJyHaA"
-            data-category="Announcements"
-            data-category-id="DIC_kwDOLJyHaM4CevNM"
-            data-mapping="pathname"
-            data-strict="1"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="top"
-            data-theme="preferred_color_scheme"
-            data-lang="zh-CN"
-            crossorigin="anonymous"
-            async
-            data-astro-rerun>
-          </script>
+          <div class="giscus-wrapper">
+            <script src="https://giscus.app/client.js"
+              data-repo="iamyunsin/iamyunsin.github.io"
+              data-repo-id="R_kgDOLJyHaA"
+              data-category="Announcements"
+              data-category-id="DIC_kwDOLJyHaM4CevNM"
+              data-mapping="pathname"
+              data-strict="1"
+              data-reactions-enabled="1"
+              data-emit-metadata="0"
+              data-input-position="top"
+              data-theme="light"
+              data-lang="zh-CN"
+              crossorigin="anonymous"
+              async
+              data-astro-rerun>
+            </script>
+          </div>
         </section>
-        <aside class="w-290 relative lt-md:hidden">
-          <section id="aside-article-nav" class="fixed shadow top-96 w-290 p-16 bg-white br-4 scroll-m-5xl">
-            <div class="font-900 font-size-16 b-b-1 p-b-16 m-b-16 pointer"><Iconfont name="catalogue" color="#0d96ce" />&nbsp;&nbsp;目录</div>
+
+        <aside id="post-toc-aside" class="post-aside">
+          <section id="aside-article-nav" class="toc-card">
+            <div class="toc-header">
+              <span class="toc-title">
+                <Iconfont name="catalogue" color="var(--accent)" />
+                <span>文章目录</span>
+              </span>
+              <button type="button" id="toc-close-btn" class="toc-close-btn" aria-label="关闭目录">✕</button>
+            </div>
           </section>
-          <i class="backtop" onclick="window.scrollTo({left: 0, top: 0, behavior: 'smooth'})">
-            <Icon name="mdi:arrow-top-bold" size={32} />
-          </i>
         </aside>
       </div>
+
+      <!-- 悬浮工具栏：移动端目录开关 & 回到顶部 -->
+      <div class="floating-actions">
+        <button type="button" id="mobile-toc-btn" class="float-btn toc-trigger-btn" title="文章目录" aria-label="展开文章目录">
+          <Iconfont name="catalogue" size={18} />
+        </button>
+        <button type="button" class="backtop" onclick="window.scrollTo({left: 0, top: 0, behavior: 'smooth'})" title="回到顶部" aria-label="回到顶部">
+          <Icon name="mdi:arrow-top-bold" size={22} />
+        </button>
+      </div>
+      <div id="toc-backdrop" class="toc-backdrop"></div>
 		</BodyWrapper>
     <Footer />
     <script is:inline data-astro-rerun>
       (function() {
         const onDomLoaded = () => {
           const tocEl = document.querySelector('nav.toc');
-          document.getElementById('aside-article-nav').appendChild(tocEl);
-          const allTocLinks =  Array.from(tocEl.querySelectorAll('a'));
-          const allHElements = allTocLinks.map(el => document.getElementById(el.getAttribute('href').slice(1)));
-          let lockTocOnClick = 0;
-          function activeTocLink(activeLink, fromClick = false){
-            if(lockTocOnClick) return;
-            if(fromClick) {
-              lockTocOnClick = true;
+          const asideNav = document.getElementById('aside-article-nav');
+          const asideWrap = document.getElementById('post-toc-aside');
+          const mobileTocBtn = document.getElementById('mobile-toc-btn');
+          const tocCloseBtn = document.getElementById('toc-close-btn');
+          const tocBackdrop = document.getElementById('toc-backdrop');
+
+          const allTocLinks = tocEl ? Array.from(tocEl.querySelectorAll('a')) : [];
+          if (!tocEl || !asideNav || allTocLinks.length === 0) {
+            if (asideWrap) asideWrap.style.display = 'none';
+            if (mobileTocBtn) mobileTocBtn.style.display = 'none';
+            if (tocEl) tocEl.remove();
+          } else {
+            asideNav.appendChild(tocEl);
+            const allHElements = allTocLinks
+              .map(el => document.getElementById(decodeURIComponent(el.getAttribute('href').slice(1))))
+              .filter(Boolean);
+
+            let lockTocOnClick = false;
+            function activeTocLink(activeLink, fromClick = false) {
+              if (!activeLink || lockTocOnClick) return;
+              if (fromClick) {
+                lockTocOnClick = true;
+              }
+              allTocLinks.forEach((el) => el.classList.remove('active'));
+              activeLink.classList.add('active');
+              setTimeout(() => {
+                lockTocOnClick = false;
+              }, 250);
             }
-            allTocLinks.forEach((el) => el.classList.remove('active'));
-            activeLink.classList.add('active');
-            setTimeout(() => {
-              lockTocOnClick = false;
-            }, 200);
-          };
 
-          function activeTocWithHEl(hEl){
-            const activeTocHref = `#${hEl.getAttribute('id')}`;
-            const activeLink = allTocLinks.find((el) => el.getAttribute('href') === activeTocHref);
-            activeTocLink(activeLink);
-          };
+            function activeTocWithHEl(hEl) {
+              if (!hEl) return;
+              const id = hEl.getAttribute('id');
+              const activeLink = allTocLinks.find((el) => decodeURIComponent(el.getAttribute('href').slice(1)) === id);
+              if (activeLink) activeTocLink(activeLink);
+            }
 
-          const hElementObserver = new IntersectionObserver((entries) => {
-            const intersectingEntry = entries.find((entry) => entry.isIntersecting);
-            if (intersectingEntry) {
-              activeTocWithHEl(intersectingEntry.target);
-            } else {
-              const rootRect = entries[0].rootBounds;
-              for(let i = allHElements.length - 1; i >=0; i --) {
-                const hEl = allHElements[i];
-                const hElRect = hEl.getBoundingClientRect();
-                
-                if(hElRect.top <= rootRect?.bottom) {
-                  activeTocWithHEl(hEl);
-                  break;
+            const hElementObserver = new IntersectionObserver((entries) => {
+              const intersectingEntry = entries.find((entry) => entry.isIntersecting);
+              if (intersectingEntry) {
+                activeTocWithHEl(intersectingEntry.target);
+              } else if (entries[0]?.rootBounds) {
+                const rootRect = entries[0].rootBounds;
+                for (let i = allHElements.length - 1; i >= 0; i--) {
+                  const hEl = allHElements[i];
+                  const hElRect = hEl.getBoundingClientRect();
+                  if (hElRect.top <= rootRect.bottom) {
+                    activeTocWithHEl(hEl);
+                    break;
+                  }
                 }
               }
+            });
+
+            allHElements.forEach((el) => hElementObserver.observe(el));
+
+            function closeMobileToc() {
+              asideWrap?.classList.remove('is-open');
+              tocBackdrop?.classList.remove('is-open');
             }
-          });
-          allHElements.forEach((el) => {
-            hElementObserver.observe(el);
-          });
-          // toc导航
-          tocEl.addEventListener('click', (event) => {
-            const targetEl = event.target;
-            if(targetEl.tagName === 'A') {
-              event.preventDefault();
-              event.stopPropagation();
-              const distEl = document.getElementById(targetEl.getAttribute('href').slice(1));
-              const scrollRoot = document.documentElement;
-              distEl?.scrollIntoView(true);
-              scrollRoot.scrollTo({
-                left: scrollRoot.scrollLeft,
-                top: distEl.offsetTop - document.getElementById('page-header').getBoundingClientRect().height,
-                behavior: 'smooth',
-              });
-              activeTocLink(targetEl, true);
-            }
-          });
+
+            mobileTocBtn?.addEventListener('click', () => {
+              asideWrap?.classList.toggle('is-open');
+              tocBackdrop?.classList.toggle('is-open');
+            });
+            tocCloseBtn?.addEventListener('click', closeMobileToc);
+            tocBackdrop?.addEventListener('click', closeMobileToc);
+
+            tocEl.addEventListener('click', (event) => {
+              const targetEl = event.target.closest('a');
+              if (targetEl) {
+                event.preventDefault();
+                event.stopPropagation();
+                const targetId = decodeURIComponent(targetEl.getAttribute('href').slice(1));
+                const distEl = document.getElementById(targetId);
+                const headerHeight = document.getElementById('page-header')?.getBoundingClientRect().height || 64;
+                if (distEl) {
+                  const top = distEl.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+                  window.scrollTo({
+                    left: 0,
+                    top,
+                    behavior: 'smooth',
+                  });
+                }
+                activeTocLink(targetEl, true);
+                closeMobileToc();
+              }
+            });
+          }
 
           // 处理点击导航链接跳转
-          function processAnchorEl(anchorEl){
-            if(!anchorEl) return;
-            const href = anchorEl.href;
-            if(!href.startsWith(window.origin)) {
+          function processAnchorEl(anchorEl) {
+            if (!anchorEl || !anchorEl.href) return;
+            if (anchorEl.href.startsWith('http') && !anchorEl.href.startsWith(window.origin)) {
               anchorEl.target = '_blank';
+              anchorEl.rel = 'noopener noreferrer';
             }
           }
 
-          // 处理图片预览
+          // 处理图片预览 (Lightbox)
           function processImgEl(targetEl) {
-            if(!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]') || targetEl.closest('header')) {
+            if (!(targetEl instanceof HTMLImageElement) || targetEl.closest('div[data-preview="Y"]') || targetEl.closest('header')) {
               return;
             }
 
             const overlayEl = document.createElement('div');
             Object.assign(overlayEl.style, {
               position: 'fixed',
-              left: 0,
-              top: 0,
-              right: 0,
-              bottom: 0,
+              inset: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '24px',
               overflow: 'auto',
-              background: 'rgba(0, 0, 0, 0.2)',
-              zIndex: '100',
+              background: 'rgba(11, 15, 23, 0.78)',
+              backdropFilter: 'blur(8px)',
+              zIndex: '1000',
+              cursor: 'zoom-out',
             });
             overlayEl.dataset.preview = 'Y';
             const cloneImg = targetEl.cloneNode(true);
-            
+
             Object.assign(cloneImg.style, {
-              margin: '20px auto',
-              boxShadow: 'rgba(0, 0, 0, .5) 6px 7px 11px 5px',
-              padding: '16px',
-              background: '#fff',
-              borderRadius: '4px',
-              zIndex: 101,
+              maxWidth: 'min(92vw, 1200px)',
+              maxHeight: '88vh',
+              objectFit: 'contain',
+              margin: 'auto',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)',
+              padding: '8px',
+              background: 'var(--bg-surface)',
+              borderRadius: '10px',
+              zIndex: '1001',
             });
             overlayEl.appendChild(cloneImg);
-            overlayEl.onclick = function() {
-              document.body.style.overflow = 'auto';
-              document.body.removeChild(overlayEl);
-            }
+            const closeOverlay = () => {
+              document.body.style.overflow = '';
+              if (overlayEl.parentNode) overlayEl.parentNode.removeChild(overlayEl);
+              window.removeEventListener('keydown', onEsc);
+            };
+            const onEsc = (e) => {
+              if (e.key === 'Escape') closeOverlay();
+            };
+            overlayEl.onclick = closeOverlay;
+            window.addEventListener('keydown', onEsc);
             document.body.style.overflow = 'hidden';
             document.body.appendChild(overlayEl);
           }
 
-          // 处理打开外链
           document.body.addEventListener('click', (event) => {
-            if(!event.target) return;
+            if (!event.target) return;
             processAnchorEl(event.target instanceof HTMLAnchorElement ? event.target : event.target.closest('a'));
             processImgEl(event.target);
           });
         };
         onDomLoaded();
-        
       })();
     </script>
 	</body>
 </html>
+
+<style lang="less">
+  .post-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .post-main {
+    flex: 1;
+    min-width: 0;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .post-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px dashed var(--border-color);
+    background: var(--author-banner);
+  }
+
+  .post-title {
+    margin: 0 0 16px;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .meta-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-secondary);
+
+    strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+  }
+
+  .stat-num {
+    color: var(--accent-secondary);
+    font-weight: 700;
+    padding: 0 2px;
+
+    &:empty::before {
+      content: '—';
+    }
+  }
+
+  .post-aside {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 82px;
+  }
+
+  .toc-card {
+    padding: 18px;
+  }
+
+  .toc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color);
+  }
+
+  .toc-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .toc-close-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+
+    &:hover {
+      background-color: var(--bg-muted);
+      color: var(--text-primary);
+    }
+  }
+
+  .toc-trigger-btn {
+    display: none;
+    position: fixed;
+    bottom: 78px;
+    right: 24px;
+    z-index: 90;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--bg-surface-elevated);
+    color: var(--accent);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-border);
+    }
+  }
+
+  .toc-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 15, 23, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 94;
+
+    &.is-open {
+      display: block;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .post-aside {
+      position: fixed;
+      right: 16px;
+      bottom: 130px;
+      top: auto;
+      width: min(310px, calc(100vw - 32px));
+      z-index: 95;
+      display: none;
+
+      &.is-open {
+        display: block;
+      }
+    }
+
+    #aside-article-nav {
+      max-height: 62vh;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toc-close-btn {
+      display: inline-flex;
+    }
+
+    .toc-trigger-btn {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .post-header {
+      padding: 20px 16px 16px;
+    }
+    .post-title {
+      font-size: 20px;
+    }
+    .post-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .toc-trigger-btn {
+      bottom: 66px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import UnoCSS from 'unocss/astro';
+import unoConfig from './uno.config.ts';
 import mdx from '@astrojs/mdx';
 import icon from "astro-icon";
 // toc索引
@@ -31,6 +32,8 @@ export default defineConfig({
     enabled: false
   },
   integrations: [expressiveCode(), UnoCSS({
+    ...unoConfig,
+    configFile: false,
     injectReset: true
   }), mdx(), sitemap(), icon(), pagefind(), vue()],
   markdown: {
