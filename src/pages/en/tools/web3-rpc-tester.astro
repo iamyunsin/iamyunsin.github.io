@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Web3RpcTesterTool from '@/components/tools/Web3RpcTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '⚡ Dedicated Web3 RPC',
+    highlight: '300M Free Compute Units',
+    title: 'Alchemy — Enterprise Ethereum, Solana, Base & Arbitrum Nodes',
+    description: 'Eliminate 429 rate-limit errors on public RPCs. Get a free private API key with 99.99% uptime, archive data access, and WebSocket subscriptions.',
+    ctaText: 'Get Free Alchemy API Key',
+    url: 'https://www.alchemy.com/',
+  },
+  {
+    badge: '🛡️ Eliminate Blind Signing',
+    highlight: 'Secure Element Hardware',
+    title: 'Ledger Hardware Wallets — Official Store',
+    description: 'Pair our offline calldata decoder with a physical Ledger hardware wallet to verify every transaction on a trusted screen before signing.',
+    ctaText: 'Shop Ledger Hardware Wallets',
+    url: 'https://shop.ledger.com/',
+  },
+  {
+    badge: '🚀 Ultra-Low Latency RPC',
+    highlight: 'Global Anycast Network',
+    title: 'QuickNode Multi-Chain Infrastructure',
+    description: 'High-speed RPC endpoints and real-time streams across 30+ EVM and non-EVM blockchains for DeFi traders and dApp builders.',
+    ctaText: 'Start Free on QuickNode',
+    url: 'https://www.quicknode.com/',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How does the offline Calldata Decoder protect me from phishing and wallet drainers?',
+    answer:
+      'Phishing dApps often disguise malicious token approvals (`approve(spender, MAX_UINT256)` or `setApprovalForAll(operator, true)`) behind fake "Claim Airdrop" buttons. By copying the raw hexadecimal calldata (`0x...`) from your wallet prompt into our Rust Wasm decoder before signing, you can inspect the exact 4-byte selector, target spender address, and 256-bit allowance value completely offline.',
+  },
+  {
+    question: 'Does this tool ever ask to connect my wallet (MetaMask / Phantom / Rabby)?',
+    answer:
+      'No. This workbench never touches `window.ethereum` or `window.solana`. All ABI word slicing and 256-bit integer conversions run locally in a sandboxed 40.7 KB Rust WebAssembly module.',
+  },
+  {
+    question: 'How is RPC latency measured in the benchmark table?',
+    answer:
+      'When you click "Run Live Latency Test", your browser sends a lightweight JSON-RPC POST request (`eth_blockNumber` for EVM chains or `getSlot` for Solana) directly from your device to each endpoint and measures the exact round-trip time via `performance.now()`.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="web3"
+  title="Multi-Chain RPC Latency Benchmark & Offline Calldata Security Decoder"
+  description="Zero-wallet-connection Web3 security workbench powered by Rust WebAssembly. Decode raw EVM transaction calldata offline to spot unlimited token approvals, and benchmark Ethereum, Solana, Base, and Arbitrum RPC latency from your browser."
+  alternateZh="/tools/web3-rpc-tester/"
+  alternateEn="/en/tools/web3-rpc-tester/"
+  wasmSizeLabel="40.7 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Web3RpcTesterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Stop Blind Signing & Find the Fastest RPC Endpoint for Your Network</h2>
+    <p>
+      Whether you are debugging a smart contract transaction or verifying a hardware wallet signature, trusting unverified frontend UIs can expose your assets to unlimited token approvals. Our <strong>Rust Wasm Offline Calldata Inspector</strong> and <strong>Live RPC Benchmark</strong> give you complete transparency with zero wallet connection required.
+    </p>
+    <ul>
+      <li><strong>Offline 32-Byte ABI Word Slicing:</strong> Automatically extracts the 4-byte function selector, matches common ERC-20, ERC-721, EIP-2612 Permit, and Uniswap Universal Router signatures, and converts 256-bit hex integers into human-readable decimals.</li>
+      <li><strong>Instant Unlimited Approval Alerts:</strong> Flags <code>0x095ea7b3</code> (<code>approve</code> with <code>MAX_UINT256</code>) and <code>0xa22cb465</code> (<code>setApprovalForAll(true)</code>) in red before you sign.</li>
+      <li><strong>Real Client-Side RPC Latency:</strong> Measures true round-trip latency from your exact geographic location to public and commercial RPC nodes across Ethereum, Solana, Base, Arbitrum, and BNB Chain.</li>
+    </ul>
+  </div>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Image Transformations',
+    description: 'Host your optimized WebP & AVIF assets on Cloudflare R2 with $0 egress bandwidth fees and global edge caching across 300+ cities.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: 'https://www.cloudflare.com/developer-platform/products/r2/',
+  },
+  {
+    badge: '🚀 High-Performance Cloud',
+    highlight: 'Global NVMe Instances',
+    title: 'Vultr Cloud Compute & S3-Compatible Storage',
+    description: 'Deploy self-hosted photo galleries (Immich) or full-stack web apps on high-frequency NVMe instances across 32 global locations.',
+    ctaText: 'Deploy on Vultr Cloud',
+    url: 'https://www.vultr.com/',
+  },
+  {
+    badge: '🌏 Asia-Pacific CDN',
+    highlight: 'Enterprise Storage',
+    title: 'Tencent Cloud COS & EdgeOne CDN',
+    description: 'Ultra-low latency object storage and media processing for Asia-Pacific and global web applications.',
+    ctaText: 'Explore Cloud Storage Offers',
+    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Do my photos ever leave my computer or phone when using this converter?',
+    answer:
+      'Never. Unlike traditional online converters that upload your private photos to a remote cloud server and delete them hours later, our converter runs 100% locally inside your browser using a 23.2 KB Rust WebAssembly module and HTML5 Canvas. You can even turn off Wi-Fi after loading this page and convert hundreds of images offline.',
+  },
+  {
+    question: 'How does the automatic EXIF and GPS location remover work?',
+    answer:
+      'Smartphone photos (especially from iPhones and Android flagships) embed JPEG APP1 (Exif/XMP) binary headers containing exact GPS coordinates, altitude, timestamp, and camera serial numbers. Our Rust Wasm inspector scans the raw file header to report how many bytes of private metadata exist, and the clean pixel re-encoding pipeline strips 100% of EXIF, GPS, XMP, and IPTC tags.',
+  },
+  {
+    question: 'Should I choose WebP or AVIF for web performance (Core Web Vitals)?',
+    answer:
+      'WebP offers the best balance of speed, 98%+ browser support, transparency, and 35% smaller file sizes compared to JPEG/PNG. AVIF achieves even higher compression (up to 55% smaller than JPEG) and is ideal for hero images and photography on modern browsers.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private Bulk WebP / AVIF / JPEG Converter, Compressor & EXIF Remover"
+  description="100% client-side bulk image converter, optimizer, and GPS/EXIF metadata stripper powered by a 23.2 KB Rust WebAssembly engine. No server uploads, no file count limits."
+  alternateZh="/tools/image-converter/"
+  alternateEn="/en/tools/image-converter/"
+  wasmSizeLabel="23.2 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <ImageConverterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Client-Side Rust Wasm Image Optimizer?</h2>
+    <p>
+      Most online image compressors force you to upload sensitive images to third-party servers while imposing strict paywalls like <em>"Max 5 files per batch"</em> or <em>"5 MB file size limit"</em>. By combining a micro-compiled <strong>Rust WebAssembly binary header inspector & pixel quantizer</strong> with your browser’s hardware-accelerated Canvas encoder, this workbench delivers instant batch conversion with zero privacy compromises.
+    </p>
+    <ul>
+      <li><strong>Zero Server Uploads:</strong> Ideal for confidential product mockups, KYC documents, medical images, and personal family photos.</li>
+      <li><strong>Instant GPS & Camera EXIF Audit:</strong> Automatically detects hidden <code>0xFFE1</code> APP1 EXIF segments and strips GPS coordinates before you share photos online.</li>
+      <li><strong>Boost Core Web Vitals (LCP):</strong> Converting PNG/JPEG hero images to WebP or AVIF at 80% quality typically reduces payload size by 50%–80% with no visible quality loss.</li>
+    </ul>
+  </div>
+</ToolLayout>

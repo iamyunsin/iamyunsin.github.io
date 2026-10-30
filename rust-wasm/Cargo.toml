@@ -3,6 +3,9 @@ resolver = "2"
 members = [
   "crates/shared-guard",
   "crates/tool-llm-cost",
+  "crates/tool-image-codec",
+  "crates/tool-deeplink",
+  "crates/tool-web3",
 ]
 
 [profile.release]

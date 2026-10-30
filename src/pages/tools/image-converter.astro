@@ -1,0 +1,75 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + Image Transformations',
+    description: '把压缩后的 WebP / AVIF 图片托管在 Cloudflare R2，全球 CDN 边缘直出且彻底免除高昂的下行带宽流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2 图床',
+    url: 'https://www.cloudflare.com/developer-platform/products/r2/',
+  },
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '静态托管 + 万象优图',
+    title: '腾讯云对象存储 COS 与内容分发 CDN',
+    description: '国内毫秒级图片与静态站点加载，支持绑定自有备案域名，新用户专享存储包与 CDN 流量包组合特惠。',
+    ctaText: '领取腾讯云存储与 CDN 福利',
+    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  },
+  {
+    badge: '🚀 独立开发者 VPS',
+    highlight: '全球 32 个数据中心',
+    title: 'Vultr 高性能云主机与对象存储',
+    description: '按小时计费的海外高性能 NVMe 云服务器，一键部署自建图床（LskyPro / Immich）与全栈应用。',
+    ctaText: '注册领取开发者试用金',
+    url: 'https://www.vultr.com/',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么很多在线图片压缩网站会泄露隐私？本工具如何保证安全？',
+    answer:
+      '传统在线图片转换器会将您的原图上传到远程服务器进行 ImageMagick 处理，不仅有每次 5 张、单张 5MB 的付费墙限制，还可能导致含身份证、合同或家庭住址 GPS 坐标的私密照片留在第三方硬盘上。本工具基于 23.2 KB 的 Rust WebAssembly 引擎与浏览器本地 Canvas 管线，所有像素解码、量化压缩与 EXIF 擦除 100% 在您自己的设备内存中完成，哪怕拔掉网线也能正常批量转换。',
+  },
+  {
+    question: 'WebP 和 AVIF 格式相比传统 JPEG / PNG 能节省多少体积？',
+    answer:
+      '在同等主观画质（Quality = 80%~85%）下，WebP 通常比 JPEG 缩减 30%~45% 的体积，且完美支持 PNG 透明通道；而新一代 AVIF 格式在色彩渐变与高分辨率摄影图上比 JPEG 可节省高达 50%~65% 的带宽，能显著提升网站的 LCP（最大内容绘制）SEO 评分。',
+  },
+  {
+    question: '手机拍照里的 EXIF 信息包含哪些敏感隐私？',
+    answer:
+      'iPhone 和安卓手机拍摄的原图（JPEG / HEIC）在文件头部的 APP1 (Exif) 数据段中默认记录了精确到米的 GPS 经纬度坐标、海拔高度、拍摄精确时间以及手机型号与镜头序列号。本工具通过 Rust Wasm 直接扫描文件二进制头部，并在重编码时彻底丢弃全部 APP1/XMP/IPTC 元数据段。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="100% 本地隐私级 WebP / AVIF / PNG / JPEG 批量转换压缩与 EXIF 擦除工作台"
+  description="基于 Rust + WebAssembly 纯浏览器本地运行的图片批量格式转换、色彩量化压缩与 GPS/EXIF 隐私抹除工具，零服务器上传、不限张数、极速导出。"
+  alternateZh="/tools/image-converter/"
+  alternateEn="/en/tools/image-converter/"
+  wasmSizeLabel="23.2 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <ImageConverterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么选择纯前端 Rust Wasm 图像转换与 EXIF 擦除工作台？</h2>
+    <p>
+      无论是前端工程师优化网站首屏 <strong>Core Web Vitals (LCP)</strong> 指标、独立开发者制作产品宣传图，还是日常在社交平台分享生活照片，我们都面临两个高频痛点：一是原图体积过大拖慢网页加载，二是原图中潜藏的 <strong>EXIF GPS 经纬度坐标</strong>极易暴露个人住址隐私。
+    </p>
+    <ul>
+      <li><strong>零上传、无限制批量处理：</strong> 不消耗任何服务器带宽，因此无需限制“每次只能传 5 张”或“超过 10MB 需充值 VIP”，支持一次性拖入数十张高清大图本地并发转换。</li>
+      <li><strong>Rust Wasm 二进制头部透视与像素量化：</strong> 工具内置的 <code>tool_image_codec.wasm</code> 模块会直接解析文件头部的魔数（Magic Bytes）与 JPEG <code>0xFFE1</code> (APP1) 数据段，精准识别是否存在 GPS 定位与相机指纹，并提供可选的 RGB 像素量化降噪，帮助截图与文档类图片额外缩减 15%~30% 体积。</li>
+    </ul>
+  </div>
+</ToolLayout>

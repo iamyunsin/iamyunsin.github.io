@@ -7,7 +7,28 @@ name = "shared-guard"
 version = "0.1.0"
 
 [[package]]
+name = "tool-deeplink"
+version = "0.1.0"
+dependencies = [
+ "shared-guard",
+]
+
+[[package]]
+name = "tool-image-codec"
+version = "0.1.0"
+dependencies = [
+ "shared-guard",
+]
+
+[[package]]
 name = "tool-llm-cost"
+version = "0.1.0"
+dependencies = [
+ "shared-guard",
+]
+
+[[package]]
+name = "tool-web3"
 version = "0.1.0"
 dependencies = [
  "shared-guard",

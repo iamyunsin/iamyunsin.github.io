@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import DeepLinkTesterTool from '@/components/tools/DeepLinkTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔒 Zero-Cost HTTPS Hosting',
+    highlight: 'Serve .well-known Globally',
+    title: 'Cloudflare Workers & Static Assets',
+    description: 'Host your /.well-known/apple-app-site-association and assetlinks.json on Cloudflare’s global edge with automatic SSL and zero redirects required by Apple CDN.',
+    ctaText: 'Deploy Free on Cloudflare',
+    url: 'https://www.cloudflare.com/developer-platform/workers/',
+  },
+  {
+    badge: '🌍 Global Cloud VPS',
+    highlight: '32 Global Regions',
+    title: 'Vultr High-Frequency Cloud Compute',
+    description: 'Spin up dedicated HTTPS test origins with full Nginx header control to debug iOS Universal Links and Android App Links.',
+    ctaText: 'Get Vultr Developer Credits',
+    url: 'https://www.vultr.com/',
+  },
+  {
+    badge: '🌏 Asia-Pacific Edge',
+    highlight: 'SSL + CDN Bundle',
+    title: 'Tencent Cloud Lighthouse & EdgeOne',
+    description: 'Reliable cloud servers and managed SSL certificates for mobile app backend and deep-linking infrastructure.',
+    ctaText: 'Explore Cloud Deals',
+    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why are my iOS Universal Links opening in Safari instead of launching my App?',
+    answer:
+      'There are three common culprits: (1) Your server must serve /.well-known/apple-app-site-association over HTTPS with Content-Type: application/json and zero 301/302 redirects; (2) Starting in iOS 14, Apple fetches AASA files via its own CDN (app-site-association.cdn-apple.com), so ensure your WAF/firewall does not block Applebot/Apple CDN IPs; (3) Universal Links only trigger when navigating across different domains or subdomains (e.g., from m.example.com to open.example.com).',
+  },
+  {
+    question: 'How do I get the SHA-256 certificate fingerprint for Android assetlinks.json?',
+    answer:
+      'Run `keytool -list -v -keystore your-release-key.keystore` in your terminal (or copy the SHA-256 certificate fingerprint from Google Play Console -> Setup -> App signing). Paste the 32 colon-separated hex pairs into our Rust Wasm validator above.',
+  },
+  {
+    question: 'How does the H5 smart fallback script detect if the native app was successfully opened?',
+    answer:
+      'When the browser switches to the native app, the web page enters the background and fires the `visibilitychange` event (`document.hidden === true`). Our generated script monitors `visibilitychange` during a 2,200ms window—only redirecting the user to the App Store or Google Play if the browser remained in the foreground.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Universal Links (AASA) & Android AssetLinks Compiler & QR Tester"
+  description="100% client-side Rust Wasm validator and generator for iOS apple-app-site-association (AASA), Android assetlinks.json, and production H5 deep-link fallback scripts."
+  alternateZh="/tools/deeplink-tester/"
+  alternateEn="/en/tools/deeplink-tester/"
+  wasmSizeLabel="47.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <DeepLinkTesterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Production Guide to iOS Universal Links & Android App Links</h2>
+    <p>
+      Configuring mobile deep linking across iOS, Android, and in-app WebViews (like WeChat, Instagram, or TikTok) requires strict JSON schema adherence and smart client-side fallback handling. A single typo in your 10-character Apple Team ID or 95-character SHA-256 certificate fingerprint will cause deep links to fail silently.
+    </p>
+    <ul>
+      <li><strong>Dual iOS 13+ & Legacy AASA Output:</strong> Generates both modern <code>components</code> rules (supporting <code>"exclude": true</code> path exclusions) and legacy <code>paths</code> arrays in a single valid JSON payload.</li>
+      <li><strong>Instant SHA-256 Fingerprint Validation:</strong> Verifies your Android signing certificate fingerprint format in real time via Rust WebAssembly.</li>
+      <li><strong>Cross-Browser H5 Launcher Snippet:</strong> Ready-to-copy JavaScript helper using the <code>Page Visibility API</code> to prevent premature App Store redirects when the user’s app successfully launches.</li>
+    </ul>
+  </div>
+</ToolLayout>

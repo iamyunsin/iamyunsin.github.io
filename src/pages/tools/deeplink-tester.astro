@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import DeepLinkTesterTool from '@/components/tools/DeepLinkTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔒 自动 HTTPS 与边缘托管',
+    highlight: '零成本托管 .well-known',
+    title: 'Cloudflare Workers & SSL 边缘节点',
+    description: 'iOS Universal Links 要求域名必须具备有效 HTTPS 且无重定向。使用 Cloudflare 免费托管 /.well-known/apple-app-site-association，满足苹果 CDN 全球抓取要求。',
+    ctaText: '免费接入 Cloudflare 边缘网络',
+    url: 'https://www.cloudflare.com/developer-platform/workers/',
+  },
+  {
+    badge: '🇨🇳 国内高防云服务器',
+    highlight: '自带 ICP 备案接入',
+    title: '腾讯云轻量应用服务器 + 免费 SSL 证书',
+    description: '针对国内微信/浏览器环境配置 Universal Links 与 App Links 的首选服务器，一键申请免费 DV SSL 证书并开启 HTTP/3。',
+    ctaText: '查看腾讯云服务器特惠',
+    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  },
+  {
+    badge: '🌍 海外测试节点',
+    highlight: '按小时计费 VPS',
+    title: 'Vultr 全球独立 IP 测试云主机',
+    description: '轻松验证 Google Digital Asset Links 与 Apple AASA CDN 在北美、欧洲、亚太节点的跨区抓取连通性。',
+    ctaText: '领取 Vultr 开发者试用金',
+    url: 'https://www.vultr.com/',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么配置好了 apple-app-site-association (AASA)，iOS 依然打不开 App？',
+    answer:
+      '90% 的踩坑原因集中在三点：第一，Web 服务器返回 AASA 文件时没有设置 Content-Type: application/json，或者返回了 301/302 重定向（苹果 CDN 爬虫严禁任何重定向）；第二，iOS 14+ 以后苹果不再由手机直接请求你的域名，而是通过 Apple CDN (app-site-association.cdn-apple.com) 代理抓取，因此你的服务器防火墙不能屏蔽海外苹果节点；第三，在同域名网页内通过 location.href 跳同域名 Universal Link 会被 iOS 判定为普通网页刷新，必须跨二级域名触发（例如从 m.example.com 跳转到 link.example.com）。',
+  },
+  {
+    question: '微信内置浏览器里为什么 URL Scheme 会失效？如何优雅兜底？',
+    answer:
+      '微信内置 WebView 默认开启了白名单机制，非白名单 App 的自定义 URL Scheme（如 myapp://）会被直接静默拦截。通用解决方案是：在 iOS 端配置 Universal Links（微信无法拦截系统级跨域 Universal Link 唤醒），或在检测到 navigator.userAgent 包含 MicroMessenger 时弹出右上角引导遮罩提示用户“在默认浏览器中打开”。本工具生成的 H5 脚本已完整内置该逻辑。',
+  },
+  {
+    question: 'Android assetlinks.json 中的 SHA-256 指纹应该用 Debug 还是 Release 签名？',
+    answer:
+      '线上生产环境的 assetlinks.json 必须填写正式发版签名（Release Keystore 或 Google Play App Signing 托管签名）的 SHA-256 指纹。如果在本地调试，可以在 sha256_cert_fingerprints 数组中同时放入 Debug 签名指纹和 Release 签名指纹。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="App 唤醒 (DeepLink / Universal Links / App Links) 配置生成与扫码调试器"
+  description="基于 Rust Wasm 的移动端 H5 唤醒 App 全链路配置编译器：一键生成并校验 iOS apple-app-site-association (AASA)、Android assetlinks.json 与微信防拦截 H5 唤醒兜底代码。"
+  alternateZh="/tools/deeplink-tester/"
+  alternateEn="/en/tools/deeplink-tester/"
+  wasmSizeLabel="47.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <DeepLinkTesterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>从 H5 网页丝滑唤醒原生 App：全链路避坑指南</h2>
+    <p>
+      本工具是作者技术博文 <a href="/blog/front-tools/open-the-app-from-any-where/">《从任意地方打开App（URL Scheme、Universal Links 与 App Links 深度解析）》</a> 的配套在线实战工作台。在日常混合开发（Hybrid / H5 增长投放）中，手写 <code>apple-app-site-association</code> 与 <code>assetlinks.json</code> 极易因为拼写错误、Team ID 位数不对或 SHA-256 冒号格式问题导致唤醒静默失败。
+    </p>
+    <ul>
+      <li><strong>iOS 13+ 与旧版双兼容 AASA 结构：</strong> 自动同时生成现代 <code>components</code> 数组（支持精细化路径排除 <code>"exclude": true</code>）与传统 <code>paths</code> 字段，兼容所有 iOS 版本。</li>
+      <li><strong>Android Digital Asset Links 严格校验：</strong> 实时利用 Rust Wasm 校验 32 组十六进制 SHA-256 证书指纹格式，杜绝因多空格或漏冒号导致 Google 验证失败。</li>
+      <li><strong>内置 `visibilitychange` 无感兜底算法：</strong> 告别早期已失效的 `iframe` 唤醒方案，利用现代浏览器 `document.hidden` 状态监听判断 App 是否成功唤起，未安装时平滑跳转至 App Store 或 APK 下载页。</li>
+    </ul>
+  </div>
+</ToolLayout>

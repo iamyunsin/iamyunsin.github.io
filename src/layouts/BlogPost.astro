@@ -8,6 +8,7 @@ import FormattedDate from '@/components/FormattedDate.astro';
 import ArticleContent from '@/components/ArticleContent.astro';
 import { Icon } from 'astro-icon/components';
 import Iconfont from '@/components/Iconfont.astro';
+import { TOOLS } from '@/consts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   minutes?: number;
@@ -55,6 +56,23 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
           <ArticleContent>
             <slot />
           </ArticleContent>
+
+          <!-- 博客内链导流至工具箱 -->
+          <div class="post-tools-promo">
+            <div class="promo-head">
+              <span class="promo-title">⚡ 站长自研 · 极客在线工具箱 (Rust + WebAssembly)</span>
+              <a href="/tools/" class="promo-more">查看全部工具 →</a>
+            </div>
+            <div class="promo-grid">
+              {TOOLS.map((t) => (
+                <a href={t.pathZh} class="promo-item">
+                  <span class="promo-badge">{t.badge}</span>
+                  <span class="promo-name">{t.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
           <!-- giscus评论 -->
           <div class="giscus-wrapper">
             <script src="https://giscus.app/client.js"
@@ -339,6 +357,80 @@ const { title, description, pubDate, updatedDate, minutes, words } = Astro.props
     &:empty::before {
       content: '—';
     }
+  }
+
+  .post-tools-promo {
+    margin: 0 32px 24px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: var(--author-banner);
+    border: 1px solid var(--border-color);
+
+    @media (max-width: 768px) {
+      margin: 0 16px 20px;
+    }
+  }
+
+  .promo-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .promo-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .promo-more {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .promo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+
+    @media (max-width: 680px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .promo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-1px);
+    }
+  }
+
+  .promo-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .promo-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
   }
 
   .post-aside {

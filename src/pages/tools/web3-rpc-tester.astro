@@ -1,0 +1,75 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Web3RpcTesterTool from '@/components/tools/Web3RpcTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '⚡ 企业级私有 RPC 节点',
+    highlight: '免费享 300M CU/月',
+    title: 'Alchemy — 全球第一的 Ethereum / Solana / Base 节点平台',
+    description: '公共 RPC 节点在行情波动时极易限流（429 Too Many Requests）。免费注册 Alchemy 即可获得专属高速 HTTPS/WSS 节点与 Enhanced APIs。',
+    ctaText: '免费获取 Alchemy 专属节点 Key',
+    url: 'https://www.alchemy.com/',
+  },
+  {
+    badge: '🛡️ 硬件冷钱包物理防护',
+    highlight: '盲签克星 · 开源安全芯片',
+    title: 'Ledger / OneKey 硬件冷钱包官方直营',
+    description: '配合本页离线 Calldata 解码器核对每一笔交易参数，使用硬件钱包将助记词与私钥彻底物理隔离在安全芯片内，杜绝电脑中毒被盗。',
+    ctaText: '查看硬件钱包官方特惠',
+    url: 'https://shop.ledger.com/',
+  },
+  {
+    badge: '🚀 全球多链极速 RPC',
+    highlight: '支持 30+ 公链',
+    title: 'QuickNode 低延迟多链基础设施',
+    description: '专为高频 DeFi 交易、链上数据分析与智能合约开发打造的超低延迟全球 Anycast RPC 节点网络。',
+    ctaText: '免费试用 QuickNode 节点',
+    url: 'https://www.quicknode.com/',
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么在使用硬件钱包或 MetaMask 签名前，需要先解码交易 Calldata？',
+    answer:
+      '许多恶意钓鱼网站会伪造前端 UI（例如界面显示“领取免费空投 NFT”），但实际发给钱包签名的底层十六进制 Calldata 却是 0x095ea7b3（ERC-20 Unlimited Approve 无限额度授权）或 0xa22cb465（setApprovalForAll 全资产转移授权）。将待签名的 Hex 数据粘贴到本工具中，Rust Wasm 引擎会离线拆解每一个 32 字节 ABI 参数并自动标红无限授权风险。',
+  },
+  {
+    question: '使用本工具测速或解码需要连接我的 Web3 钱包（window.ethereum）吗？',
+    answer:
+      '完全不需要！本工具从设计上严禁调用任何钱包插件 API（不触发 eth_requestAccounts），所有 Calldata 解析 100% 在本地 Rust Wasm 沙箱内离线完成，确保零授权风险。',
+  },
+  {
+    question: '为什么公共 RPC 节点有时会显示超时或被限流？',
+    answer:
+      '免费公共 RPC 节点通常对单个 IP 设有严格的速率限制（Rate Limit）或并发限制。如果您正在运行自动化脚本、DApp 前端或链上索引器，建议申请 Alchemy 或 QuickNode 的免费私有 API Key 以获得稳定低延迟体验。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="web3"
+  title="多链 RPC 节点真实延迟测速 & 交易 Calldata / ABI 离线安全解码器"
+  description="无需连接钱包的 Web3 极客安全工具台：基于 Rust Wasm 离线解析未知交易十六进制 Calldata、精准拦截 ERC-20 无限额度授权钓鱼，并实时测试 Ethereum / Solana / Base / Arbitrum 节点真实网络延迟。"
+  alternateZh="/tools/web3-rpc-tester/"
+  alternateEn="/en/tools/web3-rpc-tester/"
+  wasmSizeLabel="40.7 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Web3RpcTesterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>告别“盲签”被盗与节点卡顿：Web3 开发者与安全玩家必备工作台</h2>
+    <p>
+      在链上交互与智能合约调试中，<strong>“从不盲签未知的十六进制 Calldata”</strong>是保护加密资产的第一铁律。本工具将<strong>离线 ABI 字节帧解码器</strong>与<strong>多链公共 RPC 实时测速仪</strong>合二为一，且全程无需连接任何浏览器钱包扩展。
+    </p>
+    <ul>
+      <li><strong>Rust Wasm 256 位大整数与 ABI 字节帧解析：</strong> 自动剥离前 4 字节函数选择器（Function Selector），按每 64 个十六进制字符（32 字节）切分 ABI 参数槽位，自动识别 <code>MAX_UINT256</code> 无限授权（<code>0xffffffff...</code>）并给出醒目的红色高危预警。</li>
+      <li><strong>浏览器直连真实网络测速：</strong> 不同于第三方服务端固定的机房 Ping 值，本工具直接从您当前所处的宽带/移动网络向各大节点发起标准 <code>eth_blockNumber</code> / <code>getSlot</code> 请求，帮您挑出当前网络环境下响应最快的 RPC 节点。</li>
+    </ul>
+  </div>
+</ToolLayout>
