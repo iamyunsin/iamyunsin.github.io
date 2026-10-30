@@ -1,24 +1,22 @@
 # deploy-mysite.yml
 name: Deploy to mysite
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository using git
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 23.7.0
       - uses: pnpm/action-setup@v3
         name: Install pnpm
         with:
-          version: 8
+          version: 9.14.4
           run_install: true
       - name: Install dependencies
         run: pnpm install
