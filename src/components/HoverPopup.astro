@@ -8,35 +8,50 @@
 </div>
 <style lang="less">
   .hover-popup {
+    position: relative;
+
     &-content {
       position: absolute;
       display: none;
-      margin-top: 8px;
+      top: calc(100% + 10px);
       left: 50%;
       transform: translate(-50%, 0);
-      background-color: var(--bg-surface-elevated);
+      background-color: var(--bg-surface);
       color: var(--text-primary);
       border: 1px solid var(--border-color);
       border-radius: 10px;
       box-shadow: var(--shadow-lg);
-      backdrop-filter: blur(12px);
       width: max-content;
       height: max-content;
       padding: 10px 12px;
-      z-index: 100;
-      &::before {
-        content: ' ';
+      z-index: 200;
+
+      /* 透明过渡桥，防止鼠标移向浮层时断触 */
+      &::after {
+        content: '';
         position: absolute;
         top: -12px;
-        left: calc(50% - 6px);
-        width: 0;
-        height: 0;
-        border-width: 6px;
-        border-style: solid;
-        border-color: transparent transparent var(--border-color) transparent;
+        left: 0;
+        right: 0;
+        height: 12px;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        left: calc(50% - 5px);
+        width: 10px;
+        height: 10px;
+        background-color: var(--bg-surface);
+        border-left: 1px solid var(--border-color);
+        border-top: 1px solid var(--border-color);
+        transform: rotate(45deg);
       }
     }
-    &:hover .hover-popup-content {
+
+    &:hover .hover-popup-content,
+    &:focus-within .hover-popup-content {
       display: block;
     }
   }

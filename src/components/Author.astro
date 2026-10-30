@@ -27,9 +27,9 @@ const className = Astro.props[`class`] || '';
     </div>
     <div class="author-socials">
       <Popup title="微信">
-        <span class="social-btn" aria-label="微信二维码">
+        <button type="button" class="social-btn" aria-label="微信二维码">
           <Iconfont name="wechat" size={18} />
-        </span>
+        </button>
         <div slot="content" class="wechat-popup">
           <img src={AUTHOR.wechat} alt="微信二维码" class="w-150 h-150 b-rd-6 block" />
           <p class="wechat-tip">扫码添加微信交流</p>
@@ -57,8 +57,13 @@ const className = Astro.props[`class`] || '';
 <style lang="less">
   :global(.author-card) {
     padding: 0 !important;
-    overflow: hidden;
+    overflow: visible !important;
     position: relative;
+    z-index: 20;
+
+    &:hover {
+      z-index: 40;
+    }
   }
 
   .author-banner {
@@ -66,6 +71,7 @@ const className = Astro.props[`class`] || '';
     width: 100%;
     background: var(--author-banner);
     border-bottom: 1px solid var(--border-subtle);
+    border-radius: 13px 13px 0 0;
   }
 
   .author-body {
@@ -118,6 +124,8 @@ const className = Astro.props[`class`] || '';
   .social-btn {
     width: 36px;
     height: 36px;
+    padding: 0;
+    outline: none;
     border-radius: 10px;
     display: inline-flex;
     align-items: center;
