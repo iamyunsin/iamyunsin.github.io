@@ -6,6 +6,7 @@ members = [
   "crates/tool-image-codec",
   "crates/tool-deeplink",
   "crates/tool-web3",
+  "crates/tool-labs",
 ]
 
 [profile.release]

@@ -5,7 +5,7 @@ import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
 import AffiliateCard, { type AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
-import { SITE } from '@/consts';
+import { SITE, TOOLS } from '@/consts';
 
 export interface FaqItem {
   question: string;
@@ -38,6 +38,8 @@ const {
 
 const switchLangUrl = lang === 'en' ? alternateZh : alternateEn;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || SITE.domain).toString();
+const matchedTool = TOOLS.find((t) => t.pathZh === alternateZh || t.pathEn === alternateEn);
+const relatedPosts = matchedTool?.relatedPosts || [];
 
 // Automatic WebApplication + FAQPage JSON-LD Schema for Google Rich Snippets
 const jsonLdSchemas: Record<string, any>[] = [
@@ -112,6 +114,20 @@ if (faqs.length > 0) {
       <header class="tool-hero">
         <h1 class="tool-h1">{title}</h1>
         <p class="tool-lead">{description}</p>
+        {relatedPosts.length > 0 && (
+          <div class="hero-related-posts">
+            <span class="hero-related-label">
+              {lang === 'en' ? '📖 Companion Source-Code Deep-Dive:' : '📖 阅读本文配套源码精读博文：'}
+            </span>
+            <div class="hero-related-links">
+              {relatedPosts.map((p) => (
+                <a href={p.url} class="hero-related-pill">
+                  {lang === 'en' ? p.titleEn : p.title} →
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       <!-- Main Interactive Tool Workspace (Vue 3 + Rust Wasm) -->
@@ -266,6 +282,47 @@ if (faqs.length > 0) {
 
     @media (max-width: 640px) {
       font-size: 13px;
+    }
+  }
+
+  .hero-related-posts {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-related-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hero-related-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-related-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--accent-border);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--accent-soft);
+      transform: translateY(-1px);
     }
   }
 

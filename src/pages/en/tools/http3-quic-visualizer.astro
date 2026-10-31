@@ -1,0 +1,51 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Http3QuicVisualizerTool from '@/components/tools/Http3QuicVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '⚡ Instant HTTP/3 & QUIC',
+    highlight: 'One-Click 0-RTT',
+    title: 'Cloudflare Global Edge Network',
+    description: 'Enable HTTP/3 QUIC and 0-RTT Connection Resumption globally with zero server configuration.',
+    ctaText: 'Enable HTTP/3 Free with Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does HTTP/2 still suffer from Head-of-Line (HoL) blocking despite multiplexing?',
+    answer:
+      'Although HTTP/2 multiplexes multiple streams over a single TCP connection, TCP enforces strict in-order byte delivery at the OS kernel level. When a single packet in Stream #1 is lost, the TCP stack holds back already-arrived packets belonging to Streams #2, #3, and #4 until the lost packet is retransmitted.',
+  },
+  {
+    question: 'How does HTTP/3 (QUIC over UDP) eliminate TCP Head-of-Line blocking?',
+    answer:
+      'QUIC implements stream multiplexing natively over UDP. Each stream has its own independent flow control and packet sequence numbering, so a lost packet in Stream #1 only stalls Stream #1 while all other streams are delivered immediately to the browser.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="HTTP/2 vs HTTP/3 (QUIC) 0-RTT Handshake & Head-of-Line Blocking Simulator"
+  description="Interactive Rust Wasm network simulator comparing HTTP/2 (TCP + TLS 1.3) vs HTTP/3 (QUIC over UDP) handshake latency and packet-loss Head-of-Line blocking."
+  alternateZh="/tools/http3-quic-visualizer/"
+  alternateEn="/en/tools/http3-quic-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Http3QuicVisualizerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Visualizing TCP Head-of-Line Blocking vs QUIC Independent Streams</h2>
+    <p>
+      Adjust the RTT latency and packet loss sliders above to observe how a single dropped packet stalls every multiplexed stream in HTTP/2 while HTTP/3 streams complete independently over QUIC.
+    </p>
+  </div>
+</ToolLayout>

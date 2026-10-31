@@ -4,14 +4,14 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
-import { SITE, TOOLS } from '@/consts';
+import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead
-      title={`Privacy-First Developer & AI Tools (Rust Wasm) · ${SITE.titleEn}`}
+      title={`Privacy-First Developer Tools & Interactive Principle Labs (Rust Wasm) · ${SITE.titleEn}`}
       description={SITE.descriptionEn}
       alternateZh="/tools/"
       alternateEn="/en/tools/"
@@ -25,14 +25,19 @@ import { SITE, TOOLS } from '@/consts';
           <span class="wasm-tag">⚡ Powered by Rust + WebAssembly</span>
           <a href="/tools/" class="lang-link">🌐 切换到中文版 →</a>
         </div>
-        <h1 class="tools-title">🛠️ Privacy-First Indie Developer Tools</h1>
+        <h1 class="tools-title">🛠️ Privacy-First Developer Tools & Interactive Labs</h1>
         <p class="tools-subtitle">
-          100% Client-Side execution powered by micro-compiled Rust WebAssembly modules (~28 KB per tool). Your prompts, files, and keys never leave your browser.
+          100% Client-Side execution powered by micro-compiled Rust WebAssembly modules. Explore production utilities and interactive architecture visualizers.
         </p>
       </header>
 
+      <div class="section-heading">
+        <h2 class="section-title">⚡ Developer & AI Utilities</h2>
+        <span class="section-desc">Zero-upload local utilities for LLM pricing, image compression, mobile deep links, and Web3 security</span>
+      </div>
+
       <section class="tools-grid">
-        {TOOLS.map((tool) => (
+        {UTILITY_TOOLS.map((tool) => (
           <a
             href={tool.pathEn}
             class={`tool-card ${tool.status === 'coming-soon' ? 'is-upcoming' : ''}`}
@@ -41,7 +46,7 @@ import { SITE, TOOLS } from '@/consts';
               <span class={`status-badge ${tool.status}`}>{tool.badgeEn}</span>
               {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
             </div>
-            <h2 class="card-title">{tool.titleEn}</h2>
+            <h3 class="card-title">{tool.titleEn}</h3>
             <p class="card-desc">{tool.descriptionEn}</p>
             <div class="card-footer">
               <span class="enter-text">
@@ -49,6 +54,39 @@ import { SITE, TOOLS } from '@/consts';
               </span>
             </div>
           </a>
+        ))}
+      </section>
+
+      <div id="labs" class="section-heading labs-heading">
+        <h2 class="section-title">🧪 Interactive Principle Visualizers & Sandboxes</h2>
+        <span class="section-desc">Step-by-step visualizers for Vue 3 compilation, Virtual DOM Fast Diff, JS Event Loop, and HTTP/3 QUIC</span>
+      </div>
+
+      <section class="tools-grid">
+        {LAB_TOOLS.map((tool) => (
+          <div class="tool-card lab-card">
+            <a href={tool.pathEn} class="card-main-link">
+              <div class="card-meta">
+                <span class="status-badge lab-badge">{tool.badgeEn}</span>
+                {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
+              </div>
+              <h3 class="card-title">{tool.titleEn}</h3>
+              <p class="card-desc">{tool.descriptionEn}</p>
+            </a>
+            {tool.relatedPosts && tool.relatedPosts.length > 0 && (
+              <div class="related-post-bar">
+                <span class="related-label">📖 Companion Deep-Dive Article:</span>
+                <div class="related-links">
+                  {tool.relatedPosts.map((post) => (
+                    <a href={post.url} class="related-link">{post.titleEn}</a>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div class="card-footer">
+              <a href={tool.pathEn} class="enter-text">Launch Interactive Lab →</a>
+            </div>
+          </div>
         ))}
       </section>
 
@@ -119,6 +157,34 @@ import { SITE, TOOLS } from '@/consts';
     line-height: 1.6;
   }
 
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border-color);
+
+    &.labs-heading {
+      margin-top: 32px;
+      scroll-margin-top: 84px;
+    }
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -155,6 +221,13 @@ import { SITE, TOOLS } from '@/consts';
     &.is-upcoming {
       opacity: 0.78;
     }
+  }
+
+  .card-main-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
   .card-meta {
@@ -195,11 +268,44 @@ import { SITE, TOOLS } from '@/consts';
   }
 
   .card-desc {
-    margin: 0 0 16px;
+    margin: 0 0 14px;
     font-size: 13.5px;
     color: var(--text-secondary);
     line-height: 1.6;
     flex: 1;
+  }
+
+  .related-post-bar {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-subtle);
+    font-size: 12px;
+  }
+
+  .related-label {
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .related-links {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .related-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.4;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .card-footer {
@@ -211,5 +317,6 @@ import { SITE, TOOLS } from '@/consts';
     font-size: 13px;
     font-weight: 700;
     color: var(--accent);
+    text-decoration: none;
   }
 </style>

@@ -1,0 +1,51 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Vue3CompilerVisualizerTool from '@/components/tools/Vue3CompilerVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🚀 Edge Full-Stack Hosting',
+    highlight: 'Global 300+ PoPs',
+    title: 'Cloudflare Workers & Static Assets',
+    description: 'Deploy Vue 3, Nuxt, and Astro apps globally with zero cold starts, built-in HTTP/3 QUIC, and free SSL.',
+    ctaText: 'Deploy on Cloudflare Workers',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'What are the 3 core stages of the Vue 3 template compiler?',
+    answer:
+      '1. Parse (baseParse): Tokenizes the raw template string via a finite state machine and constructs the Template AST. 2. Transform: Traverses the AST to apply directive transforms, hoist static trees (_hoisted_*), compute bitwise PatchFlags, and collect dynamic children into a Block Tree. 3. Generate: Emits the final JavaScript render(_ctx, _cache) function.',
+  },
+  {
+    question: 'How do bitwise PatchFlags accelerate Virtual DOM diffing?',
+    answer:
+      'By encoding dynamic bindings as powers of two (TEXT = 1, CLASS = 2, STYLE = 4, PROPS = 8), the compiler combines multiple dynamic traits via bitwise OR (|), and the runtime renderer checks them in O(1) time via bitwise AND (&), completely bypassing static attribute comparisons.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Vue 3 Template Compiler, AST, PatchFlags & Hoisting Interactive Visualizer"
+  description="Interactive Rust Wasm sandbox visualizing how Vue 3 compiles SFC templates into Lexical Tokens, Template AST, Static Hoisting (_hoisted), and bitwise PatchFlags."
+  alternateZh="/tools/vue3-compiler-visualizer/"
+  alternateEn="/en/tools/vue3-compiler-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Vue3CompilerVisualizerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Inside Vue 3 Compile-Time Optimizations: Block Tree & Bitwise PatchFlags</h2>
+    <p>
+      This interactive visualizer accompanies the technical deep-dive series on Vue 3 compiler architecture. Edit the template or switch presets above to inspect how <code>@vue/compiler-core</code> transforms declarative templates into high-performance Block Tree render functions.
+    </p>
+  </div>
+</ToolLayout>

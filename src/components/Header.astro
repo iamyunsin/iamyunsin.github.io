@@ -23,8 +23,7 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
 
     <div class="nav-links">
       <NavLink href="/">{lang === 'en' ? 'Blog' : '首页'}</NavLink>
-      <NavLink href={lang === 'en' ? '/en/tools/' : '/tools/'}>{lang === 'en' ? 'Tools' : '工具箱'}</NavLink>
-      <NavLink href="/experiment/">{lang === 'en' ? 'Labs' : '小实验'}</NavLink>
+      <NavLink href={lang === 'en' ? '/en/tools/' : '/tools/'}>{lang === 'en' ? 'Tools & Labs' : '工具箱'}</NavLink>
     </div>
 
     <div class="nav-utilities">

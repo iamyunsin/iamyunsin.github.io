@@ -21,6 +21,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "tool-labs"
+version = "0.1.0"
+dependencies = [
+ "shared-guard",
+]
+
+[[package]]
 name = "tool-llm-cost"
 version = "0.1.0"
 dependencies = [

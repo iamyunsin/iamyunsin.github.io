@@ -4,15 +4,15 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
-import { SITE, TOOLS } from '@/consts';
+import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
 ---
 
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <BaseHead
-      title={`极客工具箱 (Rust Wasm) · ${SITE.title}`}
-      description="100% 浏览器本地运行的开发者与效率工具箱，基于 Rust + WebAssembly 构建，零文件上传、极致速度、保护数据隐私。"
+      title={`极客工具箱 & 底层原理交互实验室 (Rust Wasm) · ${SITE.title}`}
+      description="100% 浏览器本地运行的开发者效率工具箱与底层原理交互式实验室，基于 Rust + WebAssembly 构建，零文件上传、极致速度、保护数据隐私。"
       alternateZh="/tools/"
       alternateEn="/en/tools/"
     />
@@ -25,14 +25,19 @@ import { SITE, TOOLS } from '@/consts';
           <span class="wasm-tag">⚡ Powered by Rust + WebAssembly</span>
           <a href="/en/tools/" class="lang-link">🌐 English Version →</a>
         </div>
-        <h1 class="tools-title">🛠️ 极客在线工具箱</h1>
+        <h1 class="tools-title">🛠️ 极客在线工具箱 & 原理实验室</h1>
         <p class="tools-subtitle">
-          100% 纯浏览器端运行（每个工具独立编译为几十 KB 的微型 Wasm 模块），数据绝不离开你的设备，无文件数量限制、零隐私泄露风险。
+          100% 纯浏览器端运行（每个工具与可视化沙盒均由微型 Rust Wasm 模块驱动），数据绝不离开你的设备，涵盖高频开发效率工具与硬核源码交互式可视化实验。
         </p>
       </header>
 
+      <div class="section-heading">
+        <h2 class="section-title">⚡ 开发者实用工具箱 (Developer Utilities)</h2>
+        <span class="section-desc">日常高频效率、隐私转换、移动端唤醒与 Web3 安全检测</span>
+      </div>
+
       <section class="tools-grid">
-        {TOOLS.map((tool) => (
+        {UTILITY_TOOLS.map((tool) => (
           <a
             href={tool.pathZh}
             class={`tool-card ${tool.status === 'coming-soon' ? 'is-upcoming' : ''}`}
@@ -41,7 +46,7 @@ import { SITE, TOOLS } from '@/consts';
               <span class={`status-badge ${tool.status}`}>{tool.badge}</span>
               {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
             </div>
-            <h2 class="card-title">{tool.title}</h2>
+            <h3 class="card-title">{tool.title}</h3>
             <p class="card-desc">{tool.description}</p>
             <div class="card-footer">
               <span class="enter-text">
@@ -49,6 +54,39 @@ import { SITE, TOOLS } from '@/consts';
               </span>
             </div>
           </a>
+        ))}
+      </section>
+
+      <div id="labs" class="section-heading labs-heading">
+        <h2 class="section-title">🧪 底层原理交互实验室 (Interactive Principle Labs)</h2>
+        <span class="section-desc">与站内硬核技术博文深度联动，动手单步推演编译器、事件循环、Diff 算法与网络协议</span>
+      </div>
+
+      <section class="tools-grid">
+        {LAB_TOOLS.map((tool) => (
+          <div class="tool-card lab-card">
+            <a href={tool.pathZh} class="card-main-link">
+              <div class="card-meta">
+                <span class="status-badge lab-badge">{tool.badge}</span>
+                {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
+              </div>
+              <h3 class="card-title">{tool.title}</h3>
+              <p class="card-desc">{tool.description}</p>
+            </a>
+            {tool.relatedPosts && tool.relatedPosts.length > 0 && (
+              <div class="related-post-bar">
+                <span class="related-label">📖 配套源码精读：</span>
+                <div class="related-links">
+                  {tool.relatedPosts.map((post) => (
+                    <a href={post.url} class="related-link">{post.title}</a>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div class="card-footer">
+              <a href={tool.pathZh} class="enter-text">进入交互实验室 →</a>
+            </div>
+          </div>
         ))}
       </section>
 
@@ -119,6 +157,34 @@ import { SITE, TOOLS } from '@/consts';
     line-height: 1.6;
   }
 
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border-color);
+
+    &.labs-heading {
+      margin-top: 32px;
+      scroll-margin-top: 84px;
+    }
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -155,6 +221,13 @@ import { SITE, TOOLS } from '@/consts';
     &.is-upcoming {
       opacity: 0.78;
     }
+  }
+
+  .card-main-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
   .card-meta {
@@ -195,11 +268,44 @@ import { SITE, TOOLS } from '@/consts';
   }
 
   .card-desc {
-    margin: 0 0 16px;
+    margin: 0 0 14px;
     font-size: 13.5px;
     color: var(--text-secondary);
     line-height: 1.6;
     flex: 1;
+  }
+
+  .related-post-bar {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-subtle);
+    font-size: 12px;
+  }
+
+  .related-label {
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .related-links {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .related-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.4;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .card-footer {
@@ -211,5 +317,6 @@ import { SITE, TOOLS } from '@/consts';
     font-size: 13px;
     font-weight: 700;
     color: var(--accent);
+    text-decoration: none;
   }
 </style>

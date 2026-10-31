@@ -2,7 +2,7 @@
 import BaseHead from '@/components/BaseHead.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { SITE, TOOLS } from '@/consts';
+import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import ArticleList from '@/components/ArticleList.astro';
 import Author from '@/components/Author.astro';
@@ -21,9 +21,9 @@ import CardTitle from '@/components/CardTitle.astro';
       <aside class="home-sidebar">
         <Author />
         <Card class="stat-card">
-          <CardTitle>⚡ 极客工具箱</CardTitle>
+          <CardTitle>⚡ 工具箱 & 原理实验室</CardTitle>
           <div class="tools-mini-list">
-            {TOOLS.slice(0, 3).map((tool) => (
+            {[...UTILITY_TOOLS.slice(0, 2), ...LAB_TOOLS.slice(0, 2)].map((tool) => (
               <a href={tool.pathZh} class="tool-mini-item">
                 <div class="tool-mini-top">
                   <span class="tool-mini-badge">{tool.badge}</span>
@@ -31,7 +31,7 @@ import CardTitle from '@/components/CardTitle.astro';
                 <div class="tool-mini-title">{tool.title}</div>
               </a>
             ))}
-            <a href="/tools/" class="tool-more-link">查看全部工具 (Rust Wasm) →</a>
+            <a href="/tools/" class="tool-more-link">查看全部工具与实验室 (8 项) →</a>
           </div>
         </Card>
         <Card class="about-card">

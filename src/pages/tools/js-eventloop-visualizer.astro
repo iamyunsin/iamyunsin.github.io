@@ -1,0 +1,63 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import JsEventLoopVisualizerTool from '@/components/tools/JsEventLoopVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '⚡ 开发者云主机特惠',
+    highlight: '高性价比 Node/全栈环境',
+    title: '腾讯云轻量应用服务器 — 独立博客与全栈服务部署首选',
+    description: '一键部署 Node.js / Deno / Bun 服务端应用与静态博客，享新人专属超低折扣。',
+    ctaText: '查看腾讯云轻量服务器优惠',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么微任务（Promise.then）总是比宏任务（setTimeout 0ms）先执行？',
+    answer:
+      '根据 HTML 标准事件循环规范，每当主线程执行栈（Call Stack）清空后，引擎会立即进入微任务检查点（Microtask Checkpoint），把微任务队列中的所有任务（包括执行期间新衍生的微任务）全部取出来连续执行完毕，直到微任务队列彻底为空，才会去进行 UI 渲染判断或从宏任务队列取出下一个宏任务。',
+  },
+  {
+    question: 'requestAnimationFrame 和 requestIdleCallback 分别在事件循环的什么时机触发？',
+    answer:
+      'requestAnimationFrame (rAF) 属于浏览器 UI 渲染管线阶段（通常按屏幕刷新率 60Hz 即约 16.6ms 触发一次），在微任务清空之后、浏览器执行 Layout 与 Paint 重绘之前调用；而 requestIdleCallback 仅在当前帧的同步代码、微任务、重绘以及常规宏任务全部处理完且仍有剩余空闲时间时，才由主线程兜底调用。',
+  },
+  {
+    question: 'async / await 在事件循环中是如何被拆解的？',
+    answer:
+      'async 函数在遇到 await 关键字之前的代码是完全同步执行的（立即入栈运行）；当执行完 await 右侧的表达式后，引擎会让出当前协程的执行权，并将 await 下方的剩余代码包装进一个微任务（等同于 Promise.resolve().then(...)）排入微任务队列。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="JavaScript 事件循环 (Event Loop) 全队列单步推演沙盒（光杆站长模型）"
+  description="配套《一文讲透事件循环》博文的交互式沙盒：还原“光杆站长”心智模型，逐帧单步推演调用栈、Promise 微任务、requestAnimationFrame、setTimeout 宏任务与 requestIdleCallback 执行时序。"
+  alternateZh="/tools/js-eventloop-visualizer/"
+  alternateEn="/en/tools/js-eventloop-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <JsEventLoopVisualizerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>从“光杆站长”心智模型彻底攻克 JS 事件循环与异步队列优先级</h2>
+    <p>
+      本沙盒与站内高人气博文《<a href="/blog/knowledge/js-eventloop">一文讲透事件循环</a>》深度联动。你可以把 JavaScript 单线程主引擎想象成火车站里<strong>同一时刻只干一件事的光杆站长</strong>：
+    </p>
+    <ul>
+      <li><strong>日常事务（执行栈 Call Stack）：</strong> 站长手头正在执行的同步语句，任何列车进站都必须等他把手头这段同步代码跑完。</li>
+      <li><strong>特快列车（微任务队列 Microtask Queue）：</strong> <code>Promise.then</code>、<code>queueMicrotask</code>、<code>MutationObserver</code>。只要执行栈一清空，站长必须把所有特快列车全部接完（哪怕接车中途又开来新的特快列车）。</li>
+      <li><strong>重绘检票（requestAnimationFrame）：</strong> 在浏览器下一帧 UI 渲染重绘之前触发，适合高帧率动画计算。</li>
+      <li><strong>普通列车（宏任务队列 Macrotask Queue）：</strong> <code>setTimeout</code>、<code>setInterval</code>、DOM 事件、I/O 回调。每次事件循环只从队头取出一列执行，执行完后立即回头检查微任务队列。</li>
+      <li><strong>空闲巡检（requestIdleCallback）：</strong> 只有当站长把特快车、重绘和普通列车全忙完了，处于空闲状态时才会顺手处理。</li>
+    </ul>
+  </div>
+</ToolLayout>

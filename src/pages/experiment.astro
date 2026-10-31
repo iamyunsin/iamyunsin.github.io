@@ -1,58 +1,21 @@
 ---
 import BaseHead from '@/components/BaseHead.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
-import { SITE, EXPERIMENTS } from '@/consts';
-import BodyWrapper from '@/components/BodyWrapper.astro';
-import Card from '@/components/Card.astro';
-import CardTitle from '@/components/CardTitle.astro';
-import UList from '@/components/OutLinkList.astro';
+import { SITE } from '@/consts';
 ---
 
 <!doctype html>
 <html lang="zh-CN">
-	<head>
-		<BaseHead title="小实验 · 原心的个人主页" description={SITE.description} />
-	</head>
-	<body>
-		<Header />
-		<BodyWrapper>
-      <div class="exp-header">
-        <h1 class="exp-title">🧪 交互式技术小实验</h1>
-        <p class="exp-subtitle">探索底层原理、编译过程可视化与前端工程趣味实验</p>
-      </div>
-      <section class="grid grid-cols-3 lt-lg:grid-cols-2 lt-sm:grid-cols-1 gap-16">
-        {EXPERIMENTS.map((item) => (
-          <Card>
-            <CardTitle>{item.name}</CardTitle>
-            <UList items={item.list}/>
-          </Card>
-        ))}
-      </section>
-		</BodyWrapper>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={`交互式原理实验室 · ${SITE.title}`} description={SITE.description} />
+    <link rel="canonical" href="https://yunsin.top/tools/#labs" />
+    <meta http-equiv="refresh" content="0;url=/tools/#labs" />
+    <script is:inline>
+      window.location.replace('/tools/#labs');
+    </script>
+  </head>
+  <body>
+    <p style="padding: 2rem; text-align: center;">
+      正在前往极客工具箱 · 底层原理交互实验室：<a href="/tools/#labs">/tools/#labs</a>
+    </p>
+  </body>
 </html>
-
-<style lang="less">
-  .exp-header {
-    margin-bottom: 20px;
-    padding: 20px 24px;
-    border-radius: 14px;
-    background: var(--author-banner);
-    border: 1px solid var(--border-color);
-  }
-
-  .exp-title {
-    margin: 0 0 6px;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .exp-subtitle {
-    margin: 0;
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-</style>

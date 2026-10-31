@@ -1,0 +1,51 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import JsEventLoopVisualizerTool from '@/components/tools/JsEventLoopVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🚀 Serverless JS Runtime',
+    highlight: 'V8 Isolates at the Edge',
+    title: 'Cloudflare Workers — Run JS/Wasm Globally in <1ms',
+    description: 'Deploy event-driven JavaScript and Rust WebAssembly workloads across 300+ global edge locations.',
+    ctaText: 'Try Cloudflare Workers Free',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why do Microtasks (Promise.then) always run before Macrotasks (setTimeout)?',
+    answer:
+      'Whenever the JavaScript Call Stack becomes empty, the runtime immediately performs a Microtask Checkpoint—draining every queued microtask (including newly spawned ones) until the Microtask Queue is completely empty before moving on to rendering or dequeuing a single macrotask.',
+  },
+  {
+    question: 'When do requestAnimationFrame and requestIdleCallback execute?',
+    answer:
+      'requestAnimationFrame runs right before the browser repaints the screen (typically every 16.6ms on a 60Hz display), whereas requestIdleCallback runs only during idle periods at the end of a frame when both microtask and macrotask queues are empty.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="JS Event Loop Step-by-Step Visualizer (Call Stack, Microtask, rAF, Macrotask & Idle)"
+  description="Interactive state-machine sandbox visualizing JavaScript Call Stack, Promise Microtasks, requestAnimationFrame, setTimeout Macrotasks, and requestIdleCallback execution order."
+  alternateZh="/tools/js-eventloop-visualizer/"
+  alternateEn="/en/tools/js-eventloop-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <JsEventLoopVisualizerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Mastering the JavaScript Event Loop: 5-Queue Step-by-Step Execution</h2>
+    <p>
+      Step through synchronous stack execution, microtask checkpoints, animation frames, macrotasks, and idle callbacks to see the exact order of <code>console.log</code> outputs in real time.
+    </p>
+  </div>
+</ToolLayout>

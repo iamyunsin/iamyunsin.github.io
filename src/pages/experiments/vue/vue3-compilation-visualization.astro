@@ -1,22 +1,21 @@
 ---
 import BaseHead from '@/components/BaseHead.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
 import { SITE } from '@/consts';
-import BodyWrapper from '@/components/BodyWrapper.astro';
-import V3CompileVisual from '@/experiments/vue/components/V3CompileVisual.vue';
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title="Vue3编译过程可视化工具·原心的个人主页" description={SITE.description} />
-	</head>
-	<body>
-		<Header />
-		<BodyWrapper >
-      <V3CompileVisual client:only />
-		</BodyWrapper>
-		<Footer />
-	</body>
+<html lang="zh-CN">
+  <head>
+    <BaseHead title={`Vue 3 编译过程可视化工具 · ${SITE.title}`} description={SITE.description} />
+    <link rel="canonical" href="https://yunsin.top/tools/vue3-compiler-visualizer/" />
+    <meta http-equiv="refresh" content="0;url=/tools/vue3-compiler-visualizer/" />
+    <script is:inline>
+      window.location.replace('/tools/vue3-compiler-visualizer/');
+    </script>
+  </head>
+  <body>
+    <p style="padding: 2rem; text-align: center;">
+      正在前往 Vue 3 编译三步曲可视化器：<a href="/tools/vue3-compiler-visualizer/">/tools/vue3-compiler-visualizer/</a>
+    </p>
+  </body>
 </html>

@@ -1,0 +1,46 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Vue3RuntimeVisualizerTool from '@/components/tools/Vue3RuntimeVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🚀 Global Edge Hosting',
+    highlight: 'Zero Cold Starts',
+    title: 'Cloudflare Workers & Pages',
+    description: 'Deploy modern Vue 3 applications to 300+ global edge locations.',
+    ctaText: 'Start Free on Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does Vue 3 compute the Longest Increasing Subsequence (LIS) during DOM diffing?',
+    answer:
+      'Moving real DOM nodes is much more expensive than JavaScript array operations. By finding the Longest Increasing Subsequence of old indices within the new child order in O(n log n) time, Vue 3 keeps the maximum possible number of DOM elements stationary and only moves the remaining nodes.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Vue 3 Reactive Track/Trigger & Fast Diff (Longest Increasing Subsequence) Stepper"
+  description="Interactive Rust Wasm sandbox stepping through Vue 3's 5-stage patchKeyedChildren Fast Diff algorithm, Longest Increasing Subsequence (LIS) anchors, and ReactiveEffect dependency tracking."
+  alternateZh="/tools/vue3-runtime-visualizer/"
+  alternateEn="/en/tools/vue3-runtime-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Vue3RuntimeVisualizerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Understanding Vue 3 Runtime: Fast Diff & Reactive Dependency Tracking</h2>
+    <p>
+      Use the interactive stepper above to inspect how Vue 3 synchronizes head and tail VNodes (`i`, `e1`, `e2`) and computes the Longest Increasing Subsequence (`getSequence`) to minimize DOM mutations.
+    </p>
+  </div>
+</ToolLayout>

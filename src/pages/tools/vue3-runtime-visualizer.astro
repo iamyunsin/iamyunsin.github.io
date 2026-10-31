@@ -1,0 +1,57 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Vue3RuntimeVisualizerTool from '@/components/tools/Vue3RuntimeVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🚀 现代前端云部署',
+    highlight: '零配置边缘加速',
+    title: 'Cloudflare Workers — 极速承载 Vue 3 与 Wasm 应用',
+    description: '支持全球边缘节点运行与静态资源智能缓存，免费开启 HTTP/3 加速。',
+    ctaText: '免费接入 Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Vue 3 的快速 Diff 算法相比 Vue 2 的双端 Diff 有什么核心改进？',
+    answer:
+      'Vue 3 借鉴了 ivi 和 inferno 框架的快速 Diff 思想：首先通过前置同步（Sync from start，指针 i 从左向右）与后置同步（Sync from end，指针 e1/e2 从右向左）快速跳过头尾未发生位移的相同节点；仅当中间存在乱序未知子序列时，才构建 newIndexToOldIndexMap 并使用贪心+二分查找求出【最长递增子序列 (LIS)】，凡是命中 LIS 的节点均保持原地不动，从而保证在 O(n log n) 时间内实现最小次数的真实 DOM 移动操作。',
+  },
+  {
+    question: 'Vue 3 响应式系统是如何组织 targetMap、depsMap 和 Dep 的？',
+    answer:
+      'Vue 3 内部使用三层数据结构存储依赖关系：最外层 targetMap 是一个 WeakMap（键为响应式原始对象 target，值为 depsMap，当 target 无引用时可被 GC 自动回收）；第二层 depsMap 是一个 Map（键为对象的属性名 key，值为 Dep 集合）；第三层 Dep 是一个存储所有订阅该属性的 ReactiveEffect 实例的集合。读取属性触发 track() 收集依赖，修改属性触发 trigger() 派发更新。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="Vue 3 响应式依赖收集 (Track/Trigger) 与快速 Diff (最长递增子序列 LIS) 步进推演器"
+  description="配套《Vue3架构分析（三）（四）》的运行时交互实验室：基于 Rust Wasm 单步推演 patchKeyedChildren 五阶段快速 Diff、最长递增子序列 (getSequence) 锚点求解与 ReactiveEffect 依赖图谱。"
+  alternateZh="/tools/vue3-runtime-visualizer/"
+  alternateEn="/en/tools/vue3-runtime-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Vue3RuntimeVisualizerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>图解 Vue 3 运行时核心：快速 Diff 五步法与最长递增子序列 (LIS)</h2>
+    <p>
+      本交互式实验室与《<a href="/blog/vue3/architecture-analysis-3">Vue3架构分析（三）—— 渲染器与App设计</a>》《<a href="/blog/vue3/architecture-analysis-4">Vue3架构分析（四）—— 组件实例的创建和初始化</a>》紧密联动。在浏览器中操作真实 DOM 的移动（<code>insertBefore</code>）远比纯 JS 对象的计算昂贵，因此 Vue 3 在更新带 <code>key</code> 的 <code>v-for</code> 列表时采用了五阶段算法：
+    </p>
+    <ul>
+      <li><strong>阶段一（头部同步）：</strong> 指针 <code>i</code> 从 <code>0</code> 开始向右扫描，只要新旧节点 <code>key</code> 相同便原地 <code>patch</code>。</li>
+      <li><strong>阶段二（尾部同步）：</strong> 指针 <code>e1</code>（旧尾）与 <code>e2</code>（新尾）同时向左扫描，跳过尾部相同节点。</li>
+      <li><strong>阶段三 & 四（纯新增或纯卸载）：</strong> 若 <code>i &gt; e1</code> 说明只需挂载新增节点；若 <code>i &gt; e2</code> 说明只需卸载多余旧节点。</li>
+      <li><strong>阶段五（乱序区间 + 最长递增子序列 LIS）：</strong> 利用 <code>getSequence(newIndexToOldIndexMap)</code> 找出相对顺序不变的最长子序列作为不动锚点，倒序遍历仅对非 LIS 节点调用 <code>hostInsert</code>，实现数学意义上的最少 DOM 移动。</li>
+    </ul>
+  </div>
+</ToolLayout>

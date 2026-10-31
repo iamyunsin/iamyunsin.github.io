@@ -1,0 +1,69 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import Vue3CompilerVisualizerTool from '@/components/tools/Vue3CompilerVisualizerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🚀 边缘极速部署',
+    highlight: '全球免费 CDN',
+    title: 'Cloudflare Workers & Pages 静态与全栈托管',
+    description: '将编译优化后的 Vue 3 / Astro 应用一键部署至全球 300+ 边缘节点，自动支持 HTTP/3 与 Brotli 压缩。',
+    ctaText: '免费体验 Cloudflare Workers',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+  {
+    badge: '🇨🇳 国内高性价比云主机',
+    highlight: '开发者轻量专场',
+    title: '腾讯云轻量应用服务器 — 个人全栈与 SSR 部署首选',
+    description: '高带宽低延迟，适合部署 Nuxt 3 / Vue 3 SSR 应用与 Node.js 编译服务。',
+    ctaText: '查看腾讯云轻量服务器特惠',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Vue 3 编译器的三步曲（parse、transform、generate）各自负责什么？',
+    answer:
+      '1. 词法与语法分析（baseParse）：通过有限状态机将模板字符串切分为词法 Token 流，并构建出描述 HTML 与指令层级结构的 Template AST；2. 语法树转换（transform）：遍历 Template AST，执行指令转换、静态节点提升（hoistStatic）标注、计算靶向更新位掩码（PatchFlags）并收集动态子节点构成 Block Tree（生成 codegenNode 即 JS AST）；3. 代码生成（generate）：深度优先遍历 codegenNode，拼接生成浏览器可直接运行的 render(_ctx, _cache) 函数代码。',
+  },
+  {
+    question: '为什么 Vue 3 的 PatchFlags 使用二进制位运算（1 << n）来设计？',
+    answer:
+      '因为一个 DOM 节点可能同时具备多种动态特性（例如既绑定了动态 :class 又包含动态文本 {{ msg }}）。使用左移位运算定义枚举（TEXT = 1, CLASS = 2, STYLE = 4, PROPS = 8）后，编译器只需通过按位或（flag |= CLASS）组合标志，而运行时在 patchElement 阶段只需执行一次极速的按位与判断（patchFlag & PatchFlags.CLASS）即可实现靶向更新，跳过无关属性比对。',
+  },
+  {
+    question: '什么是 Block Tree 与静态提升（Static Hoisting / -1）？',
+    answer:
+      '对于不含任何响应式绑定的纯静态节点（PatchFlag = -1），Vue 3 编译器会将其 VNode 创建调用提取到 render() 函数外部的常量（如 _hoisted_1），避免每次重渲染时重复分配内存。同时，根 Block 节点会跨层级直接收集所有带 PatchFlag 的动态后代节点存入 dynamicChildren 数组，使靶向更新复杂度从“整棵树大小 O(N)”降维至“仅动态节点数量 O(D)”。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="Vue 3 编译三步曲 (Token → AST → PatchFlags & Block Tree) 交互式可视化器"
+  description="基于 Rust Wasm 的 Vue 3 模板编译器在线可视化实验室：实时输入或切换 Vue SFC 模板，透视词法 Token 流、Template AST、静态提升 (_hoisted) 与 PatchFlags 靶向更新位运算。"
+  alternateZh="/tools/vue3-compiler-visualizer/"
+  alternateEn="/en/tools/vue3-compiler-visualizer/"
+  wasmSizeLabel="91.9 KB Rust Wasm"
+  offers={offers}
+  faqs={faqs}
+>
+  <Vue3CompilerVisualizerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>深入理解 Vue 3 编译时优化：从模板字符串到极速靶向渲染函数</h2>
+    <p>
+      本交互式实验室是作者《<a href="/blog/vue3/architecture-analysis-1">Vue3架构分析（一）</a>》与《<a href="/blog/vue3/architecture-analysis-2">Vue3架构分析（二）—— 编译器的设计与实现</a>》的配套在线沙盒。传统的虚拟 DOM 在更新时需要完整递归比对整棵 VNode 树，而 Vue 3 通过<strong>编译时静态分析（Compile-Time Optimization）</strong>为运行时注入了三大加速引擎：
+    </p>
+    <ul>
+      <li><strong>靶向更新标志 (PatchFlags)：</strong> 在编译阶段精确识别元素的动态绑定类型（如 <code>1 /* TEXT */</code>、<code>2 /* CLASS */</code>、<code>8 /* PROPS */</code>），运行时直接按位与跳过静态属性。</li>
+      <li><strong>静态提升 (hoistStatic)：</strong> 纯静态 DOM 子树被标记为 <code>-1 /* HOISTED */</code> 并提升至 <code>render()</code> 作用域之外，组件重渲染时零开销复用。</li>
+      <li><strong>内联事件缓存 (_cache)：</strong> 自动将 <code>@click="handleSend"</code> 包装进 <code>_cache[0]</code>，避免子组件因内联函数引用变化而发生无意义的重渲染。</li>
+    </ul>
+  </div>
+</ToolLayout>
