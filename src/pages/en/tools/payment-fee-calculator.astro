@@ -1,0 +1,106 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import PaymentFeeCalculatorTool from '@/components/tools/PaymentFeeCalculatorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Business Multi-Currency Account',
+    description: 'Bypass PayPal 3.5%–4.0% hidden exchange rate margins. Receive USD, EUR, and GBP with transparent tiered fees and instant payouts.',
+    ctaText: 'Save on FX with Wise',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🌍 Marketplace Standard',
+    highlight: '$25 Registration Reward',
+    title: 'Payoneer Cross-Border Payout Gateway',
+    description: 'Seamlessly collect contractual funds from Upwork, Fiverr, Amazon, and international wire transfers into local bank accounts.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Host international e-commerce APIs, checkout tunnels, or serverless apps with a 25% exclusive creator discount on ECS and OSS.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'What is a "Hidden FX Markup" and why is it more costly than processing fees?',
+    answer:
+      'Many legacy payment gateways (such as PayPal or correspondent wire banks) advertise a headline transaction fee of 2.9%–4.4%, but quietly apply a 3.0%–4.5% currency conversion spread (markup) over the authentic mid-market exchange rate when converting foreign funds into your local withdrawal currency. On a $10,000 international payout, this hidden spread alone extracts $300–$450 without itemized transparency.',
+  },
+  {
+    question: 'What is Gross-up Mode and why is it critical for freelance & contractor quotes?',
+    answer:
+      'Gross-up is standard international financial accounting. When you agree on a net compensation of $5,000 with a client, invoicing them exactly $5,000 means gateway deductions and FX markups will reduce your bank payout down to roughly $4,650. Our gross-up solver automatically calculates the exact gross invoice total needed to cover all processing fees and provides ready-to-send client communication templates.',
+  },
+  {
+    question: 'How do Wise, Stripe, PayPal, Payoneer, and Lianlian compare across use cases?',
+    answer:
+      '1. Wise: Best for B2B contracts and direct client wires above $1,000, charging zero FX markup and netting under 0.6% total cost; 2. Stripe: The premier choice for automated SaaS subscriptions and global credit card checkout; 3. PayPal: Highest consumer brand recognition, but incurs punitive fees on small transactions (<$500) and multi-currency payouts; 4. Payoneer & Lianlian: Industry leaders for Upwork/Fiverr freelance platforms and Amazon marketplace payouts.',
+  },
+  {
+    question: 'Can I override default fee formulas with my custom merchant account rates?',
+    answer:
+      'Yes. Expand the "Advanced Custom Rate Overrides" panel at the bottom of the calculator. You can adjust fixed fees, percentage cuts, and FX spread sliders in real time to match negotiated enterprise tier volume discounts or international card surcharges.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Global Cross-Border Payment Fee & Hidden FX Markup Calculator"
+  description="Benchmark real transaction fees and hidden FX markups across PayPal, Stripe, Wise, Payoneer, and Lianlian with reverse gross-up invoice pricing."
+  alternateZh="/tools/payment-fee-calculator/"
+  alternateEn="/en/tools/payment-fee-calculator/"
+  wasmSizeLabel="High-Precision Multi-Gateway"
+  offers={offers}
+  faqs={faqs}
+>
+  <PaymentFeeCalculatorTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Demystifying Cross-Border Payment Costs: Stop Hidden Foreign Exchange Bleed</h2>
+    <p>
+      For indie hackers, remote contractors, and cross-border businesses, international payment processing is often a silent margin killer. While engineers meticulously optimize cloud infrastructure costs and API bills, up to <strong>7% to 9% of top-line revenue</strong> vanishes into gateway fees, international card surcharges, correspondent wire fees, and predatory currency conversion spreads.
+    </p>
+
+    <h3>The 4 Core Pillars of Cross-Border Payment Economics</h3>
+    <ul>
+      <li>
+        <strong>1. Fixed Transaction Toll:</strong>
+        A non-negotiable flat charge per transaction ($0.30 on Stripe, $0.49 on international PayPal). This flat rate accounts for over 5% of transaction value on micro-purchases under $10.
+      </li>
+      <li>
+        <strong>2. Base & Cross-Border Percentage Cut:</strong>
+        Domestic processing percentages (2.9%) coupled with cross-border issuing bank surcharges (+1.0% to +1.5%) push standard credit card fees to 3.9%–4.4%.
+      </li>
+      <li>
+        <strong>3. The Hidden FX Spread (Currency Arbitrage):</strong>
+        When invoice currency differs from settlement currency, platforms convert funds using an inflated exchange rate that deviates 2.5%–4.0% from the official Reuters / Google interbank mid-market rate.
+      </li>
+      <li>
+        <strong>4. Intermediary SWIFT Wire Deductions:</strong>
+        Correspondent routing fees deducted invisibly in transit between intermediary clearing houses, often shaving $15–$35 off international wires.
+      </li>
+    </ul>
+
+    <h3>Mathematical Derivation of the Reverse Gross-Up Formula</h3>
+    <p>
+      To receive an exact <strong>Target Net Payout</strong> after every gateway deduction and exchange rate spread is settled, calculate the <strong>Gross Invoiced Total</strong> using:
+    </p>
+    <pre><code>Gross Invoice = (Target Net + Fixed Toll) / (1 - (Percentage Rate + FX Spread))</code></pre>
+    <p>
+      Mastering this formula guarantees that international payment processor charges are transparently shared or absorbed according to your contractual agreements.
+    </p>
+  </div>
+</ToolLayout>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, triggerRef } from 'vue';
 import {
   initImageCodecWasm,
   inspectImageHeaderWithWasm,
@@ -72,18 +72,213 @@ function formatBytes(bytes: number): string {
   return `${(bytes / Math.pow(k, i)).toFixed(i === 0 ? 0 : 2)} ${sizes[i]}`;
 }
 
+// ==========================================
+// Zero-Dependency Client-Side PKZip Archive Generator
+// ==========================================
+const CRC32_TABLE = new Uint32Array(256);
+for (let i = 0; i < 256; i++) {
+  let c = i;
+  for (let k = 0; k < 8; k++) {
+    c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+  }
+  CRC32_TABLE[i] = c >>> 0;
+}
+
+function computeCrc32(data: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (let i = 0; i < data.length; i++) {
+    crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ data[i]) & 0xff];
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function getDosDateTime(date: Date = new Date()): { dosDate: number; dosTime: number } {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = Math.floor(date.getSeconds() / 2);
+
+  const dosDate = ((Math.max(1980, year) - 1980) << 9) | (month << 5) | day;
+  const dosTime = (hours << 11) | (minutes << 5) | seconds;
+  return { dosDate: dosDate & 0xffff, dosTime: dosTime & 0xffff };
+}
+
+interface ZipEntry {
+  filename: string;
+  data: Uint8Array;
+}
+
+function createZipArchive(entries: ZipEntry[]): Blob {
+  const encoder = new TextEncoder();
+  const processed = entries.map((e) => {
+    const nameBytes = encoder.encode(e.filename);
+    const crc = computeCrc32(e.data);
+    return {
+      nameBytes,
+      data: e.data,
+      crc,
+    };
+  });
+
+  const { dosDate, dosTime } = getDosDateTime();
+  let localTotal = 0;
+  let cdTotal = 0;
+  for (const p of processed) {
+    localTotal += 30 + p.nameBytes.length + p.data.length;
+    cdTotal += 46 + p.nameBytes.length;
+  }
+  const totalSize = localTotal + cdTotal + 22;
+  const buffer = new Uint8Array(totalSize);
+  const view = new DataView(buffer.buffer);
+
+  let offset = 0;
+  const localOffsets: number[] = [];
+
+  // 1. Write Local File Headers + File Data
+  for (const p of processed) {
+    localOffsets.push(offset);
+    view.setUint32(offset, 0x04034b50, true); // Local file header signature
+    view.setUint16(offset + 4, 20, true); // Version needed to extract (2.0)
+    view.setUint16(offset + 6, 0x0800, true); // General purpose bit flag (UTF-8 filename)
+    view.setUint16(offset + 8, 0, true); // Compression method (0 = Stored)
+    view.setUint16(offset + 10, dosTime, true);
+    view.setUint16(offset + 12, dosDate, true);
+    view.setUint32(offset + 14, p.crc, true);
+    view.setUint32(offset + 18, p.data.length, true); // Compressed size
+    view.setUint32(offset + 22, p.data.length, true); // Uncompressed size
+    view.setUint16(offset + 26, p.nameBytes.length, true);
+    view.setUint16(offset + 28, 0, true); // Extra field length
+    offset += 30;
+    buffer.set(p.nameBytes, offset);
+    offset += p.nameBytes.length;
+    buffer.set(p.data, offset);
+    offset += p.data.length;
+  }
+
+  // 2. Write Central Directory Headers
+  const cdOffset = offset;
+  for (let i = 0; i < processed.length; i++) {
+    const p = processed[i];
+    view.setUint32(offset, 0x02014b50, true); // Central directory signature
+    view.setUint16(offset + 4, 20, true); // Version made by
+    view.setUint16(offset + 6, 20, true); // Version needed to extract
+    view.setUint16(offset + 8, 0x0800, true); // UTF-8 filename flag
+    view.setUint16(offset + 10, 0, true); // Compression method 0
+    view.setUint16(offset + 12, dosTime, true);
+    view.setUint16(offset + 14, dosDate, true);
+    view.setUint32(offset + 16, p.crc, true);
+    view.setUint32(offset + 20, p.data.length, true);
+    view.setUint32(offset + 24, p.data.length, true);
+    view.setUint16(offset + 28, p.nameBytes.length, true);
+    view.setUint16(offset + 30, 0, true); // Extra field length
+    view.setUint16(offset + 32, 0, true); // File comment length
+    view.setUint16(offset + 34, 0, true); // Disk number start
+    view.setUint16(offset + 36, 0, true); // Internal file attributes
+    view.setUint32(offset + 38, 0, true); // External file attributes
+    view.setUint32(offset + 42, localOffsets[i], true); // Local header offset
+    offset += 46;
+    buffer.set(p.nameBytes, offset);
+    offset += p.nameBytes.length;
+  }
+
+  // 3. Write End of Central Directory Record (EOCD)
+  const cdSize = offset - cdOffset;
+  view.setUint32(offset, 0x06054b50, true); // EOCD signature
+  view.setUint16(offset + 4, 0, true); // Disk number
+  view.setUint16(offset + 6, 0, true); // Disk with central directory
+  view.setUint16(offset + 8, processed.length, true); // Entries on this disk
+  view.setUint16(offset + 10, processed.length, true); // Total entries
+  view.setUint32(offset + 12, cdSize, true); // Size of central directory
+  view.setUint32(offset + 16, cdOffset, true); // Offset of start of central directory
+  view.setUint16(offset + 20, 0, true); // Comment length
+
+  return new Blob([buffer], { type: 'application/zip' });
+}
+
+const isArchiving = ref(false);
+
+async function downloadAllAsZip() {
+  const doneItems = items.value.filter((i) => i.status === 'done' && i.outputBlob);
+  if (doneItems.length === 0 || isArchiving.value) return;
+
+  isArchiving.value = true;
+  try {
+    const usedNames = new Set<string>();
+    const entries: ZipEntry[] = [];
+    const ext = extMap[targetMime.value] || 'webp';
+
+    for (const item of doneItems) {
+      if (!item.outputBlob) continue;
+      const baseName = item.name.trim() || 'image';
+      let filename = `${baseName}_optimized.${ext}`;
+      let counter = 1;
+      while (usedNames.has(filename)) {
+        filename = `${baseName}_optimized(${counter}).${ext}`;
+        counter++;
+      }
+      usedNames.add(filename);
+
+      const arrayBuffer = await item.outputBlob.arrayBuffer();
+      entries.push({
+        filename,
+        data: new Uint8Array(arrayBuffer),
+      });
+    }
+
+    if (entries.length === 0) return;
+
+    const zipBlob = createZipArchive(entries);
+    const downloadUrl = URL.createObjectURL(zipBlob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `compressed_images_${Date.now()}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+  } catch (err) {
+    console.error('Failed to create ZIP package:', err);
+  } finally {
+    isArchiving.value = false;
+  }
+}
+
+async function downloadAllSeparately() {
+  const doneItems = items.value.filter((i) => i.status === 'done' && i.outputUrl);
+  if (doneItems.length === 0) return;
+
+  for (let idx = 0; idx < doneItems.length; idx++) {
+    const item = doneItems[idx];
+    const link = document.createElement('a');
+    link.href = item.outputUrl;
+    link.download = `${item.name}_optimized.${extMap[targetMime.value] || 'webp'}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    if (idx < doneItems.length - 1) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+  }
+}
+
 async function processSingleItem(item: ProcessedImageItem) {
-  item.status = 'processing';
+  const target = items.value.find((i) => i.id === item.id) || item;
+  target.status = 'processing';
+  triggerRef(items);
+
   try {
     // 1. Read first 64KB for Rust Wasm binary header & EXIF/GPS inspection
-    const sliceBuffer = await item.file.slice(0, 65536).arrayBuffer();
+    const sliceBuffer = await target.file.slice(0, 65536).arrayBuffer();
     const headerBytes = new Uint8Array(sliceBuffer);
     if (wasmExports.value) {
-      item.headerInfo = inspectImageHeaderWithWasm(wasmExports.value, headerBytes);
+      target.headerInfo = inspectImageHeaderWithWasm(wasmExports.value, headerBytes);
+      triggerRef(items);
     }
 
     // 2. Decode image via browser ImageBitmap / HTMLImageElement
-    const imgUrl = URL.createObjectURL(item.file);
+    const imgUrl = URL.createObjectURL(target.file);
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const el = new Image();
       el.onload = () => resolve(el);
@@ -92,14 +287,15 @@ async function processSingleItem(item: ProcessedImageItem) {
     });
     URL.revokeObjectURL(imgUrl);
 
-    item.width = img.naturalWidth || img.width;
-    item.height = img.naturalHeight || img.height;
+    target.width = img.naturalWidth || img.width;
+    target.height = img.naturalHeight || img.height;
 
     const scale = scalePercent.value / 100;
-    const outW = Math.max(1, Math.round(item.width * scale));
-    const outH = Math.max(1, Math.round(item.height * scale));
-    item.outWidth = outW;
-    item.outHeight = outH;
+    const outW = Math.max(1, Math.round(target.width * scale));
+    const outH = Math.max(1, Math.round(target.height * scale));
+    target.outWidth = outW;
+    target.outHeight = outH;
+    triggerRef(items);
 
     // 3. Draw onto clean Canvas (automatically strips all EXIF, GPS, XMP & IPTC segments)
     const canvas = document.createElement('canvas');
@@ -135,18 +331,22 @@ async function processSingleItem(item: ProcessedImageItem) {
       );
     });
 
-    if (item.outputUrl) URL.revokeObjectURL(item.outputUrl);
-    item.outputBlob = blob;
-    item.outputUrl = URL.createObjectURL(blob);
-    item.outputSize = blob.size;
-    item.savedPercent =
-      item.originalSize > 0
-        ? Math.round(((item.originalSize - blob.size) / item.originalSize) * 1000) / 10
+    if (target.outputUrl) URL.revokeObjectURL(target.outputUrl);
+    target.outputBlob = blob;
+    target.outputUrl = URL.createObjectURL(blob);
+    target.outputSize = blob.size;
+    target.savedPercent =
+      target.originalSize > 0
+        ? Math.round(((target.originalSize - blob.size) / target.originalSize) * 1000) / 10
         : 0;
-    item.status = 'done';
+    target.status = 'done';
+    triggerRef(items);
+    items.value = [...items.value];
   } catch (err: any) {
-    item.status = 'error';
-    item.errorMsg = err?.message || 'Error';
+    target.status = 'error';
+    target.errorMsg = err?.message || 'Error';
+    triggerRef(items);
+    items.value = [...items.value];
   }
 }
 
@@ -180,10 +380,15 @@ async function handleFiles(fileList: FileList | File[]) {
   }));
 
   items.value.unshift(...newItems);
-  for (const item of newItems) {
-    await processSingleItem(item);
+  triggerRef(items);
+
+  for (const rawItem of newItems) {
+    const reactiveItem = items.value.find((i) => i.id === rawItem.id) || rawItem;
+    await processSingleItem(reactiveItem);
   }
   isProcessing.value = false;
+  triggerRef(items);
+  items.value = [...items.value];
 }
 
 function onFileInputChange(e: Event) {
@@ -208,6 +413,8 @@ async function reprocessAll() {
     await processSingleItem(item);
   }
   isProcessing.value = false;
+  triggerRef(items);
+  items.value = [...items.value];
 }
 
 async function generateDemoImage() {
@@ -266,7 +473,18 @@ function clearAll() {
     if (item.outputUrl) URL.revokeObjectURL(item.outputUrl);
   }
   items.value = [];
+  triggerRef(items);
 }
+
+onUnmounted(() => {
+  for (const item of items.value) {
+    if (item.outputUrl) {
+      try {
+        URL.revokeObjectURL(item.outputUrl);
+      } catch {}
+    }
+  }
+});
 
 const totalStats = computed(() => {
   const done = items.value.filter((i) => i.status === 'done');
@@ -417,6 +635,33 @@ const totalStats = computed(() => {
           <span v-if="totalStats.saved > 0" class="saved-badge">
             {{ isEn ? `Saved ${totalStats.saved}%` : `累计节省 ${totalStats.saved}%` }}
           </span>
+        </div>
+
+        <div class="summary-actions">
+          <button
+            type="button"
+            class="batch-btn batch-zip-btn"
+            :disabled="totalStats.count === 0 || isArchiving"
+            @click="downloadAllAsZip"
+          >
+            <span v-if="isArchiving" class="spin-icon">⏳</span>
+            <span v-else>📦</span>
+            {{
+              isArchiving
+                ? (isEn ? 'Archiving ZIP...' : '正在打包 ZIP...')
+                : (isEn ? `Download All as ZIP (${totalStats.count})` : `打包 ZIP 下载全部 (${totalStats.count})`)
+            }}
+          </button>
+          <button
+            v-if="totalStats.count > 1"
+            type="button"
+            class="batch-btn batch-separate-btn"
+            :disabled="totalStats.count === 0 || isArchiving"
+            @click="downloadAllSeparately"
+          >
+            <span>⬇️</span>
+            {{ isEn ? 'Download Separately' : '批量逐张下载' }}
+          </button>
         </div>
       </div>
 
@@ -705,6 +950,8 @@ const totalStats = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   padding-bottom: 14px;
   margin-bottom: 14px;
   border-bottom: 1px dashed var(--border-color);
@@ -867,5 +1114,79 @@ const totalStats = computed(() => {
   font-size: 12.5px;
   font-weight: 700;
   text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.summary-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
+}
+
+.batch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 640px) {
+    flex: 1;
+  }
+}
+
+.batch-zip-btn {
+  background-color: var(--accent);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+}
+
+.batch-separate-btn {
+  background-color: var(--bg-surface);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent-border);
+  }
+}
+
+.spin-icon {
+  display: inline-block;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

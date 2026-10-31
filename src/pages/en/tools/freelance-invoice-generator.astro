@@ -1,0 +1,110 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import FreelanceInvoiceTool from '@/components/tools/FreelanceInvoiceTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Lowest Surcharge',
+    highlight: 'Mid-Market Exchange Rate',
+    title: 'Wise Business Multi-Currency Account',
+    description: 'Get dedicated USD, EUR, and GBP local bank account details to receive client wires with zero inbound surcharges and real exchange rates.',
+    ctaText: 'Open Wise Business Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: '$25 Sign-Up Bonus',
+    title: 'Payoneer Global Invoicing & Payment',
+    description: 'Seamlessly get paid by international enterprise clients, Upwork, and marketplaces into local currency accounts worldwide.',
+    ctaText: 'Claim $25 Bonus on Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Deploy your portfolio, client preview stages, or micro-SaaS backends on enterprise cloud infrastructure with a 25% exclusive creator rebate.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Are documents generated here legally compliant commercial billing records?',
+    answer:
+      'Yes. The documents generated represent international standard Commercial Invoices, Estimates (Quotes), Statements of Work (SOW), and Payment Receipts widely accepted by global accounting firms, banks, and enterprise procurement teams for contractual settlement. Note that in jurisdictions requiring government-certified electronic tax invoices (such as Chinese VAT Fapiao), official tax reporting platforms must be used for formal statutory compliance.',
+  },
+  {
+    question: 'Is my client confidential data or banking details uploaded anywhere?',
+    answer:
+      'Never. This tool operates on a zero-knowledge, 100% client-side offline architecture. Every form input, invoice line-item, banking account coordinate, and payment QR code stays isolated inside your browser LocalStorage. No server telemetry or analytics track your invoice values, and you can export or import encrypted JSON backups anytime.',
+  },
+  {
+    question: 'How do I generate a crisp, vector A4 or US Letter PDF for clients?',
+    answer:
+      'Click the "Print / Export Vector A4 PDF" action button. The interface instantly applies standard @page { size: A4; margin: 15mm; } print stylesheets. In your operating system print dialog, select "Save as PDF" and ensure "Background graphics" is enabled. The output is a crystal-clear, searchable, vector-accurate PDF with clickable hyperlinks and scannable QR payment codes.',
+  },
+  {
+    question: 'Does it support milestone installments, multi-currency, or crypto?',
+    answer:
+      'Yes. You can customize payment stages (e.g., 50% upfront deposit, 30% alpha milestone, 20% final sign-off) and configure invoices in USD ($), EUR (€), GBP (£), JPY (¥), CNY (¥), or crypto stablecoins (USDT / USDC). Adding crypto wallet addresses or payment links automatically renders a high-density vector QR code on the document appendix.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private Freelance Invoice, Quote & Commercial Receipt Generator"
+  description="100% private client-side billing workspace covering Quotes, SOWs, Invoices, and Receipts with multi-currency, milestone schedules, payment QR codes, and vector A4 PDF printing."
+  alternateZh="/tools/freelance-invoice-generator/"
+  alternateEn="/en/tools/freelance-invoice-generator/"
+  wasmSizeLabel="100% Client Offline"
+  offers={offers}
+  faqs={faqs}
+>
+  <FreelanceInvoiceTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Professional Commercial Invoicing: The Complete Freelancer Billing Playbook</h2>
+    <p>
+      For indie developers, remote contractors, and digital nomads dealing with global enterprise clients, polished billing documentation is essential. A well-crafted <strong>Commercial Invoice, Statement of Work (SOW), or Estimate</strong> not only accelerates client accounts-payable approval cycles from 45 days down to net-7 days, but also provides ironclad legal recourse in contractual disputes.
+    </p>
+
+    <h3>The 4-Stage Contractual Billing Lifecycle</h3>
+    <ul>
+      <li>
+        <strong>1. Formal Project Estimate (Quote):</strong>
+        Initial cost estimation presented during client discovery. Outlines projected engineering hours, milestone deliverables, rate card pricing, and an explicit proposal expiration date.
+      </li>
+      <li>
+        <strong>2. Scope of Work (SOW):</strong>
+        Detailed technical specification and deliverable checklist. Establishes the boundaries of what is included and specifically what falls out of scope, preventing insidious feature creep.
+      </li>
+      <li>
+        <strong>3. Commercial Billing Invoice:</strong>
+        Formal request for payment triggered at agreed milestone milestones. Contains unique chronological numbering, net payment terms (Net 15 / Net 30), SWIFT/BIC codes, and direct payment links.
+      </li>
+      <li>
+        <strong>4. Payment Receipt:</strong>
+        Final confirmation issued immediately upon funds settlement, providing both parties with an audit-ready reconciliation record for corporate tax filings.
+      </li>
+    </ul>
+
+    <h3>Three Critical Protective Clauses Every Independent Contract Needs</h3>
+    <ol>
+      <li>
+        <strong>Milestone Escrow Schedule:</strong> Never begin development without upfront commitment. Standard enterprise practice requires <code>40% upfront deposit upon contract signing, 40% on staging delivery, and 20% upon production deployment</code>.
+      </li>
+      <li>
+        <strong>Retention of Title & Intellectual Property:</strong> Maintain full legal ownership of all source code, design files, and deployment keys until final invoice payment has cleared into your bank account.
+      </li>
+      <li>
+        <strong>Late Payment Penalty:</strong> Explicitly specify that invoices past due by 14 calendar days incur a standard 1.5% monthly compound interest fee and result in immediate suspension of staging hosting and SLA support.
+      </li>
+    </ol>
+  </div>
+</ToolLayout>

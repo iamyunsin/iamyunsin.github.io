@@ -19,6 +19,14 @@ const { lang = 'zh', offers = [] } = Astro.props;
 
 const fallbackOffersZh: AffiliateOffer[] = [
   {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '立享 7.5 折首购特惠',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与百炼 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount || 'https://www.aliyun.com/minisite/goods?userCode=o0amjn4j',
+  },
+  {
     badge: '🇨🇳 开发者云主机特惠',
     highlight: '高性价比全栈环境',
     title: '腾讯云轻量应用服务器 — 独立博客与 Node/SSR 部署首选',
@@ -54,6 +62,14 @@ const fallbackOffersZh: AffiliateOffer[] = [
 
 const fallbackOffersEn: AffiliateOffer[] = [
   {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Creator subsidies 20% commission + platform 5% rebate = 25% exclusive discount for new users on ECS cloud servers, OSS, and Model Studio.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount || 'https://www.aliyun.com/minisite/goods?userCode=o0amjn4j',
+  },
+  {
     badge: '🚀 Global Edge Hosting',
     highlight: 'Zero Cold Starts',
     title: 'Cloudflare Workers & Pages — 300+ Global Edge Locations',
@@ -75,7 +91,7 @@ const fallbackOffersEn: AffiliateOffer[] = [
     title: 'Alibaba Cloud & Tencent Cloud Global — Low-Latency NVMe Instances',
     description: 'Spin up production Linux servers with Docker, Nginx HTTP/3, and global BGP bandwidth in 30 seconds.',
     ctaText: 'Explore Cloud Server Deals',
-    url: AFFILIATE_LINKS.vultr,
+    url: AFFILIATE_LINKS.aliyunDiscount || 'https://www.aliyun.com/minisite/goods?userCode=o0amjn4j',
   },
 ];
 

@@ -1,0 +1,113 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SocialCardGeneratorTool from '@/components/tools/SocialCardGeneratorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与百炼 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🎨 设计神器',
+    highlight: '30 天免费试用',
+    title: 'Canva 可画 Pro 专属试用福利',
+    description: '超千万款商用设计模板、智能抠图、海量中英文字体与自媒体封面预设，新用户专享 30 天 Pro 免费体验。',
+    ctaText: '免费领取 30 天 Canva Pro',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '🤖 爆款文案 API',
+    highlight: '送 ¥16 算力',
+    title: '硅基流动 SiliconFlow — 满血 DeepSeek-R1 / V3 API',
+    description: '国内高速直连，免海外卡一键接入满血版 DeepSeek-R1、Qwen3，极速生成高赞社交金句与爆款小红书文案。',
+    ctaText: '免费注册领 ¥16 算力',
+    url: AFFILIATE_LINKS.siliconflow,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '我制作的卡片与文案会上传到远程服务器吗？如何保证数据安全？',
+    answer:
+      '绝对不会。本工具基于纯前端 HTML5 Canvas 与 CSS 现代排版渲染管线构建，100% 在您本机的浏览器内存沙箱中实时排版与生成像素。无论是您的金句文案、私人推文截图、企业敏感源码快照还是上传的自定义头像，均不会经过任何外部网络服务器，即使断开网络连接或拔掉网线也能顺畅排版与导出。',
+  },
+  {
+    question: '为什么小红书发布图片时总会被右下角平台水印遮挡重要文字？本工坊如何解决？',
+    answer:
+      '小红书 App 在用户发布竖屏（3:4）笔记图片时，会在图片右下角（约距右侧 24px、距底部 28px 区域）强制加盖半透明平台昵称水印，导致许多居底排版的金句或作者签名严重被遮。本工具独创「防小红书遮挡智能胶囊」排版规程：在 3:4 比例下，品牌留印与作者信息自动采用内缩 36px 安全边距，并智能浮动至右上角或底部正中，彻底规避平台水印碰撞。',
+  },
+  {
+    question: '导出的图片在 iPhone Retina 屏与 4K 显示器上清晰吗？会不会发糊？',
+    answer:
+      '非常清晰。传统截屏工具往往采用 1:1 屏幕物理分辨率，在移动端 Retina 高分屏（DPR ≥ 2）下极易产生抗锯齿边缘发虚与字体发糊。本工具底层渲染引擎强制采用 window.devicePixelRatio = 2 双倍超采样（Supersampling）离屏画布重绘，小红书卡片导出真实分辨率高达 2160×2880 像素，Twitter 卡片导出达 2400×1350 像素，线条锐利、字体细腻。',
+  },
+  {
+    question: '支持一键写入系统剪贴板吗？导出的文件体积有多大？',
+    answer:
+      '支持。在现代桌面与移动端浏览器中，点击「复制到剪贴板」按钮即可通过 ClipboardItem API 直接将高保真 PNG 图像写入系统剪贴板，支持直接在微信、飞书、Notion 或 XHS 网页版中 Ctrl+V 粘贴。导出时复用站内优化的色彩压缩管线，PNG 兼顾无损画质，单图体积通常控制在 300KB ~ 800KB 之间。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="自媒体爆款社交分享卡片与金句排版生成工坊 · 100% 本地 Canvas"
+  description="纯浏览器本地 Canvas 渲染小红书 (3:4)、Twitter/X (16:9)、金句海报、极客代码快照与里程碑大字报，零服务器上传，20+ 精调渐变主题极速导出。"
+  alternateZh="/tools/social-card-generator/"
+  alternateEn="/en/tools/social-card-generator/"
+  wasmSizeLabel="纯本地 Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <SocialCardGeneratorTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>自媒体视觉传播黄金法则：为什么优质排版卡片能提升 300% 互动率？</h2>
+    <p>
+      在小红书、即刻、Twitter/X、微信朋友圈及微信公众号等内容平台，纯文本长图或手机原生截屏往往因字体层级单一、行距拥挤、背景灰暗而难以在用户的飞速信息流滑动中建立“视觉停留点 (Visual Stopping Power)”。研究表明，带有<strong>高对比度主标题、结构化引文强调、精致毛玻璃质感与渐变留白</strong>的视觉卡片，其点赞、收藏与完播率较普通截图高出 2.8 至 3.5 倍。
+    </p>
+
+    <h3>四大核心社交媒体预设比例与分辨率规范</h3>
+    <ul>
+      <li>
+        <strong>小红书竖版黄金笔记 (3:4 · 1080×1440 px)：</strong>
+        契合移动端单列与双列瀑布流最佳展示比例。工具预设强制启用 36px 安全边距，彻底规避小红书客户端右下角强制添加的平台昵称与二维码水印遮挡问题。
+      </li>
+      <li>
+        <strong>Twitter / X & LinkedIn 横版推文 (16:9 · 1200×675 px)：</strong>
+        标准 OpenGraph (og:image) 尺寸与信息流首图比例，在桌面端信息流与移动端推文中均能实现 100% 完整平铺，无两侧黑边裁剪。
+      </li>
+      <li>
+        <strong>极简正方形金句方卡 (1:1 · 1080×1080 px)：</strong>
+        Instagram、微信朋友圈 9 宫格、博客配图与播客 Show Notes 金句摘录的常青比例，居中排版聚焦核心论点。
+      </li>
+      <li>
+        <strong>微信公众号首图横幅 (2.35:1 · 900×383 px)：</strong>
+        精准匹配微信公众平台官方头条推荐位比例，杜绝分享到微信聊天对话框时两侧被二次拉伸变形。
+      </li>
+    </ul>
+
+    <h3>四大场景化排版模版特色</h3>
+    <ol>
+      <li>
+        <strong>金句论点卡片：</strong> 专为读书笔记、观点输出与知识博主设计，内嵌大号引号徽标、高亮关键词标签与作者头像背书。
+      </li>
+      <li>
+        <strong>拟真推文对话：</strong> 像素级还原 Twitter/X 官方优雅的深色/浅色卡片形态，适合自媒体观点搬运、用户真实好评晒单与快讯速递。
+      </li>
+      <li>
+        <strong>macOS 极客代码快照：</strong> 类似 Carbon 与 Ray.so 的精致代码窗口，配备红黄绿三色圆形控制按钮、语法高亮与炫彩动态外发光阴影，适合程序员分享精妙算法与架构片段。
+      </li>
+      <li>
+        <strong>Indie Hacker 成绩单：</strong> 专为独立开发者与创作者打造，大字号突出展示 MRR、ARR 营收突破、GitHub Star 破千与独立上线 Milestone 纪念。
+      </li>
+    </ol>
+  </div>
+</ToolLayout>

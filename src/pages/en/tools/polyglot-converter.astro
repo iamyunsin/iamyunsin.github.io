@@ -1,0 +1,114 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import PolyglotConverterTool from '@/components/tools/PolyglotConverterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Deploy full-stack microservices, Go/Rust backends, and databases with a 25% exclusive creator voucher on ECS and OSS.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🤖 AI Code Inference',
+    highlight: 'Free Credits Included',
+    title: 'SiliconFlow & OpenRouter LLM API Gateway',
+    description: 'One OpenAI-compatible key for DeepSeek-R1, Qwen 2.5 Coder, and Claude 3.7 with high throughput and prompt caching.',
+    ctaText: 'Claim Free Credits',
+    url: AFFILIATE_LINKS.openrouter,
+  },
+  {
+    badge: '⚡ Global Edge API',
+    highlight: 'Zero Cold Starts',
+    title: 'Cloudflare Workers Serverless Runtime',
+    description: 'Deploy full-stack TypeScript, Rust WebAssembly, and GraphQL edge APIs with built-in KV, D1, and R2 storage.',
+    ctaText: 'Start Free on Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Is my internal proprietary JSON or production SQL schema uploaded to remote servers?',
+    answer:
+      'Never. Security and confidentiality are paramount in engineering workflows. This polyglot workbench operates 100% inside your browser’s local client runtime. Lexical tokenization, abstract syntax tree (AST) traversal, and multi-language code generation happen directly within browser memory. Your production payloads and database schemas never traverse any external network.',
+  },
+  {
+    question: 'Does the generated TypeScript code support Zod v3 runtime schema validation?',
+    answer:
+      'Yes. In modern full-stack development (Next.js App Router, Nuxt 3, tRPC), compile-time interfaces alone cannot defend against corrupted incoming payloads. Our generator produces clean Zod schemas with z.object(), optional fields, and automatic type inference via export type MyType = z.infer<typeof MySchema>; for end-to-end runtime safety.',
+  },
+  {
+    question: 'Are generated Go structs and Rust types idiomatic and production-ready?',
+    answer:
+      'Completely. Go structs include idiomatic camelCase struct field names paired with standard `json:"fieldName,omitempty"` tags and pointer types (*string, *int) for nullable values. Rust structs derive Debug, Clone, Serialize, and Deserialize with #[serde(rename_all = "camelCase")] and defensive Option<T> wrappers for optional keys.',
+  },
+  {
+    question: 'Can I transform raw cURL commands copied from Chrome DevTools directly into Python or Node.js code?',
+    answer:
+      'Yes. Simply paste any cURL command (e.g., curl -X POST -H "Authorization: ..." -d \'{...}\'). The AST engine parses the HTTP verb, URL path, headers, query parameters, and JSON payloads into idiomatic Python (httpx / requests), Node.js (fetch / axios), or Go (net/http) code snippets.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Polyglot Multi-Language Schema & Type Converter (JSON, SQL, cURL)"
+  description="100% private offline converter translating JSON, YAML, SQL DDL, and cURL into TypeScript, Zod v3, Go structs, Rust Serde, Python Pydantic v2, and Prisma schemas."
+  alternateZh="/tools/polyglot-converter/"
+  alternateEn="/en/tools/polyglot-converter/"
+  wasmSizeLabel="Client AST Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <PolyglotConverterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Type Safety Across the Full Stack: Eliminating Cross-Language Impedance Mismatch</h2>
+    <p>
+      In distributed microservices, APIs, and modern web architectures, systems routinely communicate via loosely typed <strong>JSON payloads, relational SQL DDLs, or GraphQL contracts</strong>. Manually writing boilerplate data structures across TypeScript frontends, Go microservices, and Python data pipelines is tedious, error-prone, and a frequent root cause of production incidents like null-pointer exceptions and subtle JSON key misspellings.
+    </p>
+
+    <h3>Cross-Language Type Mapping Specifications</h3>
+    <ul>
+      <li>
+        <strong>TypeScript (Interface & Zod v3):</strong>
+        Infers strict scalar types and generates companion Zod v3 schemas for bulletproof runtime validation at network boundaries.
+      </li>
+      <li>
+        <strong>Go (Golang Structs):</strong>
+        Adheres to Go export naming conventions, appending standardized <code>`json:"fieldName"`</code> and <code>`db:"fieldName"`</code> struct tags while mapping nullables to pointers.
+      </li>
+      <li>
+        <strong>Rust (Serde Structs):</strong>
+        Automatically decorates structures with <code>#[derive(Serialize, Deserialize)]</code>, wraps nullable types in <code>Option&lt;T&gt;</code>, and enforces zero-copy serde compatibility.
+      </li>
+      <li>
+        <strong>Python (Pydantic v2 BaseModels):</strong>
+        Generates modern Python 3.12+ models equipped with <code>ConfigDict(strict=True)</code>, ready for high-performance FastAPI backends.
+      </li>
+      <li>
+        <strong>Prisma ORM Models:</strong>
+        Translates raw PostgreSQL and MySQL <code>CREATE TABLE</code> DDL statements directly into clean Prisma schemas with relations and timestamps.
+      </li>
+    </ul>
+
+    <h3>Three Critical Type-Conversion Pitfalls to Avoid</h3>
+    <ol>
+      <li>
+        <strong>Dynamic Map Structures:</strong> When JSON object keys represent variable IDs (such as user UUIDs), generate dynamic dictionary types like <code>Record&lt;string, T&gt;</code> or <code>map[string]T</code> rather than brittle hardcoded properties.
+      </li>
+      <li>
+        <strong>64-bit Integer Precision Overflow:</strong> JavaScript numbers truncate beyond <code>2^53 - 1</code>. Snowflake IDs and 64-bit unsigned integers must be mapped to <code>bigint</code> or <code>string</code> to avoid silent data corruption.
+      </li>
+      <li>
+        <strong>ISO 8601 vs. Epoch Timestamps:</strong> Differentiate between integer epoch timestamps and RFC 3339 datetime strings to avoid runtime deserialization panics.
+      </li>
+    </ol>
+  </div>
+</ToolLayout>

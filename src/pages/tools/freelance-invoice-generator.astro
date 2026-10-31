@@ -1,0 +1,110 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import FreelanceInvoiceTool from '@/components/tools/FreelanceInvoiceTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与百炼 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🟢 跨境自由职业首选',
+    highlight: '独立多币种 IBAN',
+    title: 'Wise Business 跨境商业多币种账户',
+    description: '免高额入账手续费接收美元、欧元、英镑客户电汇，以银行间真实中间汇率无汇损结汇，自由职业出海必备。',
+    ctaText: '免费开通 Wise 商业账户',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🌍 全球企业收款',
+    highlight: '满额送 $25 礼金',
+    title: 'Payoneer 派安盈跨境收付款',
+    description: '一站式接收 Upwork、Fiverr、境外企业外包合同款，支持提现至国内银联借记卡，合规结汇不占用个人 5 万美元结售汇额度。',
+    ctaText: '注册派安盈领 $25 奖励',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '本工具生成的单据在中国境内具备增值税发票的抵税报销效力吗？',
+    answer:
+      '不具备。依据《中华人民共和国发票管理办法》（国务院令第764号），中国境内的法定发票必须由销售方通过国家税务总局全国统一的电子发票服务平台依法开具并盖章。本工具生成的单据性质属于国际通行的商业结算对账凭单（Commercial Invoice / Pro-forma Invoice / Payment Receipt），专用于自由职业者与境外企业、跨国客户之间的劳务合同履约备忘、项目验收确认及银行国际电汇入账附言对账，绝非国内法定税务发票。',
+  },
+  {
+    question: '我填写的客户名称、合同金额及个人银行卡号会泄露或被上传吗？',
+    answer:
+      '绝对不会。本工具秉持极致的隐私保护架构，100% 运行在您本机的浏览器沙箱中。所有表单字段、项目明细、银行结算账号及上传的收款二维码均持久化保存在您本机的浏览器 LocalStorage 缓存内，数据绝不会发送到任何远程服务器。您还可以点击「备份」按钮一键导出离线 JSON 配置文件随身携带。',
+  },
+  {
+    question: '如何导出高清、无锯齿且符合国际商务标准的 A4 矢量 PDF？',
+    answer:
+      '点击发票下方的「打印 / 导出矢量 A4 PDF」按钮，浏览器将自动唤起原生打印引擎并应用严格的 @page { size: A4; margin: 15mm; } 国际排版样式表。在弹出的系统打印窗口中，将「目标打印机」选择为「另存为 PDF」，并在高级设置中勾选「背景图形」，即可获得线条绝对清晰、文字可选中复制、附带矢量收款二维码的国际级无损 PDF 文件。',
+  },
+  {
+    question: '支持分期付款（如 50% 预付款 + 50% 验收尾款）和加密货币收款吗？',
+    answer:
+      '完美支持。在单据编辑区您可以自由配置付款阶段（如预付定金 Deposit、开发里程碑 Milestone、验收尾款 Final Payment）；币种支持 CNY (¥)、USD ($)、EUR (€)、GBP (£)、JPY (¥) 及稳定币 USDT / USDC。勾选加密货币或输入 PayPal/微信收款链接时，右侧发票附录将自动即时生成矢量收款二维码方便客户扫码支付。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="自由职业者极速隐私报价单、服务确认函与商业发票生成器 · 本地离线安全"
+  description="100% 离线本地保存，报价单 (Quote) → 服务范围 (SOW) → 商业发票 (Invoice) → 付款收据 (Receipt) 四阶段单据流转，支持多币种、阶梯款项、收款码与矢量 A4 PDF 打印。"
+  alternateZh="/tools/freelance-invoice-generator/"
+  alternateEn="/en/tools/freelance-invoice-generator/"
+  wasmSizeLabel="本地离线安全"
+  offers={offers}
+  faqs={faqs}
+>
+  <FreelanceInvoiceTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>自由职业与独立咨询必备：专业商业单据（Commercial Invoice）规范指南</h2>
+    <p>
+      当自由职业者（Freelancers）、独立软件工程师、UI 设计师或出海独立团队与境外企业（欧美、新加坡、香港等地区）开展劳务合作时，海外客户往往无法理解中国特有的“增值税税务发票”，而是要求提供符合国际惯例的 <strong>Commercial Invoice（商业发票）、Quote（估价单）或 Scope of Work（服务范围确认书）</strong>作为公账打款与财务做账审计的依据。
+    </p>
+
+    <h3>商务全生命周期四阶段单据流转规范</h3>
+    <ul>
+      <li>
+        <strong>1. 项目报价单 (Quote / Cost Estimate)：</strong>
+        合作意向初期的正式工程量核算与报价陈述。明确列出工时单价、功能模块预估及报价有效期（如 14 天或 30 天），客户签名确认后方可立项。
+      </li>
+      <li>
+        <strong>2. 服务范围确认书 (Scope of Work - SOW)：</strong>
+        明确约定项目交付物边界、技术选型、验收标准以及不包含的范围（Out of Scope），彻底杜绝客户在交付阶段漫无边际的反复加需求。
+      </li>
+      <li>
+        <strong>3. 正式请款商业发票 (Commercial Invoice)：</strong>
+        项目达到付款节点时开具给客户财务的正式索款通知书。包含唯一单据编号（Invoice No）、付款最后期限（Due Date）、银行电汇路径（SWIFT/BIC、IBAN）或线上支付直连链接。
+      </li>
+      <li>
+        <strong>4. 完税收款收据 (Payment Receipt)：</strong>
+        款项入账后回传给客户的结清证明，注明交易流水号与实收币种金额，帮助双方财务建立无争议的完整账务档案。
+      </li>
+    </ul>
+
+    <h3>防拖欠款与涉外合同自保三大关键条款</h3>
+    <ol>
+      <li>
+        <strong>严格阶梯付款机制：</strong> 杜绝“先做完再结款”。推荐采用行业通行的 <code>40% 启动预付款 + 40% 中期可演示版本交付 + 20% 最终上线验收尾款</code>。
+      </li>
+      <li>
+        <strong>知识产权保留声明 (Retention of Title)：</strong> 明确约定在全部合同尾款足额到账前，全部源码、设计源文件及衍生知识产权均归开发者所有，客户仅享有受限测试权。
+      </li>
+      <li>
+        <strong>延期付款滞纳金条款：</strong> 单据底部注明“超过付款期限 14 日未结清账单，将按每日 0.05% 加收滞纳金，并有权暂停线上生产服务支持”。
+      </li>
+    </ol>
+  </div>
+</ToolLayout>

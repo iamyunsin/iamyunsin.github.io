@@ -1,0 +1,105 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SaasMetricsTool from '@/components/tools/SaasMetricsTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与百炼 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🇨🇳 极客建站推荐',
+    highlight: '开发者专属补贴',
+    title: '腾讯云轻量应用服务器特惠',
+    description: '高带宽开箱即用，一键部署 Node/SSR、Docker 容器化服务与独立产品官网，稳定承载早期种子用户。',
+    ctaText: '查看轻量服务器专属特惠',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+  {
+    badge: '🤖 SaaS AI 特惠',
+    highlight: '注册赠 ¥16 算力',
+    title: '硅基流动 SiliconFlow — 生产级大模型 API 聚合',
+    description: '为你的 Micro-SaaS 产品无缝集成 DeepSeek、Qwen3 等百余款模型能力，高并发低延迟，显著降低 AI Token 调用边际成本。',
+    ctaText: '免费开通硅基流动 API',
+    url: AFFILIATE_LINKS.siliconflow,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么 Net MRR Churn（月度净流失率）被视作 SaaS 产品的生命线？',
+    answer:
+      '流失率（Churn Rate）是决定 SaaS 能否跨越“增长天花板”的核心瓶颈。如果月度流失率达到 8%，意味着每年有超过 60% 的老用户流失，团队必须耗费巨大精力拉新才能维持营收持平；而如果能通过增值功能、席位扩充实现 Net Negative Churn（负流失率，如 -2%），老客群体的每月自然扩购金额超过了流失金额，产品无需任何新客涌入也能自发呈复合指数级增长。',
+  },
+  {
+    question: '为什么优秀的 SaaS 投资人要求 LTV:CAC 比率必须 ≥ 3:1？',
+    answer:
+      'LTV:CAC 代表客户全生命周期价值与单个获客成本的比率。当 LTV:CAC < 1 时，产品卖得越多亏损越快；在 1:1 ~ 2:1 区间时，毛利几乎被服务器、网关抽成及日常运维消耗殆尽，抗风险能力极差；只有当 LTV:CAC ≥ 3:1 且获客成本回收周期（CAC Payback Period）< 12 个月时，才证明产品具备真正健康的单元经济学，具备持续加大投放进行规模化扩张的底气。',
+  },
+  {
+    question: 'Acquire.com 与 Flippa 等平台对独立 Micro-SaaS 的估值倍数是如何确定的？',
+    answer:
+      '在海外成熟的项目并购交易市场，年营收低于 $1M 的 Micro-SaaS 通常以 ARR 乘数（ARR Multiple，中位数为 2.5x ~ 4.5x）或 SDE 卖家可自由支配收益乘数（3.0x ~ 6.0x）作为估值锚点。若产品年复合增长率 > 80%、拥有低于 3% 的超低流失率、代码架构纯粹轻量且创始人极少需要介入人工客服，估值乘数可进一步提升至 6.0x ~ 8.0x ARR。',
+  },
+  {
+    question: '本工具的估值推演与财务测算数据具有法律效力吗？（免责声明）',
+    answer:
+      '不具有。本估值沙盘系基于 Acquire.com、Flippa 等公开披露的 Micro-SaaS 交易统计中位数构建的离线数学模型，主要供独立开发者与创业团队在商业规划、定价调优及天使轮自检时提供量化参考，绝不构成任何正式的商业资产评估报告、财务审计意见、证券投资建议或法定并购要约。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="独立开发与 Micro-SaaS 核心单元经济学、现金流推演与并购估值沙盘"
+  description="毫秒级计算 MRR、ARR、ARPU、Net Churn、LTV、CAC 与健康度评级；提供 12 个月现金流敏感度曲线与基于 Acquire.com 公开倍数的公允估值推演。"
+  alternateZh="/tools/saas-metrics-calculator/"
+  alternateEn="/en/tools/saas-metrics-calculator/"
+  wasmSizeLabel="单元经济学沙盘"
+  offers={offers}
+  faqs={faqs}
+>
+  <SaasMetricsTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>独立开发者的第一堂商业课：如何看懂 Micro-SaaS 单元经济学（Unit Economics）？</h2>
+    <p>
+      许多技术背景极强、全栈能力出众的独立开发者（Indie Hackers）在推出自己的 SaaS 产品后，常常困惑于<strong>“为什么明明每天都有新用户付费注册，银行账户里的现金余额却越来越少？”</strong>。核心原因在于忽视了 SaaS 商业模型背后的<strong>单元经济学黑盒</strong>——缺乏对 ARPU、客户流失速度（Churn）、获客回收周期（CAC Payback）与长期现金流的量化建模。
+    </p>
+
+    <h3>Micro-SaaS 核心度量衡公式精解</h3>
+    <ul>
+      <li>
+        <strong>月度经常性收入 (MRR) & 年度经常性收入 (ARR)：</strong>
+        <code>MRR = 活跃订阅客户数 × 平均每客月付金额 (ARPU)</code>；<code>ARR = MRR × 12</code>。它是衡量订阅制现金流稳定性的基石。
+      </li>
+      <li>
+        <strong>客户全生命周期价值 (Customer Lifetime Value - LTV)：</strong>
+        <code>LTV = ARPU × 毛利率 / 月度用户流失率 (User Churn Rate)</code>。流失率只要从 10% 降到 5%，单客的终身价值将直接翻倍。
+      </li>
+      <li>
+        <strong>客户获客成本 (Customer Acquisition Cost - CAC)：</strong>
+        <code>CAC = 当月总营销与推广支出 / 当月新增付费客户数</code>。若依靠自然 SEO 与开源引流，CAC 可趋近于零。
+      </li>
+      <li>
+        <strong>获客成本回收周期 (CAC Payback Months)：</strong>
+        <code>Payback = CAC / (ARPU × 毛利率)</code>。行业黄金准则为 ≤ 6~12 个月，超过 18 个月将严重威胁小团队现金流。
+      </li>
+    </ul>
+
+    <h3>Acquire.com 交易市场的估值五大权重维度</h3>
+    <ol>
+      <li><strong>净收入留存率 (Net Retention Rate - NRR)：</strong> NRR > 105% 证明产品拥有强大的升级扩容与自裂变能力。</li>
+      <li><strong>营收质量与客户集中度：</strong> 单一最大客户的营收占比低于 15%，杜绝关键客户流失导致公司猝死的系统性风险。</li>
+      <li><strong>毛利率健康度 (Gross Margin)：</strong> 纯软件产品毛利率通常应维持在 75%~85% 以上（刨除云服务器与 AI Token 接口调用支出）。</li>
+      <li><strong>创始人干预时间 (Owner Inactive Hours)：</strong> 自动化程度高、每周仅需创始人维护小于 5 小时的产品，在并购交易中通常能斩获 1.5 倍溢价。</li>
+    </ol>
+  </div>
+</ToolLayout>

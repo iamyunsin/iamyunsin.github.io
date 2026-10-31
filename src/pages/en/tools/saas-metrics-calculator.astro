@@ -1,0 +1,105 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SaasMetricsTool from '@/components/tools/SaasMetricsTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Deploy your micro-SaaS architecture and API instances with 25% combined partner subsidy on ECS and OSS.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '⚡ Serverless SaaS',
+    highlight: 'Free Plan Included',
+    title: 'Cloudflare Workers & D1 Database',
+    description: 'Run serverless micro-SaaS backends with zero cold starts, global edge caching, and free SQL D1 databases globally.',
+    ctaText: 'Deploy Free on Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+  {
+    badge: '🔥 AI Inference Gateway',
+    highlight: 'Free Credits Included',
+    title: 'SiliconFlow & OpenRouter Unified API',
+    description: 'Integrate DeepSeek-R1, Claude 3.7, and GPT-4o into your SaaS product via one OpenAI-compatible endpoint.',
+    ctaText: 'Get Free AI Credits',
+    url: AFFILIATE_LINKS.openrouter,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why is Net MRR Churn considered the single most critical metric for micro-SaaS?',
+    answer:
+      'Customer churn defines your growth ceiling. An 8% monthly churn rate means over 60% of your subscriber base vanishes each year, forcing you into an exhausting hamster wheel of non-stop customer acquisition. Conversely, achieving Net Negative Churn (e.g., -2%) via expansion revenue or seat upgrades allows ARR to compound autonomously even with zero new acquisitions.',
+  },
+  {
+    question: 'Why do top SaaS investors demand an LTV:CAC ratio of at least 3:1?',
+    answer:
+      'LTV:CAC measures capital efficiency. When LTV:CAC is under 1, you lose money on every signed customer. In the 1:1 to 2:1 range, gross margins are completely consumed by infrastructure, support, and payment tolls. A ratio of 3:1 (with a CAC payback period under 12 months) signals robust unit economics and validates scaling your marketing spend.',
+  },
+  {
+    question: 'How do platforms like Acquire.com and Flippa value bootstrapped Micro-SaaS apps?',
+    answer:
+      'Bootstrapped software under $1M ARR trades primarily on ARR multiples (typically 2.5x to 4.5x ARR) or SDE multiples (Seller Discretionary Earnings, 3.0x to 6.0x). Businesses with >80% year-over-year growth, sub-3% churn, modern documentation, and minimal owner maintenance (<5 hrs/week) command premium valuations up to 6.0x to 8.0x ARR.',
+  },
+  {
+    question: 'Does this calculator provide legally binding corporate financial valuation? (Disclaimer)',
+    answer:
+      'No. This sandbox uses statistical medians derived from publicly reported Micro-SaaS transactions (Acquire.com, Flippa) for strategic planning and sensitivity modeling. It does not constitute formal business appraisal, investment banking advice, certified audit opinion, or a binding acquisition tender.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Indie Micro-SaaS Unit Economics, Cash Flow & Valuation Sandbox"
+  description="Interactive dashboard calculating MRR, Churn, LTV, CAC, and unit economics with 12-month cash flow sensitivity curves and Acquire.com multiple valuations."
+  alternateZh="/tools/saas-metrics-calculator/"
+  alternateEn="/en/tools/saas-metrics-calculator/"
+  wasmSizeLabel="Unit Economics Sandbox"
+  offers={offers}
+  faqs={faqs}
+>
+  <SaasMetricsTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>The Indie Founder’s Compass: Demystifying Micro-SaaS Unit Economics</h2>
+    <p>
+      Many technically proficient full-stack developers struggle after shipping their first software product. They celebrate steady sign-ups while wondering why their operating bank accounts dwindle month over month. The culprit is almost always <strong>opaque unit economics</strong>—a lack of visibility into Customer Acquisition Cost (CAC), Gross Churn, Lifetime Value (LTV), and real cash-flow runways.
+    </p>
+
+    <h3>Core SaaS Metric Formulations & Financial Benchmarks</h3>
+    <ul>
+      <li>
+        <strong>Monthly & Annual Recurring Revenue (MRR / ARR):</strong>
+        <code>MRR = Active Subscribers × Average Revenue Per User (ARPU)</code>; <code>ARR = MRR × 12</code>. Represents the foundation of recurring revenue predictability.
+      </li>
+      <li>
+        <strong>Customer Lifetime Value (LTV):</strong>
+        <code>LTV = ARPU × Gross Margin / Monthly User Churn Rate</code>. Cutting your monthly churn from 10% to 5% instantly doubles the lifetime value of every customer acquired.
+      </li>
+      <li>
+        <strong>Customer Acquisition Cost (CAC):</strong>
+        <code>CAC = Total Monthly Marketing & Ad Spend / New Paying Customers Acquired</code>. Organic pSEO, word-of-mouth, and open-source tooling push CAC toward zero.
+      </li>
+      <li>
+        <strong>CAC Payback Period:</strong>
+        <code>Payback Months = CAC / (ARPU × Gross Margin)</code>. The golden benchmark for healthy SaaS is ≤ 6 to 12 months.
+      </li>
+    </ul>
+
+    <h3>Top Five Drivers of Acquisition Multiples on Acquire.com</h3>
+    <ol>
+      <li><strong>Net Revenue Retention (NRR):</strong> NRR > 105% demonstrates that upsells and expansions outpace downgrades and cancellations.</li>
+      <li><strong>Customer Concentration Risk:</strong> No single customer should generate more than 15% of total ARR, insulating buyers against sudden catastrophic revenue loss.</li>
+      <li><strong>Gross Margin Health:</strong> Pure software businesses should sustain gross margins between 75% and 85% after cloud hosting and third-party AI inference bills are paid.</li>
+      <li><strong>Autonomous Operations:</strong> Codebases requiring under 5 hours of founder intervention per week routinely command a 1.5× valuation premium during M&A due diligence.</li>
+    </ol>
+  </div>
+</ToolLayout>

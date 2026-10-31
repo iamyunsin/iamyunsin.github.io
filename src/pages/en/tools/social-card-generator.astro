@@ -1,0 +1,113 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SocialCardGeneratorTool from '@/components/tools/SocialCardGeneratorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Creator subsidies 20% commission + platform 5% bonus = 25% exclusive discount for new users on ECS cloud servers, OSS, and Model Studio.',
+    ctaText: 'Claim 25% Discount Coupon',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🎨 Design Studio',
+    highlight: '30-Day Free Trial',
+    title: 'Canva Pro Design Suite',
+    description: 'Unlock millions of premium social media templates, AI background removal, and commercial typography for creator branding.',
+    ctaText: 'Start 30-Day Free Trial',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ Zero-Egress Storage',
+    highlight: '10GB/mo Free Tier',
+    title: 'Cloudflare R2 Object Storage',
+    description: 'Host and distribute high-res social media cards and blog cover assets with zero egress bandwidth fees globally.',
+    ctaText: 'Deploy on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Does this generator upload my cards or text to remote servers?',
+    answer:
+      'Never. This generator is powered by client-side HTML5 Canvas and CSS modern typography engines running 100% inside your local browser memory sandbox. Your copy, private screenshots, source code, and custom avatars never touch any remote backend. You can even disconnect your network and generate cards offline.',
+  },
+  {
+    question: 'How does it avoid platform watermark collisions on mobile feeds?',
+    answer:
+      'Many platforms (such as Xiaohongshu or TikTok) automatically stamp a semi-transparent account watermark in the bottom-right corner of uploaded images. Our layout engine applies a strict 36px safe margin on 3:4 cards, centering or positioning attribution pills safely in the top-right or center-bottom to prevent any ugly visual overlap.',
+  },
+  {
+    question: 'Are the exported images sharp on high-DPI Retina screens and 4K monitors?',
+    answer:
+      'Yes, exceptionally sharp. While standard web screenshots render at 1x display resolution, our off-screen Canvas rendering pipeline enforces a 2x device pixel ratio (window.devicePixelRatio = 2) supersampling. Exported Twitter cards reach 2400×1350 px and mobile posters reach 2160×2880 px, guaranteeing crisp typography and pristine vector curves.',
+  },
+  {
+    question: 'Can I copy the card directly to my system clipboard?',
+    answer:
+      'Yes. Simply click the "Copy to Clipboard" button. Modern desktop and mobile browsers leverage the native navigator.clipboard.write API with ClipboardItem to place a lossless PNG directly into your clipboard, allowing immediate pasting into Notion, Slack, Twitter/X, or Figma.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Social Share Card Generator & Indie Geek Snapshot Studio"
+  description="100% client-side Canvas generator for Xiaohongshu (3:4), Twitter/X (16:9), viral quote posters, and macOS-style code snapshots with 20+ gradient themes."
+  alternateZh="/tools/social-card-generator/"
+  alternateEn="/en/tools/social-card-generator/"
+  wasmSizeLabel="Client Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <SocialCardGeneratorTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>The Anatomy of High-Converting Social Cards for Indie Hackers & Creators</h2>
+    <p>
+      In modern social feeds like Twitter/X, LinkedIn, Substack Notes, and Instagram, raw text snippets and low-contrast mobile screenshots get swallowed in endless infinite-scroll feeds. Visual psychology benchmarks reveal that cards with <strong>high-contrast typography, clear hierarchy, subtle glassmorphic depth, and mesh gradient accents</strong> capture up to 3.5× higher click-through rates and bookmark conversions.
+    </p>
+
+    <h3>Standard Social Media Aspect Ratios & Canvas Resolutions</h3>
+    <ul>
+      <li>
+        <strong>Mobile Vertical Feed (3:4 · 1080×1440 px):</strong>
+        Tailored for vertical mobile feeds. Incorporates anti-collision safe margins so platform watermarks and interface navigation overlays never obscure vital conclusions or signatures.
+      </li>
+      <li>
+        <strong>Twitter/X & LinkedIn Stream (16:9 · 1200×675 px):</strong>
+        The definitive open-graph (og:image) ratio. Ensures full-bleed rendering without awkward auto-cropping or black letterboxing on desktop and mobile timelines.
+      </li>
+      <li>
+        <strong>Square Quote Card (1:1 · 1080×1080 px):</strong>
+        Classic square format optimized for Instagram grids, WeChat Moments, podcast show-notes pull-quotes, and community newsletters.
+      </li>
+      <li>
+        <strong>Editorial Banner (2.35:1 · 900×383 px):</strong>
+        Widescreen banner proportions ideal for blog hero headers, newsletter lead artwork, and article covers.
+      </li>
+    </ul>
+
+    <h3>Four Distinct Layout Archetypes</h3>
+    <ol>
+      <li>
+        <strong>Viral Quote Card:</strong> Highlights punchy arguments and book takeaways with oversized punctuation, author avatar badges, and crisp accent tags.
+      </li>
+      <li>
+        <strong>Realistic Social Post:</strong> Recreates Twitter/X light and dark cards with pixel precision—ideal for showcasing user testimonials, launch announcements, and community buzz.
+      </li>
+      <li>
+        <strong>macOS Developer Code Snapshot:</strong> Features a refined macOS terminal window with traffic-light buttons, syntax coloring, line numbers, and glowing drop shadows.
+      </li>
+      <li>
+        <strong>Indie Hacker Milestone Poster:</strong> Celebrate MRR records, ARR milestones, Product Hunt #1 badges, and GitHub Star achievements with commanding typography.
+      </li>
+    </ol>
+  </div>
+</ToolLayout>
