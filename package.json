@@ -7,8 +7,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build:wasm": "cargo build --manifest-path rust-wasm/Cargo.toml --target wasm32-unknown-unknown --release && node scripts/copy-wasm.mjs",
-    "build": "astro build",
-    "build:mysite": "astro build --site=https://yunsin.top",
+    "build": "astro build && node scripts/hash-static-assets.mjs",
+    "build:mysite": "astro build --site=https://yunsin.top && node scripts/hash-static-assets.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "postinstall": "npx playwright install --with-deps chromium"

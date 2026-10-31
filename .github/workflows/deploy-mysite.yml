@@ -30,7 +30,6 @@ jobs:
           SECRET_ID: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
           SECRET_KEY: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
         run: |
-          pip install coscmd
-          coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -b yunsin-top-1251451201 -r ap-chengdu
-          coscmd upload -rs --delete ./dist/ /
+          pip install cos-python-sdk-v5
+          python scripts/deploy-cos.py
 
