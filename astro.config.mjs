@@ -27,7 +27,7 @@ import expressiveCode from 'astro-expressive-code';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://iamyunsin.github.io',
+  site: 'https://yunsin.top',
   devToolbar: {
     enabled: false
   },

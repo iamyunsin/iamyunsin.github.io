@@ -1,10 +1,12 @@
 # deploy-mysite.yml
-name: Deploy to mysite
+name: Deploy to Tencent Cloud COS
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository using git
@@ -22,20 +24,13 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm run build:mysite
-      - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@main
-        with:
-          # 本地.ssh文件下的私钥id_rsa，存在secrets的PRIVATE_KEY中
-          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          # 复制操作的参数。"-avzr --delete"意味部署时清空服务器目标目录下的文件
-          ARGS: "-avz --delete"
-          # 源目录
-          SOURCE: "./dist/"
-          # 部署目标主机
-          REMOTE_HOST: ${{ secrets.HOST }}
-          # 部署目标主机端口
-          REMOTE_PORT: ${{ secrets.PORT }}
-          # 登录用户
-          REMOTE_USER: ${{ secrets.USER }}
-          # 部署目标目录
-          TARGET: ${{ secrets.TARGET }}
+      - name: Deploy to Tencent Cloud COS
+        if: ${{ secrets.TENCENT_CLOUD_SECRET_ID != '' && secrets.TENCENT_CLOUD_SECRET_KEY != '' }}
+        env:
+          SECRET_ID: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
+        run: |
+          pip install coscmd
+          coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -b yunsin-top-1251451201 -r ap-chengdu
+          coscmd upload -rs --delete ./dist/ /
+
