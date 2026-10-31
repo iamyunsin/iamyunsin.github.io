@@ -24,8 +24,8 @@ export const AUTHOR = {
  * - clarityProjectId: 在 https://clarity.microsoft.com 免费创建项目获取（支持点击热力图与录屏）
  */
 export const ANALYTICS = {
-  cloudflareToken: import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN || '',
-  clarityProjectId: import.meta.env.PUBLIC_CLARITY_PROJECT_ID || '',
+  cloudflareToken: import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN || '813b1177101b4dd9a1fe1be47f5c2154',
+  clarityProjectId: import.meta.env.PUBLIC_CLARITY_PROJECT_ID || 'z69eg55m99',
 };
 
 /**
