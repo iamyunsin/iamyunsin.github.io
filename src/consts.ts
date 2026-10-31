@@ -55,14 +55,14 @@ export const ADS_CONFIG = {
  * - quicknode: QuickNode 推荐链接，登录 https://dashboard.quicknode.com/ 后台获取 Referral Link
  */
 export const AFFILIATE_LINKS = {
-  tencentCloud: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  tencentCloud: 'https://curl.qcloud.com/rD9jP4Q9',
   aliyunBailian: 'https://www.aliyun.com/product/bailian',
   vultr: 'https://www.vultr.com/',
   openrouter: 'https://openrouter.ai/',
   cloudflareR2: 'https://www.cloudflare.com/products/r2/',
   cloudflareWorkers: 'https://www.cloudflare.com/products/workers/',
   cloudflareAi: 'https://www.cloudflare.com/products/ai-gateway/',
-  ledger: 'https://onekey.so/',
+  ledger: 'https://onekey.so/r/T1HD5Q',
   alchemy: 'https://www.alchemy.com/',
   quicknode: 'https://www.quicknode.com/',
 };
