@@ -25,11 +25,10 @@ jobs:
       - name: Build
         run: pnpm run build:mysite
       - name: Deploy to Tencent Cloud COS
-        if: ${{ secrets.TENCENT_CLOUD_SECRET_ID != '' && secrets.TENCENT_CLOUD_SECRET_KEY != '' }}
         env:
           SECRET_ID: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
           SECRET_KEY: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
         run: |
           pip install cos-python-sdk-v5
-          python scripts/deploy-cos.py
+          python3 scripts/deploy-cos.py
 
