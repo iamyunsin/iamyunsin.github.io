@@ -1,3 +1,5 @@
+import { AFFILIATE_LINKS } from '@/consts';
+
 export interface LlmModelPricing {
   id: string;
   name: string;
@@ -34,8 +36,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '👑 Best Value',
     ctaTextZh: '获取高速 API',
     ctaTextEn: 'Get API Key',
-    affiliateUrlZh: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
-    affiliateUrlEn: 'https://openrouter.ai/models/deepseek/deepseek-chat',
+    affiliateUrlZh: AFFILIATE_LINKS.tencentCloud,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'deepseek-r1',
@@ -50,8 +52,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '🧠 Top Reasoning',
     ctaTextZh: '满血版 API',
     ctaTextEn: 'Try R1 API',
-    affiliateUrlZh: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
-    affiliateUrlEn: 'https://openrouter.ai/models/deepseek/deepseek-r1',
+    affiliateUrlZh: AFFILIATE_LINKS.tencentCloud,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'gpt-4o-mini',
@@ -66,8 +68,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '⚡ Ultra Fast',
     ctaTextZh: '聚合调用',
     ctaTextEn: 'OpenRouter API',
-    affiliateUrlZh: 'https://openrouter.ai/models/openai/gpt-4o-mini',
-    affiliateUrlEn: 'https://openrouter.ai/models/openai/gpt-4o-mini',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'gemini-2.5-flash',
@@ -82,8 +84,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '📚 1M Context',
     ctaTextZh: '免费额度接入',
     ctaTextEn: 'Try Gemini API',
-    affiliateUrlZh: 'https://openrouter.ai/models/google/gemini-2.5-flash-preview',
-    affiliateUrlEn: 'https://openrouter.ai/models/google/gemini-2.5-flash-preview',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'qwen-plus',
@@ -98,8 +100,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '🇨🇳 Low Latency CN',
     ctaTextZh: '百炼免费领券',
     ctaTextEn: 'Alibaba Cloud',
-    affiliateUrlZh: 'https://www.aliyun.com/product/bailian',
-    affiliateUrlEn: 'https://openrouter.ai/models/qwen/qwen-plus',
+    affiliateUrlZh: AFFILIATE_LINKS.aliyunBailian,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'o3-mini',
@@ -112,8 +114,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     outputPricePerM: 4.40,
     ctaTextZh: '免绑卡调用',
     ctaTextEn: 'Get o3-mini API',
-    affiliateUrlZh: 'https://openrouter.ai/models/openai/o3-mini',
-    affiliateUrlEn: 'https://openrouter.ai/models/openai/o3-mini',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'gemini-2.5-pro',
@@ -128,8 +130,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '🔥 Multimodal Pro',
     ctaTextZh: '聚合 API 接入',
     ctaTextEn: 'Get Gemini Pro',
-    affiliateUrlZh: 'https://openrouter.ai/models/google/gemini-2.5-pro-preview',
-    affiliateUrlEn: 'https://openrouter.ai/models/google/gemini-2.5-pro-preview',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'gpt-4o',
@@ -142,8 +144,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     outputPricePerM: 10.00,
     ctaTextZh: '聚合 API 接入',
     ctaTextEn: 'Compare Gateway',
-    affiliateUrlZh: 'https://openrouter.ai/models/openai/gpt-4o',
-    affiliateUrlEn: 'https://openrouter.ai/models/openai/gpt-4o',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'claude-3-5-haiku',
@@ -156,8 +158,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     outputPricePerM: 4.00,
     ctaTextZh: '统一网关调用',
     ctaTextEn: 'Use via Gateway',
-    affiliateUrlZh: 'https://openrouter.ai/models/anthropic/claude-3.5-haiku',
-    affiliateUrlEn: 'https://openrouter.ai/models/anthropic/claude-3.5-haiku',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'claude-3-7-sonnet',
@@ -172,8 +174,8 @@ export const LLM_MODELS: LlmModelPricing[] = [
     badgeEn: '💻 Best for Coding',
     ctaTextZh: '免封号 API 接入',
     ctaTextEn: 'Access Claude API',
-    affiliateUrlZh: 'https://openrouter.ai/models/anthropic/claude-3.7-sonnet',
-    affiliateUrlEn: 'https://openrouter.ai/models/anthropic/claude-3.7-sonnet',
+    affiliateUrlZh: AFFILIATE_LINKS.openrouter,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
   {
     id: 'qwen-max',
@@ -186,7 +188,7 @@ export const LLM_MODELS: LlmModelPricing[] = [
     outputPricePerM: 6.40,
     ctaTextZh: '阿里云百炼特惠',
     ctaTextEn: 'Try Qwen-Max',
-    affiliateUrlZh: 'https://www.aliyun.com/product/bailian',
-    affiliateUrlEn: 'https://openrouter.ai/models/qwen/qwen-max',
+    affiliateUrlZh: AFFILIATE_LINKS.aliyunBailian,
+    affiliateUrlEn: AFFILIATE_LINKS.openrouter,
   },
 ];

@@ -325,14 +325,24 @@ function downloadConfigFile() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dl-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 22px 24px;
   border-radius: 16px;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+
+  @media (max-width: 640px) {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
 }
 
 .card-head {
@@ -349,6 +359,7 @@ function downloadConfigFile() {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  min-width: 0;
 }
 
 .section-title {
@@ -356,6 +367,10 @@ function downloadConfigFile() {
   font-size: 17.5px;
   font-weight: 800;
   color: var(--text-primary);
+
+  @media (max-width: 640px) {
+    font-size: 16px;
+  }
 }
 
 .wasm-status {
@@ -433,6 +448,7 @@ function downloadConfigFile() {
 }
 
 .platform-box {
+  min-width: 0;
   padding: 16px;
   border-radius: 12px;
   background-color: var(--bg-muted);
@@ -440,6 +456,10 @@ function downloadConfigFile() {
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 640px) {
+    padding: 12px;
+  }
 }
 
 .plat-title {
@@ -454,6 +474,7 @@ function downloadConfigFile() {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0;
 
   label {
     font-size: 12px;
@@ -463,6 +484,9 @@ function downloadConfigFile() {
 }
 
 .text-input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -517,7 +541,12 @@ function downloadConfigFile() {
 .code-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 }
 
 .action-btn {
@@ -535,6 +564,11 @@ function downloadConfigFile() {
     color: var(--accent);
     border-color: var(--accent-border);
   }
+
+  @media (max-width: 640px) {
+    flex: 1;
+    text-align: center;
+  }
 }
 
 .deploy-hint {
@@ -544,6 +578,7 @@ function downloadConfigFile() {
   font-size: 12px;
   color: var(--text-secondary);
   margin-bottom: 12px;
+  word-break: break-word;
 }
 
 .code-preview {
@@ -557,6 +592,7 @@ function downloadConfigFile() {
   line-height: 1.6;
   overflow-x: auto;
   max-height: 320px;
+  max-width: 100%;
 }
 
 .live-tester-box {
@@ -569,11 +605,15 @@ function downloadConfigFile() {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 14px;
+
+  @media (max-width: 640px) {
+    padding: 14px;
+  }
 }
 
 .tester-info {
-  flex: 1;
-  min-width: 240px;
+  flex: 1 1 200px;
+  min-width: 0;
 }
 
 .tester-title {
@@ -594,11 +634,16 @@ function downloadConfigFile() {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 }
 
 .trigger-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 9px 16px;
   border-radius: 10px;
   font-size: 13px;
@@ -614,6 +659,10 @@ function downloadConfigFile() {
     background-color: var(--bg-surface);
     color: var(--accent);
     border: 1px solid var(--accent-border);
+  }
+
+  @media (max-width: 640px) {
+    width: 100%;
   }
 }
 </style>

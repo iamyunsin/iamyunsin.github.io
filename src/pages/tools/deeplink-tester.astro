@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import DeepLinkTesterTool from '@/components/tools/DeepLinkTesterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Cloudflare Workers & SSL 边缘节点',
     description: 'iOS Universal Links 要求域名必须具备有效 HTTPS 且无重定向。使用 Cloudflare 免费托管 /.well-known/apple-app-site-association，满足苹果 CDN 全球抓取要求。',
     ctaText: '免费接入 Cloudflare 边缘网络',
-    url: 'https://www.cloudflare.com/developer-platform/workers/',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
   },
   {
     badge: '🇨🇳 国内高防云服务器',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: '腾讯云轻量应用服务器 + 免费 SSL 证书',
     description: '针对国内微信/浏览器环境配置 Universal Links 与 App Links 的首选服务器，一键申请免费 DV SSL 证书并开启 HTTP/3。',
     ctaText: '查看腾讯云服务器特惠',
-    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+    url: AFFILIATE_LINKS.tencentCloud,
   },
   {
     badge: '🌍 海外测试节点',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'Vultr 全球独立 IP 测试云主机',
     description: '轻松验证 Google Digital Asset Links 与 Apple AASA CDN 在北美、欧洲、亚太节点的跨区抓取连通性。',
     ctaText: '领取 Vultr 开发者试用金',
-    url: 'https://www.vultr.com/',
+    url: AFFILIATE_LINKS.vultr,
   },
 ];
 

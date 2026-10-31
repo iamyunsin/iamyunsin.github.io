@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import LlmCostCalculator from '@/components/tools/LlmCostCalculator.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'OpenRouter — One API for Claude 3.7, GPT-4o, Gemini & DeepSeek',
     description: 'Route requests across OpenAI, Anthropic, Google Gemini, and DeepSeek with automatic fallback, transparent pay-as-you-go pricing, and built-in prompt caching support.',
     ctaText: 'Get Free OpenRouter API Key',
-    url: 'https://openrouter.ai/',
+    url: AFFILIATE_LINKS.openrouter,
   },
   {
     badge: '⚡ Zero-Egress Cloud',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: 'Cloudflare Workers & AI Gateway',
     description: 'Cache LLM responses at the edge, enforce rate limits, and monitor token spend across all providers in real time with zero added latency.',
     ctaText: 'Explore Cloudflare AI Gateway',
-    url: 'https://www.cloudflare.com/developer-platform/products/ai-gateway/',
+    url: AFFILIATE_LINKS.cloudflareAi,
   },
   {
     badge: '🌏 High-Speed Asian Cloud',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'Alibaba Cloud Model Studio (Bailian)',
     description: 'Official enterprise hosting for Qwen-Max, Qwen-Plus, and DeepSeek-R1 with 1M+ free trial tokens and OpenAI-compatible SDK endpoints.',
     ctaText: 'Claim Free Trial Credits',
-    url: 'https://www.aliyun.com/product/bailian',
+    url: AFFILIATE_LINKS.aliyunBailian,
   },
 ];
 

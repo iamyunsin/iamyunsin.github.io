@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import Web3RpcTesterTool from '@/components/tools/Web3RpcTesterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Alchemy — 全球第一的 Ethereum / Solana / Base 节点平台',
     description: '公共 RPC 节点在行情波动时极易限流（429 Too Many Requests）。免费注册 Alchemy 即可获得专属高速 HTTPS/WSS 节点与 Enhanced APIs。',
     ctaText: '免费获取 Alchemy 专属节点 Key',
-    url: 'https://www.alchemy.com/',
+    url: AFFILIATE_LINKS.alchemy,
   },
   {
     badge: '🛡️ 硬件冷钱包物理防护',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: 'Ledger / OneKey 硬件冷钱包官方直营',
     description: '配合本页离线 Calldata 解码器核对每一笔交易参数，使用硬件钱包将助记词与私钥彻底物理隔离在安全芯片内，杜绝电脑中毒被盗。',
     ctaText: '查看硬件钱包官方特惠',
-    url: 'https://shop.ledger.com/',
+    url: AFFILIATE_LINKS.ledger,
   },
   {
     badge: '🚀 全球多链极速 RPC',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'QuickNode 低延迟多链基础设施',
     description: '专为高频 DeFi 交易、链上数据分析与智能合约开发打造的超低延迟全球 Anycast RPC 节点网络。',
     ctaText: '免费试用 QuickNode 节点',
-    url: 'https://www.quicknode.com/',
+    url: AFFILIATE_LINKS.quicknode,
   },
 ];
 

@@ -489,14 +489,24 @@ const totalStats = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tool-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 22px 24px;
   border-radius: 16px;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+
+  @media (max-width: 640px) {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
 }
 
 .card-head {
@@ -513,6 +523,7 @@ const totalStats = computed(() => {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  min-width: 0;
 }
 
 .section-title {
@@ -520,6 +531,10 @@ const totalStats = computed(() => {
   font-size: 17.5px;
   font-weight: 800;
   color: var(--text-primary);
+
+  @media (max-width: 640px) {
+    font-size: 16px;
+  }
 }
 
 .wasm-status {
@@ -550,7 +565,12 @@ const totalStats = computed(() => {
 .head-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 }
 
 .demo-btn {
@@ -562,6 +582,11 @@ const totalStats = computed(() => {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+
+  @media (max-width: 640px) {
+    flex: 1;
+    text-align: center;
+  }
 }
 
 .clear-btn {
@@ -586,10 +611,13 @@ const totalStats = computed(() => {
   }
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 
 .ctrl-box {
+  min-width: 0;
+  max-width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
   background-color: var(--bg-muted);
@@ -618,6 +646,9 @@ const totalStats = computed(() => {
 }
 
 .select-input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -645,6 +676,10 @@ const totalStats = computed(() => {
   &.dragging {
     background-color: var(--accent-soft);
     border-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    padding: 24px 14px;
   }
 }
 
@@ -732,8 +767,8 @@ const totalStats = computed(() => {
 }
 
 .info-col {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 180px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -750,6 +785,7 @@ const totalStats = computed(() => {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
+  word-break: break-all;
 }
 
 .format-pill {

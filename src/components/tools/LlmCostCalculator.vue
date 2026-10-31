@@ -590,9 +590,14 @@ function formatSliceDisplay(t: string): string {
   display: flex;
   flex-direction: column;
   gap: 22px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .calc-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 22px 24px;
   border-radius: 16px;
   background-color: var(--bg-surface);
@@ -600,7 +605,8 @@ function formatSliceDisplay(t: string): string {
   box-shadow: var(--shadow-sm);
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 16px 14px;
+    border-radius: 12px;
   }
 }
 
@@ -618,6 +624,7 @@ function formatSliceDisplay(t: string): string {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  min-width: 0;
 }
 
 .section-title {
@@ -625,6 +632,10 @@ function formatSliceDisplay(t: string): string {
   font-size: 17.5px;
   font-weight: 800;
   color: var(--text-primary);
+
+  @media (max-width: 640px) {
+    font-size: 16px;
+  }
 }
 
 .section-sub {
@@ -662,7 +673,14 @@ function formatSliceDisplay(t: string): string {
 .tokenizer-select-wrap {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 }
 
 .field-label {
@@ -672,6 +690,8 @@ function formatSliceDisplay(t: string): string {
 }
 
 .select-input {
+  max-width: 100%;
+  min-width: 0;
   padding: 6px 12px;
   border-radius: 9px;
   border: 1px solid var(--border-color);
@@ -683,6 +703,11 @@ function formatSliceDisplay(t: string): string {
 
   &:focus {
     border-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    flex: 1;
+    width: 100%;
   }
 }
 
@@ -735,6 +760,7 @@ function formatSliceDisplay(t: string): string {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 
 .prompt-textarea {
@@ -794,11 +820,17 @@ function formatSliceDisplay(t: string): string {
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
   }
+
+  @media (max-width: 640px) {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .token-visual-col {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-muted);
@@ -980,6 +1012,7 @@ function formatSliceDisplay(t: string): string {
 }
 
 .slider-box {
+  min-width: 0;
   padding: 14px;
   border-radius: 12px;
   background-color: var(--bg-muted);

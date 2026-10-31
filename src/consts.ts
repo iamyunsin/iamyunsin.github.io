@@ -43,6 +43,30 @@ export const ADS_CONFIG = {
   aadsUnitId: import.meta.env.PUBLIC_AADS_UNIT_ID || '',
 };
 
+/**
+ * 全站 CPS 推广返佣链接集中配置中心（只需在此处替换为带你自己推广后缀的链接，全站中英文工具页自动生效）
+ * - tencentCloud: 腾讯云推广者（云大使）专属链接，申请地址：https://cloud.tencent.com/act/cps
+ * - aliyunBailian: 阿里云云大使专属链接（带 ?userCode=xxxx），申请地址：https://ambassador.aliyun.com/
+ * - vultr: Vultr 推荐链接（带 ?ref=xxxxxx），获取地址：https://my.vultr.com/referrals/
+ * - openrouter: OpenRouter 或你常用的中转 API 聚合网关邀请链接
+ * - cloudflareR2 / cloudflareWorkers / cloudflareAi: Cloudflare 落地页或推荐链接
+ * - ledger: Ledger 硬件钱包 Affiliate 链接（带 ?r=xxxx），申请地址：https://affiliate.ledger.com/
+ * - alchemy: Alchemy 节点推荐链接，获取地址：https://www.alchemy.com/
+ * - quicknode: QuickNode Partner 推荐链接（带 ?tap_a=...），申请地址：https://www.quicknode.com/partner
+ */
+export const AFFILIATE_LINKS = {
+  tencentCloud: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+  aliyunBailian: 'https://www.aliyun.com/product/bailian',
+  vultr: 'https://www.vultr.com/',
+  openrouter: 'https://openrouter.ai/',
+  cloudflareR2: 'https://www.cloudflare.com/developer-platform/products/r2/',
+  cloudflareWorkers: 'https://www.cloudflare.com/developer-platform/workers/',
+  cloudflareAi: 'https://www.cloudflare.com/developer-platform/products/ai-gateway/',
+  ledger: 'https://shop.ledger.com/',
+  alchemy: 'https://www.alchemy.com/',
+  quicknode: 'https://www.quicknode.com/',
+};
+
 export interface ToolItem {
   id: string;
   slug: string;

@@ -65,6 +65,12 @@ import { SITE, TOOLS } from '@/consts';
     border-radius: 16px;
     background: var(--author-banner);
     border: 1px solid var(--border-color);
+
+    @media (max-width: 640px) {
+      padding: 16px 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
   }
 
   .banner-top {
@@ -133,6 +139,12 @@ import { SITE, TOOLS } from '@/consts';
     border: 1px solid var(--border-color);
     text-decoration: none;
     transition: all 0.22s ease;
+    min-width: 0;
+
+    @media (max-width: 640px) {
+      padding: 16px 14px;
+      border-radius: 12px;
+    }
 
     &:hover {
       border-color: var(--accent-border);

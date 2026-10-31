@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import DeepLinkTesterTool from '@/components/tools/DeepLinkTesterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Cloudflare Workers & Static Assets',
     description: 'Host your /.well-known/apple-app-site-association and assetlinks.json on Cloudflare’s global edge with automatic SSL and zero redirects required by Apple CDN.',
     ctaText: 'Deploy Free on Cloudflare',
-    url: 'https://www.cloudflare.com/developer-platform/workers/',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
   },
   {
     badge: '🌍 Global Cloud VPS',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: 'Vultr High-Frequency Cloud Compute',
     description: 'Spin up dedicated HTTPS test origins with full Nginx header control to debug iOS Universal Links and Android App Links.',
     ctaText: 'Get Vultr Developer Credits',
-    url: 'https://www.vultr.com/',
+    url: AFFILIATE_LINKS.vultr,
   },
   {
     badge: '🌏 Asia-Pacific Edge',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'Tencent Cloud Lighthouse & EdgeOne',
     description: 'Reliable cloud servers and managed SSL certificates for mobile app backend and deep-linking infrastructure.',
     ctaText: 'Explore Cloud Deals',
-    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+    url: AFFILIATE_LINKS.tencentCloud,
   },
 ];
 

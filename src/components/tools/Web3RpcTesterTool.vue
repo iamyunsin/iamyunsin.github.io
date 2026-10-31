@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
+import { AFFILIATE_LINKS } from '@/consts';
 import {
   initWeb3Wasm,
   decodeCalldataWithWasm,
@@ -331,7 +332,7 @@ onMounted(async () => {
             <span class="risk-text">{{ decodedResult.riskReason }}</span>
           </div>
           <a
-            href="https://shop.ledger.com/"
+            :href="AFFILIATE_LINKS.ledger"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="hw-wallet-link"
@@ -478,7 +479,7 @@ onMounted(async () => {
               <td><span class="lat-badge fast">⚡ ~18 ms</span></td>
               <td>
                 <a
-                  href="https://www.alchemy.com/"
+                  :href="AFFILIATE_LINKS.alchemy"
                   target="_blank"
                   rel="nofollow noopener sponsored"
                   class="vip-cta-btn"
@@ -536,14 +537,24 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .w3-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 22px 24px;
   border-radius: 16px;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+
+  @media (max-width: 640px) {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
 }
 
 .card-head {
@@ -560,6 +571,7 @@ onMounted(async () => {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  min-width: 0;
 }
 
 .section-title {
@@ -567,6 +579,10 @@ onMounted(async () => {
   font-size: 17.5px;
   font-weight: 800;
   color: var(--text-primary);
+
+  @media (max-width: 640px) {
+    font-size: 16px;
+  }
 }
 
 .section-sub {
@@ -830,6 +846,11 @@ onMounted(async () => {
     opacity: 0.65;
     cursor: not-allowed;
   }
+
+  @media (max-width: 640px) {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .rpc-toolbar {
@@ -869,16 +890,29 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
 }
 
 .rpc-input {
   width: 240px;
+  max-width: 100%;
+  min-width: 0;
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-muted);
   color: var(--text-primary);
   font-size: 12px;
+
+  @media (max-width: 640px) {
+    flex: 1;
+    width: auto;
+  }
 }
 
 .add-rpc-btn {
@@ -890,6 +924,7 @@ onMounted(async () => {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .sponsored-rpc-row td {

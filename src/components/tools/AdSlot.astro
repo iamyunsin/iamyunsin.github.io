@@ -1,5 +1,5 @@
 ---
-import { ADS_CONFIG } from '@/consts';
+import { ADS_CONFIG, AFFILIATE_LINKS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
@@ -51,7 +51,7 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
         </p>
       </div>
       <a
-        href={lang === 'en' ? 'https://openrouter.ai/' : 'https://cloud.tencent.com/act/cps/redirect?redirect=2446'}
+        href={lang === 'en' ? AFFILIATE_LINKS.openrouter : AFFILIATE_LINKS.tencentCloud}
         target="_blank"
         rel="nofollow noopener sponsored"
         class="sponsor-cta"
@@ -75,6 +75,13 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
     flex-direction: column;
     justify-content: center;
     gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+
+    @media (max-width: 640px) {
+      padding: 14px;
+      border-radius: 12px;
+    }
   }
 
   .ad-slot-label {
@@ -95,7 +102,7 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
 
   .sponsor-main {
     flex: 1;
-    min-width: 240px;
+    min-width: 200px;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -117,6 +124,7 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
   .sponsor-cta {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 8px 16px;
     border-radius: 10px;
     background-color: var(--accent-soft);
@@ -131,6 +139,10 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
     &:hover {
       transform: translateY(-1px);
       box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 640px) {
+      width: 100%;
     }
   }
 </style>

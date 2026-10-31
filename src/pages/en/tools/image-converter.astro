@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Cloudflare R2 + Image Transformations',
     description: 'Host your optimized WebP & AVIF assets on Cloudflare R2 with $0 egress bandwidth fees and global edge caching across 300+ cities.',
     ctaText: 'Start Free on Cloudflare R2',
-    url: 'https://www.cloudflare.com/developer-platform/products/r2/',
+    url: AFFILIATE_LINKS.cloudflareR2,
   },
   {
     badge: '🚀 High-Performance Cloud',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: 'Vultr Cloud Compute & S3-Compatible Storage',
     description: 'Deploy self-hosted photo galleries (Immich) or full-stack web apps on high-frequency NVMe instances across 32 global locations.',
     ctaText: 'Deploy on Vultr Cloud',
-    url: 'https://www.vultr.com/',
+    url: AFFILIATE_LINKS.vultr,
   },
   {
     badge: '🌏 Asia-Pacific CDN',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'Tencent Cloud COS & EdgeOne CDN',
     description: 'Ultra-low latency object storage and media processing for Asia-Pacific and global web applications.',
     ctaText: 'Explore Cloud Storage Offers',
-    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+    url: AFFILIATE_LINKS.tencentCloud,
   },
 ];
 

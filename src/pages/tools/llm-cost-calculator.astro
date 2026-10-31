@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import LlmCostCalculator from '@/components/tools/LlmCostCalculator.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'OpenRouter 统一大模型 API 网关',
     description: '只需 1 个 API Key 即可无缝切换调用 Claude 3.7 Sonnet、GPT-4o、Gemini 2.5 Pro 与 DeepSeek-R1，按量透明计费，彻底告别多平台封号与绑卡烦恼。',
     ctaText: '免费注册获取聚合 API Key',
-    url: 'https://openrouter.ai/',
+    url: AFFILIATE_LINKS.openrouter,
   },
   {
     badge: '🇨🇳 国内高并发首选',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: '腾讯云大模型 API 与轻量应用服务器特惠',
     description: '国内直连零延迟调用满血版 DeepSeek-R1 / V3 接口，搭配高性价比轻量云服务器快速部署企业级 AI Agent 与 RAG 知识库。',
     ctaText: '领取腾讯云开发者专属代金券',
-    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+    url: AFFILIATE_LINKS.tencentCloud,
   },
   {
     badge: '🎁 百万免费 Token',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: '阿里云百炼大模型服务平台',
     description: '新用户开通即送超百万免费 Token 额度，支持 Qwen-Max、Qwen-Plus 与 DeepSeek 全系列模型，兼容 OpenAI SDK 一行代码平滑迁移。',
     ctaText: '前往阿里云百炼领取免费额度',
-    url: 'https://www.aliyun.com/product/bailian',
+    url: AFFILIATE_LINKS.aliyunBailian,
   },
 ];
 

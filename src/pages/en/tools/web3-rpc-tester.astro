@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import Web3RpcTesterTool from '@/components/tools/Web3RpcTesterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Alchemy — Enterprise Ethereum, Solana, Base & Arbitrum Nodes',
     description: 'Eliminate 429 rate-limit errors on public RPCs. Get a free private API key with 99.99% uptime, archive data access, and WebSocket subscriptions.',
     ctaText: 'Get Free Alchemy API Key',
-    url: 'https://www.alchemy.com/',
+    url: AFFILIATE_LINKS.alchemy,
   },
   {
     badge: '🛡️ Eliminate Blind Signing',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: 'Ledger Hardware Wallets — Official Store',
     description: 'Pair our offline calldata decoder with a physical Ledger hardware wallet to verify every transaction on a trusted screen before signing.',
     ctaText: 'Shop Ledger Hardware Wallets',
-    url: 'https://shop.ledger.com/',
+    url: AFFILIATE_LINKS.ledger,
   },
   {
     badge: '🚀 Ultra-Low Latency RPC',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'QuickNode Multi-Chain Infrastructure',
     description: 'High-speed RPC endpoints and real-time streams across 30+ EVM and non-EVM blockchains for DeFi traders and dApp builders.',
     ctaText: 'Start Free on QuickNode',
-    url: 'https://www.quicknode.com/',
+    url: AFFILIATE_LINKS.quicknode,
   },
 ];
 

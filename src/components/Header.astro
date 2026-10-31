@@ -21,20 +21,21 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
       <span class="brand-title">{lang === 'en' ? SITE.titleEn : SITE.title}</span>
     </a>
 
-    <div class="nav-actions">
-      <div class="nav-links">
-        <NavLink href="/">{lang === 'en' ? 'Blog (ZH)' : '首页'}</NavLink>
-        <NavLink href={lang === 'en' ? '/en/tools/' : '/tools/'}>{lang === 'en' ? 'Tools' : '工具箱'}</NavLink>
-        <NavLink href="/experiment/">{lang === 'en' ? 'Labs' : '小实验'}</NavLink>
+    <div class="nav-links">
+      <NavLink href="/">{lang === 'en' ? 'Blog' : '首页'}</NavLink>
+      <NavLink href={lang === 'en' ? '/en/tools/' : '/tools/'}>{lang === 'en' ? 'Tools' : '工具箱'}</NavLink>
+      <NavLink href="/experiment/">{lang === 'en' ? 'Labs' : '小实验'}</NavLink>
+    </div>
+
+    <div class="nav-utilities">
+      <div class="nav-search">
+        <PageFindSearch />
       </div>
       {switchLangUrl && (
         <a href={switchLangUrl} class="lang-switch-btn" title={lang === 'en' ? '切换到中文' : 'Switch to English'}>
           {lang === 'en' ? '中文' : 'EN'}
         </a>
       )}
-      <div class="nav-search">
-        <PageFindSearch />
-      </div>
       <ThemeSwitcher />
     </div>
   </nav>
@@ -76,7 +77,7 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
   .site-nav {
     max-width: 1400px;
     margin: 0 auto;
-    height: 62px;
+    min-height: 62px;
     padding: 0 24px;
     display: flex;
     align-items: center;
@@ -92,6 +93,7 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
     text-decoration: none;
     color: var(--text-primary);
     flex-shrink: 0;
+    min-width: 0;
     transition: color 0.2s ease;
 
     &:hover {
@@ -105,25 +107,30 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
     font-weight: 600;
     letter-spacing: 0.02em;
     white-space: nowrap;
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .nav-links {
     display: flex;
     align-items: center;
     gap: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .nav-utilities {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
   }
 
   .nav-search {
     display: flex;
     align-items: center;
     position: relative;
+    min-width: 0;
   }
 
   .lang-switch-btn {
@@ -138,6 +145,7 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
     background-color: var(--accent-soft);
     border: 1px solid var(--accent-border);
     text-decoration: none;
+    flex-shrink: 0;
     transition: all 0.2s ease;
 
     &:hover {
@@ -146,27 +154,57 @@ const { lang = 'zh', switchLangUrl } = Astro.props;
     }
   }
 
-  @media (max-width: 820px) {
+  @media (max-width: 920px) {
     .site-nav {
-      padding: 0 14px;
-      height: 56px;
+      padding: 0 16px;
       gap: 8px;
     }
     .brand-title {
-      display: none;
-    }
-    .nav-actions {
-      gap: 8px;
+      font-size: 18px;
     }
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 680px) {
     .site-nav {
-      padding: 0 10px;
-      gap: 6px;
+      height: auto;
+      min-height: 0;
+      padding: 8px 12px;
+      flex-wrap: wrap;
+      row-gap: 8px;
+      column-gap: 8px;
     }
-    .nav-actions {
-      gap: 6px;
+
+    .brand-group {
+      gap: 8px;
+      max-width: 48%;
+    }
+
+    .brand-title {
+      font-size: 16px;
+    }
+
+    .nav-links {
+      margin-left: auto;
+      gap: 2px;
+    }
+
+    .nav-utilities {
+      width: 100%;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .nav-search {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 370px) {
+    .brand-title {
+      display: none;
     }
   }
 </style>

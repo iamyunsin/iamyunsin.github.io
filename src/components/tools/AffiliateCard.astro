@@ -54,6 +54,14 @@ const { lang = 'zh', offers = [] } = Astro.props;
     border-radius: 16px;
     background: var(--author-banner);
     border: 1px solid var(--border-color);
+    min-width: 0;
+    max-width: 100%;
+
+    @media (max-width: 640px) {
+      padding: 16px 14px;
+      border-radius: 12px;
+      margin: 18px 0;
+    }
   }
 
   .affiliate-header {
@@ -107,7 +115,8 @@ const { lang = 'zh', offers = [] } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-bottom: 8px;
   }
 

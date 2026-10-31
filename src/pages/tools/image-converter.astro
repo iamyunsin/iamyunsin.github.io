@@ -2,6 +2,7 @@
 import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
 import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
 import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
 
 const offers: AffiliateOffer[] = [
   {
@@ -10,7 +11,7 @@ const offers: AffiliateOffer[] = [
     title: 'Cloudflare R2 对象存储 + Image Transformations',
     description: '把压缩后的 WebP / AVIF 图片托管在 Cloudflare R2，全球 CDN 边缘直出且彻底免除高昂的下行带宽流量费（Egress Fee = $0）。',
     ctaText: '免费开通 Cloudflare R2 图床',
-    url: 'https://www.cloudflare.com/developer-platform/products/r2/',
+    url: AFFILIATE_LINKS.cloudflareR2,
   },
   {
     badge: '🇨🇳 国内备案加速首选',
@@ -18,7 +19,7 @@ const offers: AffiliateOffer[] = [
     title: '腾讯云对象存储 COS 与内容分发 CDN',
     description: '国内毫秒级图片与静态站点加载，支持绑定自有备案域名，新用户专享存储包与 CDN 流量包组合特惠。',
     ctaText: '领取腾讯云存储与 CDN 福利',
-    url: 'https://cloud.tencent.com/act/cps/redirect?redirect=2446',
+    url: AFFILIATE_LINKS.tencentCloud,
   },
   {
     badge: '🚀 独立开发者 VPS',
@@ -26,7 +27,7 @@ const offers: AffiliateOffer[] = [
     title: 'Vultr 高性能云主机与对象存储',
     description: '按小时计费的海外高性能 NVMe 云服务器，一键部署自建图床（LskyPro / Immich）与全栈应用。',
     ctaText: '注册领取开发者试用金',
-    url: 'https://www.vultr.com/',
+    url: AFFILIATE_LINKS.vultr,
   },
 ];
 
