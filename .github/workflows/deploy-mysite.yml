@@ -19,7 +19,6 @@ jobs:
         name: Install pnpm
         with:
           version: 9.14.4
-          run_install: true
       - name: Install dependencies
         run: pnpm install
       - name: Build
