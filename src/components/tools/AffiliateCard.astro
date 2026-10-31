@@ -1,4 +1,6 @@
 ---
+import { AFFILIATE_LINKS } from '@/consts';
+
 export interface AffiliateOffer {
   badge: string;
   title: string;
@@ -14,9 +16,86 @@ interface Props {
 }
 
 const { lang = 'zh', offers = [] } = Astro.props;
+
+const fallbackOffersZh: AffiliateOffer[] = [
+  {
+    badge: '🇨🇳 开发者云主机特惠',
+    highlight: '高性价比全栈环境',
+    title: '腾讯云轻量应用服务器 — 独立博客与 Node/SSR 部署首选',
+    description: '高带宽低延迟，一键部署 Node.js、Docker、Nginx 1.25+ (HTTP/3) 与全栈 Web 服务，享开发者专属特惠。',
+    ctaText: '查看腾讯云轻量服务器特惠',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+  {
+    badge: '🔥 官方上云补贴',
+    highlight: '爆款主机低至 38元/年',
+    title: '阿里云云小站 — 云服务器 ECS、OSS 与百炼 AI 一站式特惠',
+    description: '汇集阿里云官方爆款轻量云主机、对象存储与大模型算力补贴，新老用户同享云小站专属折扣。',
+    ctaText: '前往阿里云云小站领专属优惠',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '🚀 AI 聚合网关福利',
+    highlight: '邀请码 mxiALm95 · 送 ¥16',
+    title: '硅基流动 SiliconFlow — 免海外卡高速调用 DeepSeek / Qwen',
+    description: '国内直连零延迟，1 个 API Key 畅享满血 DeepSeek-R1/V3、千问 Qwen3 等百余款大模型，注册即赠 ¥16 额度。',
+    ctaText: '免费注册领 ¥16 API 额度',
+    url: AFFILIATE_LINKS.siliconflow,
+  },
+  {
+    badge: '⚡ 全球边缘部署',
+    highlight: '免费 CDN + HTTP/3',
+    title: 'Cloudflare Workers & Pages — 全球 300+ 节点极速托管',
+    description: '零冷启动运行前端静态站点、Serverless API 与 Rust WebAssembly，默认免费开启 QUIC 与 SSL。',
+    ctaText: '免费接入 Cloudflare 边缘网络',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const fallbackOffersEn: AffiliateOffer[] = [
+  {
+    badge: '🚀 Global Edge Hosting',
+    highlight: 'Zero Cold Starts',
+    title: 'Cloudflare Workers & Pages — 300+ Global Edge Locations',
+    description: 'Deploy Vue 3, Astro, and Rust WebAssembly apps globally with built-in HTTP/3 QUIC and free SSL.',
+    ctaText: 'Deploy Free on Cloudflare',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+  {
+    badge: '🔥 Unified LLM API Gateway',
+    highlight: 'Free Credits Included',
+    title: 'SiliconFlow & OpenRouter — 100+ LLMs via One OpenAI-Compatible Key',
+    description: 'Access DeepSeek-R1, Claude 3.7, GPT-4o, and Qwen with high concurrency and automatic prompt caching.',
+    ctaText: 'Claim Free API Credits',
+    url: AFFILIATE_LINKS.openrouter,
+  },
+  {
+    badge: '☁️ High-Performance Cloud VPS',
+    highlight: 'Developer Special',
+    title: 'Alibaba Cloud & Tencent Cloud Global — Low-Latency NVMe Instances',
+    description: 'Spin up production Linux servers with Docker, Nginx HTTP/3, and global BGP bandwidth in 30 seconds.',
+    ctaText: 'Explore Cloud Server Deals',
+    url: AFFILIATE_LINKS.vultr,
+  },
+];
+
+// Automatically top up to 3 cards when 1 or 2 offers are provided so the 3-column grid is always balanced
+const displayOffers: AffiliateOffer[] = [...offers];
+if (displayOffers.length > 0 && displayOffers.length < 3) {
+  const pool = lang === 'en' ? fallbackOffersEn : fallbackOffersZh;
+  for (const candidate of pool) {
+    if (displayOffers.length >= 3) break;
+    const exists = displayOffers.some(
+      (o) => o.url === candidate.url || o.title === candidate.title
+    );
+    if (!exists) {
+      displayOffers.push(candidate);
+    }
+  }
+}
 ---
 
-{offers.length > 0 && (
+{displayOffers.length > 0 && (
   <section class="affiliate-section" aria-label={lang === 'en' ? 'Recommended Services' : '场景精选推荐'}>
     <div class="affiliate-header">
       <span class="affiliate-title">
@@ -26,8 +105,8 @@ const { lang = 'zh', offers = [] } = Astro.props;
         {lang === 'en' ? 'Partner Links · Zero Extra Cost to You' : '官方合作链接 · 由对应平台提供全部售后保障'}
       </span>
     </div>
-    <div class="affiliate-grid">
-      {offers.map((offer) => (
+    <div class="affiliate-grid" data-cols={Math.min(displayOffers.length, 3)}>
+      {displayOffers.map((offer) => (
         <a
           href={offer.url}
           target="_blank"
@@ -89,8 +168,16 @@ const { lang = 'zh', offers = [] } = Astro.props;
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
 
-    @media (max-width: 960px) {
+    &[data-cols='1'] {
       grid-template-columns: 1fr;
+    }
+
+    &[data-cols='2'] {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 960px) {
+      grid-template-columns: 1fr !important;
     }
   }
 

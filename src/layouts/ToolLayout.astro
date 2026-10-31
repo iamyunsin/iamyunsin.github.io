@@ -74,6 +74,122 @@ if (faqs.length > 0) {
     })),
   });
 }
+
+interface ParsedFaqBlock {
+  badge?: string;
+  lead?: string;
+  html: string;
+}
+
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function highlightInlineTech(text: string): string {
+  let safe = escapeHtml(text);
+
+  // Highlight inline code expressions, parenthetical assignments/bitwise ops, CLI/API names, and Big-O notation
+  const codePattern =
+    /(\{\{[^}]+\}\}|`[^`]+`|\bO\([^)]+\)|_hoisted_\d+|_cache\[\d+\]|render\([^)]*\)|\b[a-zA-Z_][a-zA-Z0-9_]*\(\)|(?<=^|[\s(（])(?::[a-zA-Z-]+|@[a-zA-Z-]+)|\bv-[a-zA-Z-]+|\b(?:TEXT|CLASS|STYLE|PROPS|FULL_PROPS|STABLE_FRAGMENT|KEYED_FRAGMENT|HOISTED)\s*=\s*-?\d+|\bflag\s*\|=\s*[A-Z_]+|\bpatchFlag\s*&amp;\s*[A-Za-z._]+|\bPatchFlag\s*=\s*-?\d+|\b(?:baseParse|transform|generate|hoistStatic|PatchFlags|PatchFlag|Block Tree|Template AST|JS AST|VNode|DOM|HTML|codegenNode|patchElement|patchKeyedChildren|getSequence|dynamicChildren|newIndexToOldIndexMap|targetMap|depsMap|ReactiveEffect|WeakMap|Promise\.then|queueMicrotask|MutationObserver|requestAnimationFrame|requestIdleCallback|setTimeout|setInterval|0-RTT|1-RTT|2-RTT|HTTP\/3|HTTP\/2|HTTP\/1\.1|QUIC|TLS 1\.3|TCP|UDP|AASA|apple-app-site-association|assetlinks\.json|visibilitychange|document\.hidden|MicroMessenger|o200k_base|DeepSeek-V3\/R1|DeepSeek-R1|GPT-4o|Claude 3\.7 Sonnet|WebP|AVIF|0xFFE1|APP1)\b)/g;
+
+  safe = safe.replace(codePattern, (match) => {
+    const clean = match.startsWith('`') && match.endsWith('`') ? match.slice(1, -1) : match;
+    return `<code class="faq-inline-code">${clean}</code>`;
+  });
+
+  // Highlight quoted key concepts “...”
+  safe = safe.replace(/“([^”]+)”/g, '<strong class="faq-quote">“$1”</strong>');
+
+  return safe;
+}
+
+function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBlock[] } {
+  const trimmed = answer.trim();
+
+  // Case 1: Numbered list items like "1. xxx；2. xxx；3. xxx" or "1. xxx 2. xxx"
+  if (/(?:^|[；;。]\s*)1\.\s*/.test(trimmed)) {
+    const firstOneIdx = trimmed.search(/1\.\s*/);
+    const intro = firstOneIdx > 0 ? trimmed.slice(0, firstOneIdx).replace(/[：:；;]\s*$/, '').trim() : undefined;
+    const rest = firstOneIdx > 0 ? trimmed.slice(firstOneIdx) : trimmed;
+    const rawItems = rest
+      .split(/(?:[；;。]\s*|\s+)(?=\d+\.\s*)/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const blocks: ParsedFaqBlock[] = rawItems.map((item, idx) => {
+      const withoutNum = item.replace(/^\d+\.\s*/, '').replace(/[；;。]+$/, '');
+      const colonIdx = withoutNum.search(/[：:]/);
+      if (colonIdx > 0 && colonIdx < 28) {
+        const lead = withoutNum.slice(0, colonIdx).trim();
+        const body = withoutNum.slice(colonIdx + 1).trim();
+        return {
+          badge: `0${idx + 1}`,
+          lead: highlightInlineTech(lead),
+          html: highlightInlineTech(body),
+        };
+      }
+      return {
+        badge: `0${idx + 1}`,
+        html: highlightInlineTech(withoutNum),
+      };
+    });
+
+    return { intro: intro ? highlightInlineTech(intro) : undefined, blocks };
+  }
+
+  // Case 2: Chinese ordinal clauses "第一，...；第二，...；第三，..."
+  if (/第一[，、]/.test(trimmed)) {
+    const firstIdx = trimmed.search(/第一[，、]/);
+    const intro = firstIdx > 0 ? trimmed.slice(0, firstIdx).replace(/[：:；;]\s*$/, '').trim() : undefined;
+    const rest = firstIdx > 0 ? trimmed.slice(firstIdx) : trimmed;
+    const parts = rest
+      .split(/[；;。]\s*(?=第[一二三四五][，、])/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const blocks: ParsedFaqBlock[] = parts.map((item, idx) => {
+      const body = item.replace(/^第[一二三四五][，、]\s*/, '');
+      return {
+        badge: `0${idx + 1}`,
+        html: highlightInlineTech(body),
+      };
+    });
+
+    return { intro: intro ? highlightInlineTech(intro) : undefined, blocks };
+  }
+
+  // Case 3: Multi-sentence / semicolon explanation -> split into clean digestible points if >= 2 sentences
+  const sentences = trimmed
+    .split(/(?<=[。！？；])\s*(?=[A-Za-z0-9\u4e00-\u9fa5])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (sentences.length >= 2) {
+    const blocks: ParsedFaqBlock[] = sentences.map((s) => {
+      const cleanS = s.replace(/[；;]+$/, '。');
+      const colonIdx = cleanS.search(/[：:]/);
+      if (colonIdx > 0 && colonIdx < 22) {
+        return {
+          badge: '•',
+          lead: highlightInlineTech(cleanS.slice(0, colonIdx).trim()),
+          html: highlightInlineTech(cleanS.slice(colonIdx + 1).trim()),
+        };
+      }
+      return {
+        badge: '•',
+        html: highlightInlineTech(cleanS),
+      };
+    });
+    return { blocks };
+  }
+
+  return {
+    blocks: [{ html: highlightInlineTech(trimmed) }],
+  };
+}
 ---
 
 <!doctype html>
@@ -151,12 +267,36 @@ if (faqs.length > 0) {
               {lang === 'en' ? 'Frequently Asked Questions (FAQ)' : '常见问题与实战解答 (FAQ)'}
             </h2>
             <div class="faq-list">
-              {faqs.map((faq) => (
-                <details class="faq-item" open>
-                  <summary class="faq-q">{faq.question}</summary>
-                  <p class="faq-a">{faq.answer}</p>
-                </details>
-              ))}
+              {faqs.map((faq, idx) => {
+                const parsed = parseFaqAnswer(faq.answer);
+                return (
+                  <details class="faq-item" open>
+                    <summary class="faq-q">
+                      <span class="faq-q-badge">Q{idx + 1}</span>
+                      <span class="faq-q-text">{faq.question}</span>
+                      <span class="faq-q-chevron" aria-hidden="true">▾</span>
+                    </summary>
+                    <div class="faq-body">
+                      {parsed.intro && <p class="faq-intro" set:html={parsed.intro} />}
+                      <div class={parsed.blocks.length > 1 ? 'faq-steps' : 'faq-single'}>
+                        {parsed.blocks.map((b) => (
+                          <div class="faq-step-row">
+                            {b.badge && (
+                              <span class={`faq-step-badge ${b.badge === '•' ? 'is-dot' : 'is-num'}`}>
+                                {b.badge}
+                              </span>
+                            )}
+                            <div class="faq-step-content">
+                              {b.lead && <strong class="faq-step-lead" set:html={`${b.lead}：`} />}
+                              <span class="faq-step-text" set:html={b.html} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </details>
+                );
+              })}
             </div>
           </section>
         )}
@@ -372,45 +512,218 @@ if (faqs.length > 0) {
       margin: 18px 0 8px;
     }
 
+    :global(p) {
+      margin: 0 0 14px;
+      line-height: 1.8;
+    }
+
+    :global(strong) {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    :global(a) {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+
+    :global(code) {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent);
+      background-color: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin: 0 2px;
+    }
+
     :global(ul) {
-      padding-left: 20px;
-      margin: 8px 0 16px;
+      padding-left: 0;
+      margin: 14px 0 20px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     :global(li) {
-      margin-bottom: 6px;
+      margin-bottom: 0;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background-color: var(--bg-muted);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--accent);
+      line-height: 1.7;
     }
   }
 
   .tool-faq-section {
-    margin-top: 28px;
+    margin-top: 32px;
   }
 
   .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
 
   .faq-item {
-    padding: 14px 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     background-color: var(--bg-muted);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+    }
+
+    &[open] .faq-q-chevron {
+      transform: rotate(180deg);
+    }
   }
 
   .faq-q {
-    font-size: 14.5px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text-primary);
     cursor: pointer;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
 
-  .faq-a {
-    margin: 8px 0 0;
+  .faq-q-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    background-color: var(--accent);
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .faq-q-text {
+    flex: 1;
+    line-height: 1.45;
+  }
+
+  .faq-q-chevron {
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .faq-body {
+    margin: 0 14px 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .faq-intro {
+    margin: 0 0 10px !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .faq-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .faq-single {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.7;
     font-size: 13.5px;
     color: var(--text-secondary);
-    line-height: 1.65;
+  }
+
+  .faq-step-badge {
+    flex-shrink: 0;
+
+    &.is-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 22px;
+      padding: 0 6px;
+      margin-top: 2px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      background-color: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+    }
+
+    &.is-dot {
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.4;
+      padding: 0 2px;
+    }
+  }
+
+  .faq-step-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .faq-step-lead {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  :global(.faq-inline-code) {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background-color: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin: 0 2px;
+  }
+
+  :global(.faq-quote) {
+    color: var(--text-primary);
+    font-weight: 700;
   }
 
   .tool-disclaimer {
