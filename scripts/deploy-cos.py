@@ -1,15 +1,23 @@
 import os
 import re
 import sys
+import time
 import hashlib
 import mimetypes
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from qcloud_cos import CosConfig, CosS3Client
+from qcloud_cos.cos_exception import CosClientError, CosServiceError
 
 BUCKET = os.environ.get("COS_BUCKET", "yunsin-top-1251451201")
 REGION = os.environ.get("COS_REGION", "ap-chengdu")
 DIST_DIR = Path("dist").resolve()
+
+# 跨国网络（GitHub Actions 美国节点 -> 腾讯云成都节点）并发与重试配置
+SMALL_FILE_WORKERS = int(os.environ.get("COS_MAX_WORKERS", "4"))
+LARGE_FILE_THRESHOLD = 512 * 1024  # 512 KB 以上视为大文件，单线程独占带宽上传
+MAX_RETRIES = 5
+FORCE_UPLOAD = os.environ.get("COS_FORCE_UPLOAD") == "1"
 
 # 30 天客户端强缓存（单位：秒，30 * 24 * 3600 = 2592000）
 CACHE_IMMUTABLE_30D = "public, max-age=2592000"
@@ -82,7 +90,19 @@ def md5_etag(file_path: Path) -> str:
     with open(file_path, "rb") as f:
         for chunk in iter(lambda: f.read(65536), b""):
             h.update(chunk)
-    return f'"{h.hexdigest()}"'
+    return h.hexdigest().lower()
+
+
+def is_unchanged_on_cos(rel_key: str, file_path: Path, remote_objects: dict[str, str]) -> bool:
+    if FORCE_UPLOAD or rel_key not in remote_objects:
+        return False
+    remote_etag = remote_objects[rel_key].strip('"').lower()
+    if not remote_etag:
+        return False
+    # 若曾通过分块上传（ETag 含 '-'）且文件名自身已包含内容 Hash，则内容必然一致
+    if "-" in remote_etag and is_hashed_static_asset(rel_key):
+        return True
+    return remote_etag == md5_etag(file_path)
 
 
 def list_remote_objects(client: CosS3Client) -> dict[str, str]:
@@ -110,7 +130,13 @@ def main():
         print(f"❌ Dist directory not found: {DIST_DIR}", file=sys.stderr)
         sys.exit(1)
 
-    config = CosConfig(Region=REGION, SecretId=secret_id, SecretKey=secret_key)
+    config = CosConfig(
+        Region=REGION,
+        SecretId=secret_id,
+        SecretKey=secret_key,
+        Timeout=120,
+        Scheme="https",
+    )
     client = CosS3Client(config)
 
     local_files: dict[str, Path] = {}
@@ -129,27 +155,86 @@ def main():
         file_path = local_files[rel_key]
         cache_control = get_cache_control(rel_key)
         content_type = get_content_type(rel_key)
-        with open(file_path, "rb") as fp:
-            client.put_object(
-                Bucket=BUCKET,
-                Body=fp,
-                Key=rel_key,
-                CacheControl=cache_control,
-                ContentType=content_type,
-            )
-        return f"{rel_key} [{cache_control}]"
+        data = file_path.read_bytes()
+        file_size = len(data)
 
-    print(f"🚀 Uploading {len(hashed_keys)} content-hashed assets (Cache-Control: {CACHE_IMMUTABLE_30D})...")
-    with ThreadPoolExecutor(max_workers=12) as pool:
-        futures = [pool.submit(upload_one, k) for k in hashed_keys]
-        for fut in as_completed(futures):
-            fut.result()
+        last_err: Exception | None = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                # 若大文件（>= 1MB）在跨国网络下普通 PUT 连续超时/过慢，自动切换为 1MB 分块上传
+                if file_size >= 1024 * 1024 and attempt >= 3:
+                    client.upload_file(
+                        Bucket=BUCKET,
+                        LocalFilePath=str(file_path),
+                        Key=rel_key,
+                        PartSize=1,
+                        MAXThread=2,
+                        EnableMD5=False,
+                        CacheControl=cache_control,
+                        ContentType=content_type,
+                    )
+                else:
+                    client.put_object(
+                        Bucket=BUCKET,
+                        Body=data,
+                        Key=rel_key,
+                        CacheControl=cache_control,
+                        ContentType=content_type,
+                    )
+                return f"{rel_key} [{cache_control}]"
+            except (CosServiceError, CosClientError, Exception) as exc:
+                last_err = exc
+                if attempt == MAX_RETRIES:
+                    break
+                wait_sec = min(2 ** attempt, 16)
+                print(
+                    f"⚠️ Upload retry {attempt}/{MAX_RETRIES} for {rel_key} "
+                    f"({file_size / 1024:.1f} KB) after error: {exc}. Retrying in {wait_sec}s...",
+                    file=sys.stderr,
+                )
+                time.sleep(wait_sec)
 
-    print(f"🚀 Uploading {len(revalidate_keys)} HTML & fixed-name files (Cache-Control: {CACHE_REVALIDATE_304})...")
-    with ThreadPoolExecutor(max_workers=12) as pool:
-        futures = [pool.submit(upload_one, k) for k in revalidate_keys]
-        for fut in as_completed(futures):
-            fut.result()
+        raise RuntimeError(f"Failed to upload {rel_key} after {MAX_RETRIES} attempts") from last_err
+
+    def sync_group(keys: list[str], group_label: str) -> tuple[int, int]:
+        to_upload = [k for k in keys if not is_unchanged_on_cos(k, local_files[k], remote_objects)]
+        skipped = len(keys) - len(to_upload)
+
+        if not to_upload:
+            print(f"⏭️ {group_label}: all {skipped} files unchanged on COS, skipped.")
+            return 0, skipped
+
+        # 将大文件（>= 512 KB）与小文件分离：大文件单线程顺序上传避免跨国带宽争抢，小文件适度并发
+        large_keys = [k for k in to_upload if local_files[k].stat().st_size >= LARGE_FILE_THRESHOLD]
+        small_keys = [k for k in to_upload if local_files[k].stat().st_size < LARGE_FILE_THRESHOLD]
+
+        print(
+            f"🚀 {group_label}: uploading {len(to_upload)} changed files "
+            f"({len(large_keys)} large >=512KB sequential, {len(small_keys)} small with {SMALL_FILE_WORKERS} workers), "
+            f"skipped {skipped} unchanged..."
+        )
+
+        # 1. 顺序上传大文件（如 _astro/*.wasm），独占连接带宽防止 UserNetworkTooSlow
+        for k in large_keys:
+            size_kb = local_files[k].stat().st_size / 1024
+            print(f"   📦 Uploading large asset: {k} ({size_kb:.1f} KB)...")
+            upload_one(k)
+
+        # 2. 并发上传小文件
+        if small_keys:
+            with ThreadPoolExecutor(max_workers=SMALL_FILE_WORKERS) as pool:
+                futures = [pool.submit(upload_one, k) for k in small_keys]
+                for fut in as_completed(futures):
+                    fut.result()
+
+        return len(to_upload), skipped
+
+    uploaded_hashed, skipped_hashed = sync_group(
+        hashed_keys, f"Content-hashed assets (Cache-Control: {CACHE_IMMUTABLE_30D})"
+    )
+    uploaded_reval, skipped_reval = sync_group(
+        revalidate_keys, f"HTML & fixed-name files (Cache-Control: {CACHE_REVALIDATE_304})"
+    )
 
     # 清理 COS 上已废弃的旧文件（在新版 HTML 上传完成后再删除，确保零停机平滑过渡）
     stale_keys = [k for k in remote_objects if k not in local_files]
@@ -163,8 +248,10 @@ def main():
             )
 
     print(
-        f"✅ COS deployment complete! {len(hashed_keys)} hashed assets (30d cache), "
-        f"{len(revalidate_keys)} HTML/fixed files (no-cache/304), {len(stale_keys)} old files cleaned."
+        f"✅ COS deployment complete! "
+        f"Hashed assets: {uploaded_hashed} uploaded / {skipped_hashed} skipped (30d cache); "
+        f"HTML & fixed files: {uploaded_reval} uploaded / {skipped_reval} skipped (no-cache/304); "
+        f"{len(stale_keys)} obsolete files cleaned."
     )
 
 
