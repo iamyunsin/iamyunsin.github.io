@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
+import { AFFILIATE_LINKS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
@@ -834,20 +835,6 @@ function triggerToast(msg: string) {
     showToast.value = false;
   }, 3500);
 }
-
-function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent) {
-  if (url.includes('PLACEHOLDER')) {
-    ev.preventDefault();
-    triggerToast(
-      isEn.value
-        ? `Official ${platformName} partner portal is updating. Redirecting to official site...`
-        : `【${platformName}】专属优惠渠道系统维护中，正在为您打开官方安全通道...`
-    );
-    setTimeout(() => {
-      window.open(`https://${platformName.toLowerCase().replace(/\s+/g, '')}.com`, '_blank');
-    }, 1200);
-  }
-}
 </script>
 
 <template>
@@ -1067,7 +1054,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
         </p>
         <div class="eco-links">
           <a
-            href="https://cloud.tencent.com/act/cps/redirect?redirect=5333&cps_key=36215a0a94cd9bd656589c958fdee45b&from=console"
+            :href="AFFILIATE_LINKS.tencentCloudLighthouse"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="eco-link-btn"
@@ -1075,7 +1062,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
             {{ isEn ? 'Tencent Cloud Lighthouse (¥9/mo)' : '腾讯云轻量服务器 (¥9/月起) ↗' }}
           </a>
           <a
-            href="https://cloud.siliconflow.cn/i/mxiALm95"
+            :href="AFFILIATE_LINKS.siliconflow"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="eco-link-btn"
@@ -1098,11 +1085,10 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
         </p>
         <div class="eco-links">
           <a
-            :href="isEn ? 'https://buymeacoffee.com/PLACEHOLDER_COFFEE' : 'https://afdian.com/a/PLACEHOLDER_AFDIAN'"
+            :href="isEn ? (AFFILIATE_LINKS.buyMeACoffee || 'https://www.buymeacoffee.com/') : (AFFILIATE_LINKS.afdian || 'https://afdian.com/')"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="btn-coffee"
-            @click="handleAffiliateClick('PLACEHOLDER', 'BuyMeACoffee', $event)"
           >
             ☕ {{ isEn ? 'Buy Me a Coffee ($3)' : '爱发电 / 请喝咖啡 (¥9.9) ↗' }}
           </a>
@@ -1113,11 +1099,10 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
     <!-- Minimal Tip Button in Clean Mode -->
     <div v-else class="minimal-clean-footer">
       <a
-        :href="isEn ? 'https://buymeacoffee.com/PLACEHOLDER_COFFEE' : 'https://afdian.com/a/PLACEHOLDER_AFDIAN'"
+        :href="isEn ? (AFFILIATE_LINKS.buyMeACoffee || 'https://www.buymeacoffee.com/') : (AFFILIATE_LINKS.afdian || 'https://afdian.com/')"
         target="_blank"
         rel="nofollow noopener sponsored"
         class="clean-coffee-btn"
-        @click="handleAffiliateClick('PLACEHOLDER', 'BuyMeACoffee', $event)"
       >
         ☕ {{ isEn ? 'Buy author a coffee' : '如果觉得好用，请作者喝杯咖啡' }} ↗
       </a>

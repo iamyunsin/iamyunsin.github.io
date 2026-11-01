@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
+import { AFFILIATE_LINKS, DIGITAL_PRODUCTS } from '@/consts';
 import channelsData from '@/data/rates/payment-channels.json';
 
 interface Props {
@@ -374,17 +375,19 @@ function triggerToast(msg: string) {
   }, 3500);
 }
 
-function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent) {
-  if (url.includes('PLACEHOLDER')) {
+function getChannelAffiliateUrl(ch: ChannelItem): string {
+  const mapped = (AFFILIATE_LINKS as Record<string, string>)[ch.affiliateKey];
+  return mapped || ch.sourceUrl;
+}
+
+function handleDigitalCheckout(url: string, ev: MouseEvent) {
+  if (!url || url.includes('placeholder') || url.includes('PLACEHOLDER')) {
     ev.preventDefault();
     triggerToast(
       isEn.value
-        ? `Official ${platformName} partner program is updating. Redirecting to official homepage...`
-        : `【${platformName}】专属优惠渠道系统维护中，正在为您打开官方安全通道...`
+        ? '📦 This Excel financial model is currently being packaged for release. Stay tuned!'
+        : '📦 该跨境收款汇损 Excel 动态核算模型正在整理上架中，敬请期待！'
     );
-    setTimeout(() => {
-      window.open(`https://${platformName.toLowerCase().replace(/\s+/g, '')}.com`, '_blank');
-    }, 1200);
   }
 }
 </script>
@@ -813,12 +816,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
               <!-- Action / Affiliate Button -->
               <td class="col-action">
                 <a
-                  :href="row.channel.sourceUrl"
+                  :href="getChannelAffiliateUrl(row.channel)"
                   target="_blank"
                   rel="nofollow noopener sponsored"
                   class="action-btn"
                   :class="{ 'btn-accent': row.isBest }"
-                  @click="handleAffiliateClick(row.channel.sourceUrl, row.channel.name, $event)"
                 >
                   {{ isEn ? 'Open Account ↗' : '免费开通 ↗' }}
                 </a>
@@ -955,11 +957,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
           {{ isEn ? 'View Sample Preview' : '在线预览样本结构' }}
         </button>
         <a
-          :href="isEn ? 'https://gumroad.com/l/PLACEHOLDER_PAYMENT_EXCEL' : 'https://mbd.pub/o/PLACEHOLDER_PAYMENT_EXCEL'"
+          :href="(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh) || '#'"
           target="_blank"
           rel="nofollow noopener sponsored"
           class="btn-tripwire-buy"
-          @click="handleAffiliateClick('PLACEHOLDER', 'Excel Model', $event)"
+          @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh, $event)"
         >
           {{ isEn ? 'Instant Get ($5.99)' : '立即获取 (¥29.0)' }}
         </a>
@@ -1097,11 +1099,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
           <div class="modal-footer">
             <span class="pricing-badge">{{ isEn ? 'Limited Time: $5.99 / ¥29.0' : '限时买断价: ¥29.0 / $5.99' }}</span>
             <a
-              :href="isEn ? 'https://gumroad.com/l/PLACEHOLDER_PAYMENT_EXCEL' : 'https://mbd.pub/o/PLACEHOLDER_PAYMENT_EXCEL'"
+              :href="(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh) || '#'"
               target="_blank"
               rel="nofollow noopener sponsored"
               class="btn-modal-checkout"
-              @click="handleAffiliateClick('PLACEHOLDER', 'Excel Model', $event)"
+              @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh, $event)"
             >
               {{ isEn ? 'Get Full Excel Model ↗' : '立即扫码获取完整模型 ↗' }}
             </a>

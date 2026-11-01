@@ -71,15 +71,20 @@ export const AFFILIATE_LINKS = {
   ledger: 'https://onekey.so/r/T1HD5Q',
   alchemy: 'https://www.alchemy.com/',
   quicknode: 'https://quicknode.com/signup?via=alan-turing',
-  // 场景化高客单与出海创作者推荐渠道
-  wiseBusiness: 'https://wise.com/invite/ihpc/yunsin-placeholder',
-  payoneer: 'https://share.payoneer.com/nav/yunsin-placeholder',
-  shopifyPartner: 'https://www.shopify.com/partners?ref=yunsin-placeholder',
-  canvaPro: 'https://partner.canva.com/c/yunsin-placeholder',
-  mianbaoduo: 'https://mbd.pub/o/bread/mbd-yunsin-placeholder',
-  gumroad: 'https://gumroad.com/l/yunsin-placeholder',
-  lemonSqueezy: 'https://lemonsqueezy.com/yunsin-placeholder',
-  beehiiv: 'https://www.beehiiv.com/?via=yunsin-placeholder',
+  // 场景化高客单与出海创作者推荐渠道（未填入专属推广码前，默认安全指向官方首页，确保 100% 可正常打开）
+  wiseBusiness: 'https://wise.com/zh-cn/business/',
+  payoneer: 'https://www.payoneer.com.cn/',
+  lianlianGlobal: 'https://global.lianlianpay.com/',
+  airwallex: 'https://www.airwallex.com.cn/',
+  stripeAtlas: 'https://stripe.com/atlas',
+  shopifyPartner: 'https://www.shopify.com/partners',
+  canvaPro: 'https://www.canva.com/pro/',
+  mianbaoduo: 'https://mbd.pub/',
+  afdian: 'https://afdian.com/',
+  gumroad: 'https://gumroad.com/',
+  lemonSqueezy: 'https://www.lemonsqueezy.com/',
+  beehiiv: 'https://www.beehiiv.com/',
+  buyMeACoffee: 'https://www.buymeacoffee.com/',
 };
 
 export interface DigitalProduct {
@@ -96,6 +101,11 @@ export interface DigitalProduct {
   badgeEn?: string;
 }
 
+/**
+ * 虚拟数字资产与模板直销配置中心
+ * - 当 checkoutUrlZh / checkoutUrlEn 为空字符串 '' 时，工具页面点击购买会弹出「正在整理上架中，敬请期待」提示，绝不跳转死链
+ * - 在面包多 (https://mbd.pub) 或 Gumroad (https://gumroad.com) 创建对应商品后，将真实购买链接填入即可一键激活收款
+ */
 export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
   socialCardPresets: {
     id: 'social-card-presets',
@@ -105,8 +115,8 @@ export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
     priceUsd: 4.99,
     description: '内含小红书高粉金句、Twitter 爆款推文、macOS 磨砂代码窗与里程碑大字报等 100+ 套精调矢量排版方案，即导即用。',
     descriptionEn: 'Curated 100+ viral layout presets for Xiaohongshu, Twitter/X, macOS frosted code windows, and milestone posters.',
-    checkoutUrlZh: 'https://mbd.pub/o/bread/mbd-social-cards',
-    checkoutUrlEn: 'https://gumroad.com/l/social-card-presets',
+    checkoutUrlZh: '', // 上架面包多后填入，如 'https://mbd.pub/o/bread/xxxx'
+    checkoutUrlEn: '', // 上架 Gumroad 后填入，如 'https://gumroad.com/l/xxxx'
     badge: '🔥 热销爆品',
     badgeEn: '🔥 Best Seller',
   },
@@ -118,8 +128,8 @@ export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
     priceUsd: 5.99,
     description: '涵盖知识产权归属、分期里程碑验收付款、汇率浮动补偿条款及中英文催款邮件话术库，由涉外律师校订。',
     descriptionEn: 'Standard bilingual contract templates, milestone payment schedules, intellectual property clauses, and payment reminder scripts.',
-    checkoutUrlZh: 'https://mbd.pub/o/bread/mbd-freelance-contract',
-    checkoutUrlEn: 'https://gumroad.com/l/freelance-contracts-pack',
+    checkoutUrlZh: '', // 上架面包多后填入
+    checkoutUrlEn: '', // 上架 Gumroad 后填入
     badge: '🛡️ 法务自保',
     badgeEn: '🛡️ Legal Shield',
   },
@@ -131,8 +141,8 @@ export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
     priceUsd: 5.99,
     description: '穿透 PayPal、Stripe、Wise、Payoneer 阶梯汇损与中转行费用，内置 12 大跨境收款通道全景穿透公式与反向倒推宏。',
     descriptionEn: 'In-depth financial Excel model analyzing hidden FX markups, tiered commissions, and reverse gross-up billing across 12 channels.',
-    checkoutUrlZh: 'https://mbd.pub/o/bread/mbd-cross-border-fx',
-    checkoutUrlEn: 'https://gumroad.com/l/cross-border-fx-model',
+    checkoutUrlZh: '', // 上架面包多后填入
+    checkoutUrlEn: '', // 上架 Gumroad 后填入
     badge: '📊 精算底表',
     badgeEn: '📊 Financial Model',
   },
@@ -144,8 +154,8 @@ export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
     priceUsd: 5.99,
     description: '专为出海独立开发者打造，包含 ARR 估值乘数拆解、净流失 Cohort 留存分析表与 Acquire.com 项目转让尽调审查清单。',
     descriptionEn: 'Complete financial due diligence toolkit for SaaS founders: Cohort retention matrices, ARR valuation multiples, and M&A checklists.',
-    checkoutUrlZh: 'https://mbd.pub/o/bread/mbd-saas-diligence',
-    checkoutUrlEn: 'https://gumroad.com/l/saas-bp-due-diligence',
+    checkoutUrlZh: '', // 上架面包多后填入
+    checkoutUrlEn: '', // 上架 Gumroad 后填入
     badge: '🚀 极客并购',
     badgeEn: '🚀 M&A Toolkit',
   },
@@ -157,8 +167,8 @@ export const DIGITAL_PRODUCTS: Record<string, DigitalProduct> = {
     priceUsd: 4.99,
     description: '深度剖析 JSON/SQL 到 TypeScript/Go/Rust/Zod 的类型映射陷阱、空安全边界、严苛反序列化与性能基准工程实践。',
     descriptionEn: 'Practical engineering guide on type conversion pitfalls, null safety, zero-copy deserialization, and schema validation.',
-    checkoutUrlZh: 'https://mbd.pub/o/bread/mbd-polyglot-playbook',
-    checkoutUrlEn: 'https://gumroad.com/l/polyglot-ast-playbook',
+    checkoutUrlZh: '', // 上架面包多后填入
+    checkoutUrlEn: '', // 上架 Gumroad 后填入
     badge: '⚡ 极客架构',
     badgeEn: '⚡ Architecture',
   },

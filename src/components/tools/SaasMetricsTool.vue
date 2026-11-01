@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { AFFILIATE_LINKS, DIGITAL_PRODUCTS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
@@ -357,17 +358,14 @@ function triggerToast(msg: string) {
   }, 3500);
 }
 
-function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent) {
-  if (url.includes('PLACEHOLDER')) {
+function handleDigitalCheckout(url: string, ev: MouseEvent) {
+  if (!url || url.includes('placeholder') || url.includes('PLACEHOLDER')) {
     ev.preventDefault();
     triggerToast(
       isEn.value
-        ? `Official ${platformName} partner benefits are updating. Redirecting to official portal...`
-        : `【${platformName}】专属优惠渠道系统维护中，正在为您打开官方安全通道...`
+        ? '📦 This Micro-SaaS due diligence financial model is being packaged for release. Stay tuned!'
+        : '📦 该 Micro-SaaS 商业计划书与并购尽调底稿正在整理上架中，敬请期待！'
     );
-    setTimeout(() => {
-      window.open(`https://${platformName.toLowerCase().replace(/\s+/g, '')}.com`, '_blank');
-    }, 1200);
   }
 }
 </script>
@@ -792,7 +790,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
         </p>
         <div class="affiliate-buttons">
           <a
-            href="https://cloud.tencent.com/act/cps/redirect?redirect=5333&cps_key=36215a0a94cd9bd656589c958fdee45b&from=console"
+            :href="AFFILIATE_LINKS.tencentCloudLighthouse"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="aff-btn"
@@ -800,7 +798,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
             {{ isEn ? 'Tencent Cloud Lighthouse ($2/mo)' : '腾讯云轻量服务器 (低至¥9/月) ↗' }}
           </a>
           <a
-            href="https://www.aliyun.com/minisite/goods?userCode=o0amjn4j"
+            :href="AFFILIATE_LINKS.aliyunDiscount"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="aff-btn"
@@ -808,11 +806,10 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
             {{ isEn ? 'Aliyun Global Servers' : '阿里云云大使上云特惠 ↗' }}
           </a>
           <a
-            href="https://stripe.com/atlas?ref=PLACEHOLDER_STRIPE_ATLAS"
+            :href="AFFILIATE_LINKS.stripeAtlas || 'https://stripe.com/atlas'"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="aff-btn"
-            @click="handleAffiliateClick('PLACEHOLDER', 'Stripe Atlas', $event)"
           >
             {{ isEn ? 'Stripe Atlas (US Entity)' : 'Stripe Atlas 海外公司注册 ↗' }}
           </a>
@@ -837,11 +834,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
             {{ isEn ? 'View Sample Structure' : '在线预览底稿结构' }}
           </button>
           <a
-            :href="isEn ? 'https://gumroad.com/l/PLACEHOLDER_SAAS_BP' : 'https://mbd.pub/o/PLACEHOLDER_SAAS_BP'"
+            :href="(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh) || '#'"
             target="_blank"
             rel="nofollow noopener sponsored"
             class="btn-tripwire-solid"
-            @click="handleAffiliateClick('PLACEHOLDER', 'SaaS BP Kit', $event)"
+            @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh, $event)"
           >
             {{ isEn ? 'Get Full Pack ($5.99)' : '立即获取 (¥29.0)' }}
           </a>
@@ -884,11 +881,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
           <div class="modal-footer">
             <span class="pricing-badge">{{ isEn ? 'Limited Offer: $5.99 / ¥29.0' : '限时买断价: ¥29.0 / $5.99' }}</span>
             <a
-              :href="isEn ? 'https://gumroad.com/l/PLACEHOLDER_SAAS_BP' : 'https://mbd.pub/o/PLACEHOLDER_SAAS_BP'"
+              :href="(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh) || '#'"
               target="_blank"
               rel="nofollow noopener sponsored"
               class="btn-modal-checkout"
-              @click="handleAffiliateClick('PLACEHOLDER', 'SaaS BP Kit', $event)"
+              @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh, $event)"
             >
               {{ isEn ? 'Get Full Toolkit ↗' : '立即扫码获取完整底稿 ↗' }}
             </a>

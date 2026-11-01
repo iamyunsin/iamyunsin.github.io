@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
-import { AFFILIATE_LINKS } from '@/consts';
+import { AFFILIATE_LINKS, DIGITAL_PRODUCTS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
@@ -927,6 +927,19 @@ function printInvoice() {
 
 // --- Tier 2 Legal Contract Pack Drawer Modal ---
 const showLegalModal = ref<boolean>(false);
+const checkoutNotice = ref<string>('');
+
+function handleDigitalCheckout(url: string, ev: MouseEvent) {
+  if (!url || url.includes('placeholder') || url.includes('PLACEHOLDER')) {
+    ev.preventDefault();
+    checkoutNotice.value = isEn.value
+      ? '📦 This legal contract pack is currently being packaged for release. Stay tuned!'
+      : '📦 该双语外包服务合同与催款话术包正在整理上架中，敬请期待！';
+    setTimeout(() => {
+      checkoutNotice.value = '';
+    }, 3500);
+  }
+}
 </script>
 
 <template>
@@ -1457,7 +1470,7 @@ const showLegalModal = ref<boolean>(false);
             }}
           </div>
           <a
-            :href="AFFILIATE_LINKS.wiseBusiness || 'https://wise.com/invite/placeholder'"
+            :href="AFFILIATE_LINKS.wiseBusiness || 'https://wise.com/zh-cn/business/'"
             target="_blank"
             rel="noopener noreferrer"
             class="partner-btn"
@@ -1480,7 +1493,7 @@ const showLegalModal = ref<boolean>(false);
             }}
           </div>
           <a
-            :href="AFFILIATE_LINKS.payoneer || 'http://share.payoneer.com/nav/placeholder'"
+            :href="AFFILIATE_LINKS.payoneer || 'https://www.payoneer.com.cn/'"
             target="_blank"
             rel="noopener noreferrer"
             class="partner-btn"
@@ -1566,10 +1579,11 @@ const showLegalModal = ref<boolean>(false);
           <div class="checkout-actions-row">
             <!-- Mianbaoduo Dual Checkout (CNY) -->
             <a
-              href="https://mianbaoduo.com/o/bread/placeholder-invoice-legal"
+              :href="DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlZh || '#'"
               target="_blank"
               rel="noopener noreferrer"
               class="checkout-btn mianbaoduo-btn"
+              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlZh, $event)"
             >
               <span>🥖</span>
               <span>面包多 微信 / 支付宝 极速购买 (¥29.0)</span>
@@ -1577,14 +1591,19 @@ const showLegalModal = ref<boolean>(false);
 
             <!-- Gumroad Dual Checkout (USD) -->
             <a
-              href="https://gumroad.com/l/placeholder-invoice-legal"
+              :href="DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlEn || '#'"
               target="_blank"
               rel="noopener noreferrer"
               class="checkout-btn gumroad-btn"
+              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlEn, $event)"
             >
               <span>💳</span>
               <span>Gumroad Credit Card / PayPal ($5.99)</span>
             </a>
+          </div>
+
+          <div v-if="checkoutNotice" class="legal-note" style="color: var(--accent); font-weight: 700;">
+            {{ checkoutNotice }}
           </div>
 
           <div class="legal-note">

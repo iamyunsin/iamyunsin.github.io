@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
-import { AFFILIATE_LINKS } from '@/consts';
+import { AFFILIATE_LINKS, DIGITAL_PRODUCTS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
@@ -1041,6 +1041,17 @@ function downloadSvg() {
 const showTemplateModal = ref<boolean>(false);
 const activeSamplePreset = ref<number>(0);
 
+function handleDigitalCheckout(url: string, ev: MouseEvent) {
+  if (!url || url.includes('placeholder') || url.includes('PLACEHOLDER')) {
+    ev.preventDefault();
+    showToast(
+      isEn.value
+        ? '📦 This preset pack is currently being packaged for release. Stay tuned!'
+        : '📦 该爆款模板预设包正在整理上架中，敬请期待！'
+    );
+  }
+}
+
 const PREMIUM_PRESETS = [
   {
     title: '极客周刊精选卡 (Tech Digest Weekly)',
@@ -1106,7 +1117,7 @@ const PREMIUM_PRESETS = [
 
         <!-- Canva Pro Affiliate -->
         <a
-          :href="AFFILIATE_LINKS.canvaPro || 'https://partner.canva.com/c/placeholder'"
+          :href="AFFILIATE_LINKS.canvaPro || 'https://www.canva.com/pro/'"
           target="_blank"
           rel="noopener noreferrer"
           class="canva-partner-btn"
@@ -1715,10 +1726,11 @@ const PREMIUM_PRESETS = [
           <div class="checkout-actions-row">
             <!-- Mianbaoduo Dual Checkout (CNY) -->
             <a
-              href="https://mianbaoduo.com/o/bread/placeholder-cards"
+              :href="DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlZh || '#'"
               target="_blank"
               rel="noopener noreferrer"
               class="checkout-btn mianbaoduo-btn"
+              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlZh, $event)"
             >
               <span>🥖</span>
               <span>微信 / 支付宝 极速购买 (¥19.9)</span>
@@ -1726,10 +1738,11 @@ const PREMIUM_PRESETS = [
 
             <!-- Gumroad Dual Checkout (USD) -->
             <a
-              href="https://gumroad.com/l/placeholder-cards"
+              :href="DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlEn || '#'"
               target="_blank"
               rel="noopener noreferrer"
               class="checkout-btn gumroad-btn"
+              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlEn, $event)"
             >
               <span>💳</span>
               <span>Credit Card / Apple Pay ($4.99)</span>
