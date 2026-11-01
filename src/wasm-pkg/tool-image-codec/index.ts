@@ -125,3 +125,132 @@ export function processRgbaBufferWithWasm(
     if (rgbaData.byteLength > 0) exports.wasm_dealloc(rgbaPtr, rgbaData.byteLength);
   }
 }
+
+// ==========================================
+// On-Demand Wasm Encoders (@jsquash/webp & @jsquash/avif)
+// Enables genuine WebP & AVIF encoding on iOS Safari / WebKit where canvas.toBlob is unsupported
+// ==========================================
+let webpReadyPromise: Promise<(data: ImageData, options?: Record<string, unknown>) => Promise<ArrayBuffer>> | null = null;
+let avifReadyPromise: Promise<(data: ImageData, options?: Record<string, unknown>) => Promise<ArrayBuffer>> | null = null;
+
+// Standard 31-byte WebAssembly SIMD feature detection probe
+const WASM_SIMD_PROBE = new Uint8Array([
+  0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 123, 3, 2, 1, 0, 10, 10, 1, 8, 0, 65, 0, 253,
+  15, 253, 98, 11,
+]);
+
+function supportsWasmSimd(): boolean {
+  try {
+    return typeof WebAssembly === 'object' && WebAssembly.validate(WASM_SIMD_PROBE);
+  } catch {
+    return false;
+  }
+}
+
+async function getWebpWasmEncoder() {
+  if (webpReadyPromise) return webpReadyPromise;
+  webpReadyPromise = (async () => {
+    const hasSimd = supportsWasmSimd();
+    const [webpEncFactory, webpMeta, webpUtils] = await Promise.all([
+      hasSimd
+        ? import('@jsquash/webp/codec/enc/webp_enc_simd.js')
+        : import('@jsquash/webp/codec/enc/webp_enc.js'),
+      import('@jsquash/webp/meta.js'),
+      import('@jsquash/webp/utils.js'),
+    ]);
+    const emscriptenModule = await (
+      webpUtils.initEmscriptenModule as (
+        factory: unknown
+      ) => Promise<{
+        encode: (
+          buf: Uint8ClampedArray,
+          w: number,
+          h: number,
+          opts: Record<string, unknown>
+        ) => { buffer: ArrayBuffer } | null;
+      }>
+    )(webpEncFactory.default);
+
+    return async (data: ImageData, options: Record<string, unknown> = {}) => {
+      const mergedOptions = { ...webpMeta.defaultOptions, ...options };
+      const output = emscriptenModule.encode(
+        data.data,
+        data.width,
+        data.height,
+        mergedOptions
+      );
+      if (!output) {
+        throw new Error('WebP Wasm encoding error.');
+      }
+      return output.buffer;
+    };
+  })();
+  return webpReadyPromise;
+}
+
+async function getAvifWasmEncoder() {
+  if (avifReadyPromise) return avifReadyPromise;
+  avifReadyPromise = (async () => {
+    const [avifEncFactory, avifMeta, avifUtils] = await Promise.all([
+      import('@jsquash/avif/codec/enc/avif_enc.js'),
+      import('@jsquash/avif/meta.js'),
+      import('@jsquash/avif/utils.js'),
+    ]);
+    const emscriptenModule = await (
+      avifUtils.initEmscriptenModule as (
+        factory: unknown
+      ) => Promise<{
+        encode: (
+          buf: Uint8Array,
+          w: number,
+          h: number,
+          opts: Record<string, unknown>
+        ) => { buffer: ArrayBuffer } | null;
+      }>
+    )(avifEncFactory.default);
+
+    return async (data: ImageData, options: Record<string, unknown> = {}) => {
+      const mergedOptions = { ...avifMeta.defaultOptions, ...options };
+      const rgbaBytes = new Uint8Array(
+        data.data.buffer,
+        data.data.byteOffset,
+        data.data.byteLength
+      );
+      const output = emscriptenModule.encode(
+        rgbaBytes,
+        data.width,
+        data.height,
+        mergedOptions
+      );
+      if (!output) {
+        throw new Error('AVIF Wasm encoding error.');
+      }
+      return output.buffer;
+    };
+  })();
+  return avifReadyPromise;
+}
+
+export async function encodeWebpWithWasm(
+  imageData: ImageData,
+  quality: number
+): Promise<Blob> {
+  const encodeWebp = await getWebpWasmEncoder();
+  const buffer = await encodeWebp(imageData, {
+    quality: Math.max(1, Math.min(100, Math.round(quality))),
+    method: 4,
+  });
+  return new Blob([buffer], { type: 'image/webp' });
+}
+
+export async function encodeAvifWithWasm(
+  imageData: ImageData,
+  quality: number
+): Promise<Blob> {
+  const encodeAvif = await getAvifWasmEncoder();
+  const buffer = await encodeAvif(imageData, {
+    quality: Math.max(1, Math.min(100, Math.round(quality))),
+    speed: 8,
+  });
+  return new Blob([buffer], { type: 'image/avif' });
+}

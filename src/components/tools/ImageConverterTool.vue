@@ -4,6 +4,8 @@ import {
   initImageCodecWasm,
   inspectImageHeaderWithWasm,
   processRgbaBufferWithWasm,
+  encodeWebpWithWasm,
+  encodeAvifWithWasm,
   type ImageHeaderInspection,
 } from '@/wasm-pkg/tool-image-codec';
 
@@ -408,6 +410,56 @@ function canvasToBlobAsync(
   });
 }
 
+async function encodeWithNativeOrWasm(
+  canvas: HTMLCanvasElement,
+  imgData: ImageData,
+  mime: 'image/webp' | 'image/jpeg' | 'image/png' | 'image/avif',
+  qPercent: number,
+  hasAlpha: boolean
+): Promise<Blob> {
+  if (mime === 'image/webp') {
+    if (encoderSupport.value.webp) {
+      const nativeBlob = await canvasToBlobAsync(canvas, 'image/webp', qPercent / 100);
+      if (nativeBlob.type === 'image/webp') {
+        return nativeBlob;
+      }
+      encoderSupport.value.webp = false;
+    }
+    try {
+      return await encodeWebpWithWasm(imgData, qPercent);
+    } catch (wasmErr) {
+      console.warn('Wasm WebP fallback to JPEG/PNG:', wasmErr);
+      return canvasToBlobAsync(
+        canvas,
+        hasAlpha ? 'image/png' : 'image/jpeg',
+        hasAlpha ? undefined : qPercent / 100
+      );
+    }
+  }
+
+  if (mime === 'image/avif') {
+    if (encoderSupport.value.avif) {
+      const nativeBlob = await canvasToBlobAsync(canvas, 'image/avif', qPercent / 100);
+      if (nativeBlob.type === 'image/avif') {
+        return nativeBlob;
+      }
+      encoderSupport.value.avif = false;
+    }
+    try {
+      return await encodeAvifWithWasm(imgData, qPercent);
+    } catch (wasmErr) {
+      console.warn('Wasm AVIF fallback to WebP:', wasmErr);
+      return encodeWebpWithWasm(imgData, qPercent);
+    }
+  }
+
+  return canvasToBlobAsync(
+    canvas,
+    mime,
+    mime === 'image/png' ? undefined : qPercent / 100
+  );
+}
+
 async function processSingleItem(item: ProcessedImageItem) {
   const target = items.value.find((i) => i.id === item.id) || item;
   target.status = 'processing';
@@ -449,67 +501,52 @@ async function processSingleItem(item: ProcessedImageItem) {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas 2D context unavailable');
 
+    if (targetMime.value === 'image/jpeg') {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, outW, outH);
+    }
     ctx.drawImage(img, 0, 0, outW, outH);
 
     // 4. Inspect alpha channel & pass RGBA buffer through Rust Wasm quantization
-    const imgData = ctx.getImageData(0, 0, outW, outH);
-    const hasAlpha = detectAlphaChannel(imgData.data);
-
-    // Determine effective MIME type (handle iOS WebKit where canvas.toBlob('image/webp'|'image/avif') silently falls back to huge lossless PNG)
-    let effectiveMime = targetMime.value;
-    const isWebpUnsupported = effectiveMime === 'image/webp' && !encoderSupport.value.webp;
-    const isAvifUnsupported = effectiveMime === 'image/avif' && !encoderSupport.value.avif;
-
-    if (isWebpUnsupported || isAvifUnsupported) {
-      effectiveMime = hasAlpha ? 'image/png' : 'image/jpeg';
-    } else if (effectiveMime === 'image/png' && !hasAlpha && quantizeLevel.value > 1) {
-      // Keep PNG if explicitly chosen, but quantize
-      effectiveMime = 'image/png';
-    }
-
-    // If exporting to JPEG and image has any transparency, composite over white
-    if (effectiveMime === 'image/jpeg' && hasAlpha) {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, outW, outH);
-      ctx.drawImage(img, 0, 0, outW, outH);
-    }
+    const finalImgData = ctx.getImageData(0, 0, outW, outH);
+    const hasAlpha = detectAlphaChannel(finalImgData.data);
 
     if (wasmExports.value) {
-      const effectiveQuantize =
-        effectiveMime === 'image/png' && (isWebpUnsupported || isAvifUnsupported)
-          ? Math.max(quantizeLevel.value, 8)
-          : quantizeLevel.value;
-      const currentImgData = ctx.getImageData(0, 0, outW, outH);
-      processRgbaBufferWithWasm(wasmExports.value, currentImgData.data, outW, effectiveQuantize);
-      ctx.putImageData(currentImgData, 0, 0);
+      processRgbaBufferWithWasm(wasmExports.value, finalImgData.data, outW, quantizeLevel.value);
+      ctx.putImageData(finalImgData, 0, 0);
     }
 
-    // 5. Encode to target format Blob with iOS fallback verification & adaptive quality step-down
-    const baseQ = effectiveMime === 'image/png' ? undefined : quality.value / 100;
-    let blob = await canvasToBlobAsync(canvas, effectiveMime, baseQ);
-
-    // Runtime safeguard: if browser still silently fell back to image/png when lossy format was requested
-    if (effectiveMime !== 'image/png' && blob.type === 'image/png' && !hasAlpha) {
-      effectiveMime = 'image/jpeg';
-      blob = await canvasToBlobAsync(canvas, 'image/jpeg', quality.value / 100);
-    }
+    // 5. Encode to target format Blob via Native Canvas or On-Demand Wasm (@jsquash/webp, @jsquash/avif)
+    const requestedMime = targetMime.value;
+    let blob = await encodeWithNativeOrWasm(
+      canvas,
+      finalImgData,
+      requestedMime,
+      quality.value,
+      hasAlpha
+    );
 
     // Adaptive quality step-down: if lossy output is still >= 96% of original size, step down quality to achieve genuine compression
     if (
-      effectiveMime !== 'image/png' &&
+      requestedMime !== 'image/png' &&
       target.originalSize > 0 &&
       blob.size >= target.originalSize * 0.96
     ) {
-      const startQ = quality.value / 100;
+      const startQ = quality.value;
       const candidateQualities = [
-        Math.min(startQ - 0.1, 0.72),
-        Math.min(startQ - 0.22, 0.6),
-        Math.min(startQ - 0.34, 0.48),
-        0.38,
-      ].filter((qVal) => qVal > 0.15 && qVal < startQ);
+        Math.min(startQ - 12, 72),
+        Math.min(startQ - 26, 58),
+        Math.min(startQ - 40, 44),
+      ].filter((qVal) => qVal >= 20 && qVal < startQ);
 
       for (const candQ of candidateQualities) {
-        const candBlob = await canvasToBlobAsync(canvas, effectiveMime, candQ);
+        const candBlob = await encodeWithNativeOrWasm(
+          canvas,
+          finalImgData,
+          requestedMime,
+          candQ,
+          hasAlpha
+        );
         if (candBlob.size < blob.size) {
           blob = candBlob;
         }
@@ -519,24 +556,15 @@ async function processSingleItem(item: ProcessedImageItem) {
       }
     }
 
-    let finalExt = extMap[blob.type] || extMap[effectiveMime] || 'jpg';
+    let finalExt = extMap[blob.type] || extMap[requestedMime] || 'webp';
 
     // 6. Never-inflate guardrail: if 100% scale and re-encoded blob is still >= originalSize, compare with lossless binary EXIF-stripped file
     if (scalePercent.value === 100 && blob.size >= target.originalSize) {
-      // Also try JPEG if input was an opaque PNG screenshot and user wanted compression (WebP/AVIF)
-      if (effectiveMime === 'image/png' && !hasAlpha && targetMime.value !== 'image/png') {
-        const jpegFallback = await canvasToBlobAsync(canvas, 'image/jpeg', Math.min(quality.value / 100, 0.76));
-        if (jpegFallback.size < blob.size) {
-          blob = jpegFallback;
-          finalExt = 'jpg';
-        }
-      }
-      if (blob.size >= target.originalSize) {
-        const stripped = await tryLosslessMetadataStrip(target.file);
-        if (stripped && stripped.blob.size < blob.size) {
-          blob = stripped.blob;
-          finalExt = stripped.ext;
-        }
+      const stripped = await tryLosslessMetadataStrip(target.file);
+      if (stripped && stripped.blob.size < blob.size) {
+        // Use lossless stripped file if user selected PNG/JPEG or if even lowest lossy step exceeded original
+        blob = stripped.blob;
+        finalExt = stripped.ext;
       }
     }
 
