@@ -655,7 +655,7 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
   ctx.clip();
 
   // 4. Draw Template Contents
-  const innerPad = 48;
+  const innerPad = 64;
   const contentX = cardX + innerPad;
   let contentY = cardY + innerPad;
   const contentW = cardW - innerPad * 2;
@@ -664,11 +664,11 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
     // Quote Mode
     // Tag pill
     if (quoteState.value.tag) {
-      ctx.font = `600 ${22 * fontSizeScale.value}px sans-serif`;
+      ctx.font = `600 ${30 * fontSizeScale.value}px sans-serif`;
       const tagText = quoteState.value.tag;
       const tagMetrics = ctx.measureText(tagText);
-      const tagW = tagMetrics.width + 32;
-      const tagH = 38 * fontSizeScale.value;
+      const tagW = tagMetrics.width + 48;
+      const tagH = 50 * fontSizeScale.value;
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.beginPath();
@@ -677,98 +677,98 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
 
       ctx.fillStyle = theme.accentColor;
       ctx.textBaseline = 'middle';
-      ctx.fillText(tagText, contentX + 16, contentY + tagH / 2);
-      contentY += tagH + 32;
+      ctx.fillText(tagText, contentX + 24, contentY + tagH / 2);
+      contentY += tagH + 36;
     }
 
     // Headline
-    ctx.font = `800 ${44 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `800 ${76 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
     ctx.textBaseline = 'top';
     const headlineLines = wrapText(ctx, quoteState.value.headline, contentW);
     for (const line of headlineLines) {
       ctx.fillText(line, contentX, contentY);
-      contentY += 56 * fontSizeScale.value;
+      contentY += 100 * fontSizeScale.value;
     }
-    contentY += 24;
+    contentY += 32;
 
     // Body Text
     if (quoteState.value.bodyText) {
-      ctx.font = `400 ${26 * fontSizeScale.value}px sans-serif`;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.font = `400 ${40 * fontSizeScale.value}px sans-serif`;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       const bodyLines = wrapText(ctx, quoteState.value.bodyText, contentW);
       for (const line of bodyLines) {
         ctx.fillText(line, contentX, contentY);
-        contentY += 38 * fontSizeScale.value;
+        contentY += 62 * fontSizeScale.value;
       }
     }
 
     // Author Section (fixed near bottom of card)
-    const authorY = cardY + cardH - 120;
-    ctx.font = `700 ${28 * fontSizeScale.value}px sans-serif`;
+    const authorY = cardY + cardH - 180;
+    ctx.font = `700 ${42 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
-    ctx.fillText(quoteState.value.authorName, contentX + 80, authorY);
+    ctx.fillText(quoteState.value.authorName, contentX + 112, authorY + 8);
 
-    ctx.font = `400 ${20 * fontSizeScale.value}px sans-serif`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.fillText(quoteState.value.authorTitle, contentX + 80, authorY + 36);
+    ctx.font = `400 ${28 * fontSizeScale.value}px sans-serif`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.fillText(quoteState.value.authorTitle, contentX + 112, authorY + 54);
 
     // Avatar Placeholder Circle
     ctx.beginPath();
-    ctx.arc(contentX + 36, authorY + 28, 28, 0, Math.PI * 2);
+    ctx.arc(contentX + 48, authorY + 44, 44, 0, Math.PI * 2);
     ctx.fillStyle = theme.accentColor;
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = '700 24px sans-serif';
+    ctx.font = '700 36px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(quoteState.value.authorName.slice(0, 1) || 'Y', contentX + 36, authorY + 28);
+    ctx.fillText(quoteState.value.authorName.slice(0, 1) || 'Y', contentX + 48, authorY + 44);
     ctx.textAlign = 'left';
 
   } else if (selectedTemplate.value === 'tweet') {
     // Tweet Mode
     // Avatar circle
     ctx.beginPath();
-    ctx.arc(contentX + 36, contentY + 36, 36, 0, Math.PI * 2);
+    ctx.arc(contentX + 48, contentY + 48, 48, 0, Math.PI * 2);
     ctx.fillStyle = theme.accentColor;
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = '700 28px sans-serif';
+    ctx.font = '700 40px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(tweetState.value.authorName.slice(0, 1) || 'T', contentX + 36, contentY + 36);
+    ctx.fillText(tweetState.value.authorName.slice(0, 1) || 'T', contentX + 48, contentY + 48);
     ctx.textAlign = 'left';
 
     // Name & Handle
-    ctx.font = `700 ${28 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `700 ${42 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
     ctx.textBaseline = 'top';
-    ctx.fillText(tweetState.value.authorName, contentX + 88, contentY + 12);
+    ctx.fillText(tweetState.value.authorName, contentX + 116, contentY + 16);
 
-    ctx.font = `400 ${22 * fontSizeScale.value}px sans-serif`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.fillText(tweetState.value.authorHandle, contentX + 88, contentY + 46);
+    ctx.font = `400 ${30 * fontSizeScale.value}px sans-serif`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.fillText(tweetState.value.authorHandle, contentX + 116, contentY + 64);
 
-    contentY += 100;
+    contentY += 130;
 
     // Tweet Content
-    ctx.font = `400 ${30 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `400 ${46 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
     const tweetLines = wrapText(ctx, tweetState.value.content, contentW);
     for (const line of tweetLines) {
       ctx.fillText(line, contentX, contentY);
-      contentY += 46 * fontSizeScale.value;
+      contentY += 70 * fontSizeScale.value;
     }
 
-    contentY += 30;
+    contentY += 36;
     // Timestamp
-    ctx.font = `400 ${20 * fontSizeScale.value}px sans-serif`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = `400 ${28 * fontSizeScale.value}px sans-serif`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
     ctx.fillText(tweetState.value.timestamp, contentX, contentY);
 
     // Stats Row
-    contentY += 40;
-    ctx.font = `600 ${22 * fontSizeScale.value}px sans-serif`;
+    contentY += 50;
+    ctx.font = `600 ${32 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
     ctx.fillText(`💬 ${tweetState.value.replies}    🔁 ${tweetState.value.retweets}    ❤️ ${tweetState.value.likes}`, contentX, contentY);
 
@@ -776,36 +776,36 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
     // Geek Code Mode
     // macOS Header Buttons
     if (codeState.value.showMacButtons) {
-      const btnRadius = 8;
-      const btnY = contentY + 10;
+      const btnRadius = 12;
+      const btnY = contentY + 16;
       // Red
       ctx.beginPath();
-      ctx.arc(contentX + 10, btnY, btnRadius, 0, Math.PI * 2);
+      ctx.arc(contentX + 16, btnY, btnRadius, 0, Math.PI * 2);
       ctx.fillStyle = '#ff5f56';
       ctx.fill();
       // Yellow
       ctx.beginPath();
-      ctx.arc(contentX + 34, btnY, btnRadius, 0, Math.PI * 2);
+      ctx.arc(contentX + 50, btnY, btnRadius, 0, Math.PI * 2);
       ctx.fillStyle = '#ffbd2e';
       ctx.fill();
       // Green
       ctx.beginPath();
-      ctx.arc(contentX + 58, btnY, btnRadius, 0, Math.PI * 2);
+      ctx.arc(contentX + 84, btnY, btnRadius, 0, Math.PI * 2);
       ctx.fillStyle = '#27c93f';
       ctx.fill();
     }
 
     // Filename center pill
-    ctx.font = `500 ${18 * fontSizeScale.value}px monospace`;
+    ctx.font = `500 ${28 * fontSizeScale.value}px monospace`;
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.textAlign = 'center';
-    ctx.fillText(codeState.value.fileName, cardX + cardW / 2, contentY + 12);
+    ctx.fillText(codeState.value.fileName, cardX + cardW / 2, contentY + 18);
     ctx.textAlign = 'left';
 
-    contentY += 50;
+    contentY += 68;
 
     // Code lines
-    ctx.font = `400 ${20 * fontSizeScale.value}px monospace`;
+    ctx.font = `400 ${30 * fontSizeScale.value}px monospace`;
     ctx.textBaseline = 'top';
 
     const lines = codeState.value.codeSnippet.split('\n');
@@ -813,48 +813,48 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
       const lineNum = (i + 1).toString().padStart(2, ' ');
       // Line number
       if (codeState.value.showLineNumbers) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
         ctx.fillText(lineNum, contentX, contentY);
       }
 
       // Code text
       ctx.fillStyle = theme.textColor;
-      ctx.fillText(lines[i], contentX + (codeState.value.showLineNumbers ? 40 : 0), contentY);
-      contentY += 28 * fontSizeScale.value;
+      ctx.fillText(lines[i], contentX + (codeState.value.showLineNumbers ? 54 : 0), contentY);
+      contentY += 46 * fontSizeScale.value;
     }
 
   } else if (selectedTemplate.value === 'milestone') {
     // Milestone Mode
     // Badge
-    ctx.font = `700 ${20 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `700 ${30 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.accentColor;
     ctx.fillText(milestoneState.value.badgeText, contentX, contentY);
 
-    contentY += 36;
+    contentY += 50;
     // Title
-    ctx.font = `700 ${36 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `800 ${54 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.textColor;
     ctx.fillText(milestoneState.value.title, contentX, contentY);
 
-    contentY += 60;
+    contentY += 76;
     // Massive Metric Numeral
-    ctx.font = `900 ${72 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `900 ${116 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = theme.accentColor;
     ctx.fillText(milestoneState.value.metricValue, contentX, contentY);
 
     // Growth badge
     const metricW = ctx.measureText(milestoneState.value.metricValue).width;
-    ctx.font = `700 ${22 * fontSizeScale.value}px sans-serif`;
+    ctx.font = `700 ${34 * fontSizeScale.value}px sans-serif`;
     ctx.fillStyle = '#10b981';
-    ctx.fillText(milestoneState.value.growthPercent, contentX + metricW + 24, contentY + 28);
+    ctx.fillText(milestoneState.value.growthPercent, contentX + metricW + 28, contentY + 44);
 
-    contentY += 80;
+    contentY += 128;
     // Metric label
-    ctx.font = `500 ${22 * fontSizeScale.value}px sans-serif`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.font = `500 ${32 * fontSizeScale.value}px sans-serif`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
     ctx.fillText(milestoneState.value.metricLabel, contentX, contentY);
 
-    contentY += 60;
+    contentY += 72;
     // Sub-metrics cards
     const subColW = (contentW - 32) / 3;
     for (let i = 0; i < milestoneState.value.subMetrics.length; i++) {
@@ -863,26 +863,26 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.beginPath();
-      ctx.roundRect(subX, contentY, subColW, 90, 12);
+      ctx.roundRect(subX, contentY, subColW, 130, 16);
       ctx.fill();
 
-      ctx.font = `700 ${26 * fontSizeScale.value}px sans-serif`;
+      ctx.font = `700 ${38 * fontSizeScale.value}px sans-serif`;
       ctx.fillStyle = theme.textColor;
-      ctx.fillText(sub.value, subX + 16, contentY + 20);
+      ctx.fillText(sub.value, subX + 22, contentY + 30);
 
-      ctx.font = `400 ${16 * fontSizeScale.value}px sans-serif`;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.fillText(sub.label, subX + 16, contentY + 56);
+      ctx.font = `400 ${24 * fontSizeScale.value}px sans-serif`;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.fillText(sub.label, subX + 22, contentY + 80);
     }
 
-    contentY += 130;
+    contentY += 170;
     // Founder Quote
     if (milestoneState.value.founderQuote) {
-      ctx.font = `italic 400 ${22 * fontSizeScale.value}px sans-serif`;
+      ctx.font = `italic 400 ${32 * fontSizeScale.value}px sans-serif`;
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.fillText(`“${milestoneState.value.founderQuote}”`, contentX, contentY);
-      contentY += 36;
-      ctx.font = `600 ${18 * fontSizeScale.value}px sans-serif`;
+      contentY += 52;
+      ctx.font = `600 ${26 * fontSizeScale.value}px sans-serif`;
       ctx.fillStyle = theme.accentColor;
       ctx.fillText(`— ${milestoneState.value.authorName}`, contentX, contentY);
     }
@@ -893,10 +893,10 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
   // 5. Anti-Collision Brand Pill Watermark (Value-Exchange)
   if (watermarkEnabled.value) {
     const pillText = '✦ Designed with yunsin.top/cards';
-    ctx.font = '600 20px sans-serif';
+    ctx.font = '600 28px sans-serif';
     const metrics = ctx.measureText(pillText);
-    const pillW = metrics.width + 40;
-    const pillH = 46;
+    const pillW = metrics.width + 56;
+    const pillH = 58;
 
     let pillX = targetW - pillW - 48;
     let pillY = 48;
@@ -919,7 +919,7 @@ async function renderCardToCanvas(scale: number = 2): Promise<HTMLCanvasElement>
 
     ctx.fillStyle = '#ffffff';
     ctx.textBaseline = 'middle';
-    ctx.fillText(pillText, pillX + 20, pillY + pillH / 2);
+    ctx.fillText(pillText, pillX + 28, pillY + pillH / 2);
     ctx.restore();
   }
 
@@ -1019,10 +1019,10 @@ function downloadSvg() {
   </defs>
   <rect width="${w}" height="${h}" fill="url(#bgGrad)"/>
   <rect x="${cardPadding.value * 2}" y="${cardPadding.value * 2}" width="${w - cardPadding.value * 4}" height="${h - cardPadding.value * 4}" rx="${borderRadius.value * 2}" fill="${theme.surfaceBg}" stroke="${theme.border}" stroke-width="2"/>
-  <text x="${w / 2}" y="${h / 2}" fill="${theme.textColor}" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="bold" text-anchor="middle">
+  <text x="${w / 2}" y="${h / 2}" fill="${theme.textColor}" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="bold" text-anchor="middle">
     ${selectedTemplate.value === 'quote' ? quoteState.value.headline : milestoneState.value.title}
   </text>
-  <text x="${w - 60}" y="70" fill="#ffffff" font-family="system-ui, sans-serif" font-size="20" font-weight="600" text-anchor="end">
+  <text x="${w - 60}" y="70" fill="#ffffff" font-family="system-ui, sans-serif" font-size="28" font-weight="600" text-anchor="end">
     ✦ Designed with yunsin.top/cards
   </text>
 </svg>`;
@@ -1270,7 +1270,7 @@ const PREMIUM_PRESETS = [
                 <textarea
                   v-model="codeState.codeSnippet"
                   rows="6"
-                  class="font-mono text-xs"
+                  class="code-input-textarea"
                   placeholder="Paste code here..."
                 ></textarea>
               </div>
@@ -1385,9 +1385,9 @@ const PREMIUM_PRESETS = [
         <!-- Section 4: Brand Pill Anti-Collision & Value-Exchange -->
         <div class="control-section brand-exchange-box">
           <div class="brand-exchange-header">
-            <div class="flex items-center gap-2">
-              <span class="text-amber-400">✦</span>
-              <span class="font-bold text-sm">
+            <div class="brand-exchange-title-wrap">
+              <span class="brand-exchange-sparkle">✦</span>
+              <span class="brand-exchange-title-text">
                 {{ isEn ? 'Brand Pill Anti-Collision & Value-Exchange' : '品牌出处胶囊 (防平台水印遮挡)' }}
               </span>
             </div>
@@ -1407,7 +1407,7 @@ const PREMIUM_PRESETS = [
 
           <div v-if="watermarkEnabled" class="brand-position-select">
             <label>{{ isEn ? 'Position Inset' : '胶囊出现位置' }}:</label>
-            <div class="flex gap-2">
+            <div class="brand-position-buttons">
               <button
                 type="button"
                 class="pos-btn"
@@ -1490,7 +1490,7 @@ const PREMIUM_PRESETS = [
                     class="quote-headline"
                     :style="{
                       color: currentTheme.textColor,
-                      fontSize: `${1.75 * fontSizeScale}rem`,
+                      fontSize: `${28 * fontSizeScale}px`,
                     }"
                   >
                     {{ quoteState.headline }}
@@ -1498,7 +1498,7 @@ const PREMIUM_PRESETS = [
                   <div
                     v-if="quoteState.bodyText"
                     class="quote-body"
-                    :style="{ fontSize: `${1.05 * fontSizeScale}rem` }"
+                    :style="{ fontSize: `${16 * fontSizeScale}px` }"
                   >
                     {{ quoteState.bodyText }}
                   </div>
@@ -1541,7 +1541,7 @@ const PREMIUM_PRESETS = [
                     class="tweet-body-text"
                     :style="{
                       color: currentTheme.textColor,
-                      fontSize: `${1.15 * fontSizeScale}rem`,
+                      fontSize: `${18 * fontSizeScale}px`,
                     }"
                   >
                     {{ tweetState.content }}
@@ -1567,7 +1567,7 @@ const PREMIUM_PRESETS = [
                     <div class="mac-filename">{{ codeState.fileName }}</div>
                   </div>
 
-                  <div class="code-body-scroll font-mono" :style="{ fontSize: `${0.85 * fontSizeScale}rem` }">
+                  <div class="code-body-scroll font-mono" :style="{ fontSize: `${13.5 * fontSizeScale}px` }">
                     <div v-for="(lineTokens, idx) in tokenizedLines" :key="idx" class="code-line">
                       <span v-if="codeState.showLineNumbers" class="line-no">{{ idx + 1 }}</span>
                       <span class="line-code">
@@ -1595,7 +1595,7 @@ const PREMIUM_PRESETS = [
                       class="hero-metric"
                       :style="{
                         color: currentTheme.accentColor,
-                        fontSize: `${3.2 * fontSizeScale}rem`,
+                        fontSize: `${52 * fontSizeScale}px`,
                       }"
                     >
                       {{ milestoneState.metricValue }}
@@ -1678,8 +1678,8 @@ const PREMIUM_PRESETS = [
     <div v-if="showTemplateModal" class="template-modal-overlay" @click.self="showTemplateModal = false">
       <div class="template-modal-card">
         <div class="modal-header">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">✨</span>
+          <div class="modal-title-wrap">
+            <span class="modal-title-icon">✨</span>
             <h3 class="modal-title">
               {{ isEn ? '100+ Pro Social Card Presets & JSON Pack' : '100+ 自媒体爆款排版预设与主题 JSON 配置文件包' }}
             </h3>
@@ -1756,11 +1756,22 @@ const PREMIUM_PRESETS = [
 
 <style scoped>
 .social-card-tool-root {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 3.5rem;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text-primary);
+}
+
+.social-card-tool-root button span,
+.social-card-tool-root a span {
+  font-size: inherit;
 }
 
 /* Intro Banner */
@@ -1769,45 +1780,49 @@ const PREMIUM_PRESETS = [
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  padding: 1.5rem;
+  gap: 16px;
+  padding: 20px 24px;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0;
 }
 
 .tool-title {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 1.5rem;
+  gap: 8px;
+  font-size: 18px;
   font-weight: 800;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .tool-subtitle {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  margin-top: 0.4rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
   margin-bottom: 0;
+  line-height: 1.5;
 }
 
 .intro-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .template-pack-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.1rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #d97706;
+  background-image: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: #ffffff;
-  font-size: 0.9rem;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 10px;
   border: none;
@@ -1823,12 +1838,12 @@ const PREMIUM_PRESETS = [
 .canva-partner-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 1rem;
-  background: rgba(56, 189, 248, 0.12);
-  color: #0284c7;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  font-size: 0.88rem;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  font-size: 12.5px;
   font-weight: 600;
   border-radius: 10px;
   text-decoration: none;
@@ -1836,14 +1851,15 @@ const PREMIUM_PRESETS = [
 }
 
 .canva-partner-btn:hover {
-  background: rgba(56, 189, 248, 0.2);
+  background: var(--accent);
+  color: #ffffff;
 }
 
 /* Workspace Grid */
 .workspace-grid {
   display: grid;
-  grid-template-columns: 460px 1fr;
-  gap: 2rem;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
   align-items: start;
 }
 
@@ -1857,23 +1873,24 @@ const PREMIUM_PRESETS = [
 .controls-panel {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 18px;
 }
 
 .control-section {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 1.25rem;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.98rem;
+  gap: 6px;
+  font-size: 15px;
   font-weight: 700;
-  margin-bottom: 0.9rem;
+  margin-bottom: 12px;
   color: var(--text-primary);
 }
 
@@ -1881,15 +1898,15 @@ const PREMIUM_PRESETS = [
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.9rem;
+  margin-bottom: 12px;
 }
 
 .pro-unlock-tag {
-  font-size: 0.78rem;
+  font-size: 11.5px;
   font-weight: 700;
   color: #10b981;
   background: rgba(16, 185, 129, 0.12);
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 6px;
 }
 
@@ -1897,16 +1914,16 @@ const PREMIUM_PRESETS = [
 .ratio-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: 10px;
 }
 
 .ratio-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0.65rem 0.8rem;
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
+  padding: 10px 12px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   text-align: left;
   cursor: pointer;
@@ -1919,45 +1936,45 @@ const PREMIUM_PRESETS = [
 
 .ratio-card.active {
   border-color: var(--accent);
-  background: rgba(59, 130, 246, 0.08);
+  background: var(--accent-soft);
 }
 
 .ratio-badge {
-  font-size: 0.85rem;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .ratio-meta {
-  font-size: 0.75rem;
+  font-size: 11px;
   color: var(--text-muted);
   font-family: monospace;
   margin-top: 2px;
 }
 
 .ratio-desc {
-  font-size: 0.7rem;
+  font-size: 11px;
   color: var(--text-muted);
   margin-top: 4px;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 /* Template Tabs */
 .template-selector-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-  margin-bottom: 1rem;
+  gap: 6px;
+  margin-bottom: 14px;
 }
 
 .tab-btn {
-  padding: 0.5rem 0.2rem;
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
+  padding: 7px 4px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  font-size: 0.78rem;
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -1966,27 +1983,28 @@ const PREMIUM_PRESETS = [
   background: var(--accent);
   color: #ffffff;
   border-color: var(--accent);
+  font-weight: 700;
 }
 
 /* Form inputs */
 .template-form-body {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .field-row {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 5px;
 }
 
 .field-row label,
 .field-grid-2 label,
 .field-grid-3 label {
-  font-size: 0.8rem;
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .field-row input,
@@ -1995,57 +2013,80 @@ const PREMIUM_PRESETS = [
 .field-grid-3 input,
 .field-grid-2 select {
   width: 100%;
-  padding: 0.55rem 0.75rem;
-  background: var(--bg-body);
+  padding: 8px 12px;
+  background: var(--bg-muted);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-row input:focus,
+.field-row textarea:focus,
+.field-grid-2 input:focus,
+.field-grid-3 input:focus,
+.field-grid-2 select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.code-input-textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px !important;
+  line-height: 1.5;
+  tab-size: 2;
 }
 
 .field-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: 10px;
 }
 
 .field-grid-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .toggle-row {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  margin-top: 0.5rem;
+  gap: 18px;
+  margin-top: 8px;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--text-primary);
   cursor: pointer;
+}
+
+.checkbox-label input {
+  accent-color: var(--accent);
 }
 
 /* Theme Palette Grid */
 .theme-palette-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .theme-thumb-btn {
   position: relative;
-  height: 52px;
+  height: 58px;
   border-radius: 10px;
   border: 2px solid transparent;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -2058,15 +2099,15 @@ const PREMIUM_PRESETS = [
 }
 
 .theme-thumb-btn.active {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .theme-name {
-  font-size: 0.65rem;
+  font-size: 11.5px;
   font-weight: 700;
   color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2076,9 +2117,9 @@ const PREMIUM_PRESETS = [
   position: absolute;
   top: 4px;
   right: 4px;
-  font-size: 0.55rem;
+  font-size: 11px;
   font-weight: 800;
-  padding: 1px 4px;
+  padding: 1px 5px;
   background: #f59e0b;
   color: #000;
   border-radius: 4px;
@@ -2088,31 +2129,38 @@ const PREMIUM_PRESETS = [
 .sliders-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin-top: 0.5rem;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .slider-item {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 4px;
 }
 
 .slider-header {
   display: flex;
   justify-content: space-between;
-  font-size: 0.78rem;
-  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.slider-header span:last-child {
+  font-weight: 800;
+  color: var(--accent);
 }
 
 .slider-item input[type='range'] {
   width: 100%;
+  accent-color: var(--accent);
 }
 
 /* Brand Exchange Box */
 .brand-exchange-box {
-  background: rgba(245, 158, 11, 0.04);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: var(--bg-surface);
+  border: 1px solid var(--accent-border);
 }
 
 .brand-exchange-header {
@@ -2121,34 +2169,60 @@ const PREMIUM_PRESETS = [
   justify-content: space-between;
 }
 
+.brand-exchange-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-exchange-sparkle {
+  color: #f59e0b;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.brand-exchange-title-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.brand-position-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .brand-exchange-desc {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-  margin: 0.6rem 0 0.8rem;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 8px 0 12px;
 }
 
 .brand-position-select {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.8rem;
+  gap: 6px;
+  font-size: 12.5px;
 }
 
 .pos-btn {
-  padding: 0.35rem 0.65rem;
-  font-size: 0.75rem;
-  background: var(--bg-body);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-muted);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
 .pos-btn.active {
   border-color: var(--accent);
-  color: var(--text-primary);
-  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
 }
 
 /* Switch Toggle */
@@ -2201,15 +2275,15 @@ input:checked + .slider.round:before {
 .siliconflow-card {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  background: rgba(14, 165, 233, 0.08);
-  border: 1px dashed rgba(14, 165, 233, 0.3);
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--accent-soft);
+  border: 1px dashed var(--accent-border);
   border-radius: 12px;
 }
 
 .sf-icon {
-  font-size: 1.5rem;
+  font-size: 20px;
 }
 
 .sf-text {
@@ -2217,23 +2291,23 @@ input:checked + .slider.round:before {
 }
 
 .sf-title {
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .sf-desc {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .sf-btn {
-  padding: 0.4rem 0.75rem;
-  background: #0284c7;
-  color: #fff;
-  border-radius: 6px;
-  font-size: 0.78rem;
+  padding: 6px 12px;
+  background: var(--accent);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -2242,21 +2316,21 @@ input:checked + .slider.round:before {
 /* Right Column: Preview */
 .preview-sticky-wrap {
   position: sticky;
-  top: 1.5rem;
+  top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 18px;
 }
 
 .preview-viewport-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #0b0f19;
+  background: var(--bg-muted);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 1.5rem;
-  min-height: 540px;
+  padding: 24px;
+  min-height: 520px;
   overflow: hidden;
 }
 
@@ -2266,11 +2340,11 @@ input:checked + .slider.round:before {
   max-width: 580px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 24px;
 }
 
 .noise-overlay {
@@ -2332,30 +2406,30 @@ input:checked + .slider.round:before {
 .quote-tag-pill {
   display: inline-block;
   align-self: flex-start;
-  font-size: 0.85rem;
+  font-size: 12.5px;
   font-weight: 700;
   padding: 4px 12px;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 1rem;
+  margin-bottom: 14px;
 }
 
 .quote-headline {
   font-weight: 800;
   line-height: 1.35;
-  margin-bottom: 0.8rem;
+  margin-bottom: 12px;
 }
 
 .quote-body {
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
 }
 
 .quote-footer {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .author-avatar {
@@ -2367,41 +2441,41 @@ input:checked + .slider.round:before {
   justify-content: center;
   font-weight: 800;
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 16px;
 }
 
 .author-name {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 15px;
 }
 
 .author-title {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Tweet Layout */
 .tweet-preview-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 14px;
 }
 
 .tweet-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .name-row {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 6px;
 }
 
 .user-name {
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 15px;
 }
 
 .verified-badge {
@@ -2413,13 +2487,13 @@ input:checked + .slider.round:before {
   border-radius: 50%;
   background: #38bdf8;
   color: #000;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
 }
 
 .user-handle {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .tweet-body-text {
@@ -2428,16 +2502,16 @@ input:checked + .slider.round:before {
 }
 
 .tweet-timestamp {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .tweet-stats-row {
   display: flex;
-  gap: 1.5rem;
-  font-size: 0.85rem;
+  gap: 20px;
+  font-size: 13px;
   font-weight: 600;
-  padding-top: 0.5rem;
+  padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -2452,9 +2526,9 @@ input:checked + .slider.round:before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 0.75rem;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.75rem;
+  margin-bottom: 10px;
 }
 
 .mac-dots {
@@ -2473,7 +2547,7 @@ input:checked + .slider.round:before {
 .dot-green { background: #27c93f; }
 
 .mac-filename {
-  font-size: 0.78rem;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -2484,12 +2558,13 @@ input:checked + .slider.round:before {
 
 .code-line {
   display: flex;
-  gap: 0.8rem;
+  gap: 12px;
 }
 
 .line-no {
   color: rgba(255, 255, 255, 0.3);
   user-select: none;
+  min-width: 24px;
 }
 
 .line-code {
@@ -2510,13 +2585,13 @@ input:checked + .slider.round:before {
 }
 
 .milestone-badge {
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin-bottom: 6px;
 }
 
 .milestone-title {
-  font-size: 1.45rem;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1.3;
 }
@@ -2524,8 +2599,8 @@ input:checked + .slider.round:before {
 .milestone-hero-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .hero-metric {
@@ -2534,67 +2609,68 @@ input:checked + .slider.round:before {
 }
 
 .growth-pill {
-  font-size: 0.95rem;
+  font-size: 13px;
   font-weight: 800;
   color: #10b981;
   background: rgba(16, 185, 129, 0.15);
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 6px;
 }
 
 .metric-label-text {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 0.35rem;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 6px;
 }
 
 .sub-metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.65rem;
-  margin-top: 1.25rem;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .sub-card {
   background: rgba(255, 255, 255, 0.07);
-  padding: 0.65rem;
+  padding: 10px 12px;
   border-radius: 10px;
 }
 
 .sub-val {
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 800;
 }
 
 .sub-lbl {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 3px;
 }
 
 .founder-quote-box {
-  margin-top: 1.25rem;
-  padding-top: 0.75rem;
+  margin-top: 18px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .quote-text {
   font-style: italic;
-  font-size: 0.88rem;
+  font-size: 13.5px;
   color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
 }
 
 .quote-author {
-  font-size: 0.78rem;
+  font-size: 12.5px;
   font-weight: 700;
-  margin-top: 0.25rem;
+  margin-top: 4px;
 }
 
 /* Action Export Bar */
 .action-export-bar {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  gap: 0.65rem;
+  gap: 10px;
 }
 
 @media (max-width: 640px) {
@@ -2607,10 +2683,10 @@ input:checked + .slider.round:before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.75rem 0.8rem;
+  gap: 6px;
+  padding: 10px 14px;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
   border: none;
   cursor: pointer;
@@ -2635,22 +2711,24 @@ input:checked + .slider.round:before {
 
 .secondary-btn:hover {
   border-color: var(--accent);
+  color: var(--accent);
 }
 
 .ghost-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .ghost-btn:hover {
   color: var(--text-primary);
+  border-color: var(--border-color);
 }
 
 .svg-btn {
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  color: #c084fc;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #a855f7;
 }
 
 .svg-btn:disabled {
@@ -2662,13 +2740,13 @@ input:checked + .slider.round:before {
 .template-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 16px;
 }
 
 .template-modal-card {
@@ -2677,52 +2755,65 @@ input:checked + .slider.round:before {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 1.75rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-md);
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 14px;
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-title-icon {
+  font-size: 20px;
+  line-height: 1;
 }
 
 .modal-title {
-  font-size: 1.15rem;
+  font-size: 18px;
   font-weight: 800;
   margin: 0;
+  color: var(--text-primary);
 }
 
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 20px;
   color: var(--text-muted);
   cursor: pointer;
 }
 
 .modal-desc {
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  font-size: 13.5px;
+  color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 1.25rem;
+  margin-bottom: 18px;
 }
 
 .sample-presets-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .preset-sample-card {
-  padding: 0.75rem;
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
+  padding: 12px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   text-align: left;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .preset-sample-card.active {
@@ -2731,20 +2822,20 @@ input:checked + .slider.round:before {
 }
 
 .sample-ratio-tag {
-  font-size: 0.7rem;
+  font-size: 11px;
   font-weight: 700;
   color: #f59e0b;
 }
 
 .sample-title {
-  font-size: 0.85rem;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .sample-desc {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-muted);
   margin-top: 4px;
 }
@@ -2752,8 +2843,8 @@ input:checked + .slider.round:before {
 .checkout-actions-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-  margin-bottom: 0.85rem;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 640px) {
@@ -2766,11 +2857,11 @@ input:checked + .slider.round:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
+  gap: 8px;
+  padding: 11px 16px;
   border-radius: 10px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 13.5px;
   text-decoration: none;
   transition: transform 0.15s ease;
 }
@@ -2786,7 +2877,7 @@ input:checked + .slider.round:before {
 }
 
 .legal-note {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-muted);
   text-align: center;
 }
@@ -2794,16 +2885,16 @@ input:checked + .slider.round:before {
 /* Toast */
 .toast-notification {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(15, 23, 42, 0.95);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 18px;
+  background: var(--bg-surface-elevated, rgba(15, 23, 42, 0.95));
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
-  font-size: 0.88rem;
+  font-size: 13px;
   font-weight: 600;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(8px);
   z-index: 1000;
   animation: slideUp 0.2s ease;

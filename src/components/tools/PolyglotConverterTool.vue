@@ -1139,8 +1139,12 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  min-width: 0;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
 }
 
 /* Clean Mode Banner */
@@ -1148,15 +1152,15 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--bg-surface-elevated, #f1f5f9);
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 0.8125rem;
-  color: var(--text-primary, #1e293b);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 12.5px;
+  color: var(--text-primary);
 
   .clean-icon {
-    font-size: 1.1rem;
+    font-size: 16px;
   }
 
   .clean-text {
@@ -1166,7 +1170,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
   .clean-gh-link {
     font-weight: 600;
-    color: var(--accent-color, #2563eb);
+    color: var(--accent);
     text-decoration: none;
 
     &:hover {
@@ -1181,9 +1185,9 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   align-items: center;
   gap: 12px;
   background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 10px;
-  padding: 10px 16px;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 12px;
+  padding: 12px 16px;
 
   @media (max-width: 640px) {
     flex-direction: column;
@@ -1192,27 +1196,31 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .shield-badge {
-  font-size: 0.6875rem;
+  font-size: 11.5px;
   font-weight: 800;
   color: #ffffff;
   background: #059669;
   padding: 3px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
 .shield-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  font-size: 0.8125rem;
-  color: #065f46;
+  gap: 3px;
+  font-size: 13px;
+  color: var(--text-primary);
+
+  strong {
+    color: var(--text-primary);
+  }
 
   .f12-tip {
-    font-size: 0.75rem;
-    color: #047857;
-    opacity: 0.9;
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.95;
   }
 }
 
@@ -1225,15 +1233,19 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .tool-title {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+
+  @media (max-width: 640px) {
+    font-size: 16.5px;
+  }
 }
 
 .tool-subtitle {
   margin: 0;
-  font-size: 0.9375rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -1241,11 +1253,17 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .controls-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 18px;
+  gap: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+
+  @media (max-width: 640px) {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
 }
 
 .controls-top-row {
@@ -1261,10 +1279,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .control-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary, #475569);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .format-pill-group {
@@ -1275,23 +1294,25 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .pill-btn {
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #cbd5e1);
-  color: var(--text-secondary, #334155);
-  transition: all 0.2s ease;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
 
   &:hover {
-    border-color: #94a3b8;
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   &.active {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
+    font-weight: 700;
   }
 }
 
@@ -1301,8 +1322,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   align-items: center;
   flex-wrap: wrap;
   gap: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-color, #f1f5f9);
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .root-name-input-wrap {
@@ -1312,22 +1333,24 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .opt-label {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-secondary, #475569);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .styled-root-input {
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  background: var(--bg-input, #ffffff);
-  color: var(--text-primary, #0f172a);
-  font-size: 0.8125rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
   font-weight: 600;
+  transition: border-color 0.15s ease;
 
   &:focus {
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
     outline: none;
   }
 }
@@ -1343,12 +1366,13 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.8125rem;
-  color: var(--text-primary, #334155);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
   cursor: pointer;
 
   input {
-    accent-color: var(--accent-color, #2563eb);
+    accent-color: var(--accent);
   }
 }
 
@@ -1356,7 +1380,7 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .editor-panes-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 18px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -1366,70 +1390,73 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .editor-pane {
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .pane-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  padding: 10px 16px;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .pane-title {
-  font-size: 0.8125rem;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary);
 }
 
 .btn-reset-sample {
   background: none;
   border: none;
-  font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
   cursor: pointer;
 
   &:hover {
-    color: var(--text-primary, #0f172a);
+    color: var(--text-primary);
   }
 }
 
 .btn-copy-code {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #cbd5e1);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent-color, #2563eb);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
   }
 }
 
 .code-textarea {
   width: 100%;
-  padding: 14px;
+  padding: 16px 18px;
   border: none;
-  background: var(--bg-input, #ffffff);
-  color: var(--text-primary, #0f172a);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.8125rem;
-  line-height: 1.5;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13.5px;
+  line-height: 1.6;
   resize: vertical;
   outline: none;
 
   &.output-textarea {
-    background: var(--bg-surface-elevated, #fcfcfd);
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
   }
 }
 
@@ -1445,24 +1472,25 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .eco-card {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: var(--shadow-sm);
 
   &.tip-card {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.08) 100%);
-    border-color: rgba(245, 158, 11, 0.3);
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-border);
   }
 }
 
 .eco-badge {
-  font-size: 0.6875rem;
+  font-size: 11px;
   font-weight: 700;
-  color: #0284c7;
+  color: var(--accent);
 
   &.badge-coffee {
     color: #d97706;
@@ -1471,16 +1499,16 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .eco-title {
   margin: 0;
-  font-size: 1rem;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary);
 }
 
 .eco-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
-  line-height: 1.4;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .eco-links {
@@ -1492,20 +1520,20 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .eco-link-btn {
   display: block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #cbd5e1);
-  color: var(--text-primary, #1e293b);
-  font-size: 0.75rem;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 12px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--accent-color, #2563eb);
-    color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
@@ -1513,13 +1541,14 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: inline-block;
   align-self: flex-start;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #f59e0b;
   color: #ffffff;
-  font-size: 0.8125rem;
+  font-size: 12.5px;
   font-weight: 700;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+  transition: all 0.15s ease;
 
   &:hover {
     background: #d97706;
@@ -1533,8 +1562,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .clean-coffee-btn {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  color: var(--text-muted);
   text-decoration: none;
 
   &:hover {
@@ -1548,15 +1577,17 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--bg-surface-elevated, #1e293b);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 0.8125rem;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   z-index: 1000;
 }
 

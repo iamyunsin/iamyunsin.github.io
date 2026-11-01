@@ -1141,32 +1141,35 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .payment-calc-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
 }
 
 /* Header & Badges */
 .tool-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .tool-title {
-  margin: 0 0 6px 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary, #1e293b);
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .tool-subtitle {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 13.5px;
   line-height: 1.5;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary);
 }
 
 .rate-badge-bar {
@@ -1175,19 +1178,19 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 8px 14px;
-  background: var(--bg-surface-elevated, rgba(16, 185, 129, 0.08));
-  border: 1px solid var(--border-color, rgba(16, 185, 129, 0.2));
-  border-radius: 8px;
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
 }
 
 .verified-badge {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: #059669;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-secondary, #059669);
 }
 
 .status-dot {
@@ -1199,28 +1202,29 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .customize-btn {
-  background: none;
-  border: 1px solid var(--border-color, #cbd5e1);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
-  color: var(--text-primary, #334155);
-  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--bg-hover, rgba(0, 0, 0, 0.04));
-    border-color: #94a3b8;
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+    border-color: var(--accent);
   }
 }
 
 /* Override Drawer */
 .override-drawer-box {
-  background: var(--bg-surface, #f8fafc);
-  border: 1px dashed var(--border-color, #cbd5e1);
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--bg-muted);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 16px 18px;
 }
 
 .drawer-header {
@@ -1230,16 +1234,17 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .drawer-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--text-primary, #1e293b);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .btn-text-danger {
   background: none;
   border: none;
   color: #ef4444;
-  font-size: 0.75rem;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover {
@@ -1249,8 +1254,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .drawer-tip {
   margin: 6px 0 12px 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12.5px;
+  color: var(--text-muted);
 }
 
 .override-channel-tabs {
@@ -1262,27 +1267,34 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .channel-tab-btn {
   position: relative;
-  background: var(--bg-input, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
   padding: 6px 12px;
-  font-size: 0.8125rem;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
-  color: var(--text-secondary, #475569);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
 
   &.active {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
   }
 
   &.overridden {
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .tab-dot {
     color: #f59e0b;
-    font-size: 1.1rem;
+    font-size: 16px;
     line-height: 0;
     margin-left: 2px;
   }
@@ -1292,8 +1304,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-color, #e2e8f0);
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .slider-field {
@@ -1305,18 +1317,18 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .field-label-line {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #475569);
+  font-size: 12.5px;
+  color: var(--text-secondary);
 }
 
 .field-val {
-  font-weight: 600;
-  color: var(--text-primary, #0f172a);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .range-slider {
   width: 100%;
-  accent-color: var(--accent-color, #2563eb);
+  accent-color: var(--accent);
 }
 
 .slider-actions {
@@ -1329,17 +1341,23 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .btn-reset-single {
   background: none;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.75rem;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.08);
+  }
 }
 
 .link-official-docs {
-  font-size: 0.75rem;
-  color: var(--accent-color, #2563eb);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
   text-decoration: none;
 
   &:hover {
@@ -1351,12 +1369,12 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .calc-control-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  gap: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .mode-tabs {
@@ -1372,42 +1390,43 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .mode-tab {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg-surface-elevated, #f8fafc);
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--bg-muted);
   border: 2px solid transparent;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
 
   .tab-icon {
-    font-size: 1.5rem;
+    font-size: 22px;
   }
 
   .tab-text {
     display: flex;
     flex-direction: column;
+    gap: 2px;
   }
 
   .title {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--text-primary, #1e293b);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
   }
 
   .desc {
-    font-size: 0.75rem;
-    color: var(--text-secondary, #64748b);
+    font-size: 12px;
+    color: var(--text-muted);
   }
 
   &.active {
-    background: var(--bg-surface, #ffffff);
-    border-color: var(--accent-color, #2563eb);
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+    background: var(--bg-surface);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--accent-soft);
 
     .title {
-      color: var(--accent-color, #2563eb);
+      color: var(--accent);
     }
   }
 }
@@ -1429,9 +1448,9 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .control-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-primary, #334155);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .amount-input-wrap {
@@ -1443,25 +1462,26 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .currency-prefix {
   position: absolute;
   left: 14px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-secondary, #64748b);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-muted);
 }
 
 .styled-number-input {
   width: 100%;
-  padding: 10px 14px 10px 32px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
-  background: var(--bg-input, #ffffff);
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 8px;
+  padding: 10px 14px 10px 36px;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:focus {
-    border-color: var(--accent-color, #2563eb);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 }
 
@@ -1473,27 +1493,31 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .preset-label {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .preset-chip {
-  background: var(--bg-surface-elevated, #f1f5f9);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  color: var(--text-secondary, #334155);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
 
   &:hover {
-    border-color: #94a3b8;
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   &.active {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
   }
 }
 
@@ -1511,26 +1535,33 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .curr-btn {
   flex: 1;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #cbd5e1);
-  color: var(--text-secondary, #334155);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
 
   &.active {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
+    font-weight: 700;
   }
 }
 
 .sub-tip {
-  font-size: 0.75rem;
-  color: #059669;
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--accent-secondary, #059669);
+  font-weight: 600;
 }
 
 .rate-input-wrap {
@@ -1539,13 +1570,20 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .styled-rate-input {
   width: 100%;
-  padding: 6px 12px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 6px;
-  background: var(--bg-input, #ffffff);
-  color: var(--text-primary, #0f172a);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
 }
 
 /* Results Table */
@@ -1565,46 +1603,48 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .section-heading {
   margin: 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 17.5px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .summary-tip {
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12.5px;
+  color: var(--text-muted);
 }
 
 .table-scroll-container {
   overflow-x: auto;
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
-  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .fee-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 13.5px;
 
   th,
   td {
     padding: 12px 14px;
-    border-bottom: 1px solid var(--border-color, #f1f5f9);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   th {
-    background: var(--bg-surface-elevated, #f8fafc);
-    color: var(--text-secondary, #475569);
-    font-weight: 600;
-    font-size: 0.8125rem;
+    background: var(--bg-muted);
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 12.5px;
     white-space: nowrap;
   }
 
   .highlight-th {
-    background: rgba(37, 99, 235, 0.05);
-    color: var(--accent-color, #2563eb);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 800;
   }
 
   tbody tr:last-child td {
@@ -1612,11 +1652,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   }
 
   tbody tr:hover {
-    background: var(--bg-hover, #f8fafc);
+    background: var(--bg-surface-hover);
   }
 
   tbody tr.best-row {
-    background: rgba(16, 185, 129, 0.04);
+    background: var(--accent-soft);
   }
 }
 
@@ -1634,25 +1674,28 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .name {
-  font-weight: 600;
-  color: var(--text-primary, #0f172a);
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--text-primary);
 }
 
 .badge-pill {
-  font-size: 0.6875rem;
-  padding: 1px 6px;
+  font-size: 11.5px;
+  padding: 2px 7px;
   border-radius: 4px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .best-badge {
-  background: #10b981;
-  color: #ffffff;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .normal-badge {
-  background: var(--bg-surface-elevated, #e2e8f0);
-  color: var(--text-secondary, #475569);
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
 }
 
 .notes-line {
@@ -1662,15 +1705,15 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .duration-tag {
-  font-size: 0.6875rem;
-  color: #0284c7;
-  font-weight: 500;
+  font-size: 11.5px;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .channel-note {
-  font-size: 0.6875rem;
-  color: var(--text-secondary, #64748b);
-  line-height: 1.3;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .col-num {
@@ -1678,40 +1721,42 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .val-usd {
-  font-weight: 600;
-  color: var(--text-primary, #0f172a);
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text-primary);
 }
 
 .sub-val {
-  font-size: 0.6875rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .total-cost-col {
   .val-cost {
     font-weight: 700;
+    font-size: 13.5px;
     color: #dc2626;
   }
 
   .sub-cost-cny {
-    font-size: 0.6875rem;
-    color: var(--text-secondary, #64748b);
+    font-size: 12px;
+    color: var(--text-muted);
   }
 }
 
 .col-highlight {
   min-width: 130px;
-  background: rgba(37, 99, 235, 0.02);
+  background: var(--accent-soft);
 
   .highlight-primary {
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: var(--accent-color, #2563eb);
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent);
   }
 
   .highlight-sub {
-    font-size: 0.75rem;
-    color: var(--text-secondary, #64748b);
+    font-size: 12px;
+    color: var(--text-muted);
   }
 }
 
@@ -1719,51 +1764,51 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: inline-block;
   padding: 2px 8px;
   border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
 
   &.rate-low {
-    background: #dcfce7;
+    background: rgba(16, 185, 129, 0.12);
     color: #15803d;
   }
 
   &.rate-mid {
-    background: #fef9c3;
-    color: #a16207;
+    background: rgba(245, 158, 11, 0.15);
+    color: #b45309;
   }
 
   &.rate-high {
-    background: #fee2e2;
+    background: rgba(239, 68, 68, 0.12);
     color: #b91c1c;
   }
 }
 
 .action-btn {
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 12.5px;
   font-weight: 600;
   text-decoration: none;
-  background: var(--bg-surface-elevated, #f1f5f9);
-  color: var(--text-primary, #334155);
-  border: 1px solid var(--border-color, #cbd5e1);
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
   }
 
   &.btn-accent {
-    background: #10b981;
+    background: var(--accent);
     color: #ffffff;
-    border-color: #10b981;
+    border-color: var(--accent);
 
     &:hover {
-      background: #059669;
+      background: var(--accent-hover);
     }
   }
 }
@@ -1773,10 +1818,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .memo-header {
@@ -1789,15 +1835,15 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .memo-title {
   margin: 0 0 4px 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .memo-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12.5px;
+  color: var(--text-muted);
 }
 
 .memo-channel-picker {
@@ -1807,18 +1853,20 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .picker-label {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-secondary, #475569);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .channel-dropdown {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  background: var(--bg-input, #ffffff);
-  font-size: 0.8125rem;
-  color: var(--text-primary, #0f172a);
+  padding: 7px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-muted);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
 }
 
 .memo-variable-inputs {
@@ -1833,18 +1881,23 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   gap: 4px;
 
   label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-secondary, #475569);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
   }
 
   .input-text {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border-color, #cbd5e1);
-    background: var(--bg-input, #ffffff);
-    font-size: 0.8125rem;
-    color: var(--text-primary, #0f172a);
+    padding: 7px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-muted);
+    font-size: 13px;
+    color: var(--text-primary);
+    outline: none;
+
+    &:focus {
+      border-color: var(--accent);
+    }
   }
 }
 
@@ -1865,11 +1918,11 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .template-box {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
-  padding: 12px;
+  gap: 10px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
 }
 
 .template-box-header {
@@ -1879,23 +1932,24 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .box-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-primary, #1e293b);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .copy-btn {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.6875rem;
-  font-weight: 500;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  color: var(--accent-color, #2563eb);
+  color: var(--accent);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
   }
 }
@@ -1903,14 +1957,15 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .template-textarea {
   width: 100%;
   font-family: monospace;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  background: var(--bg-input, #ffffff);
-  color: var(--text-primary, #1e293b);
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   resize: vertical;
+  outline: none;
 }
 
 /* Tripwire Banner */
@@ -1920,18 +1975,19 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%);
-  border: 1px solid rgba(37, 99, 235, 0.25);
-  border-radius: 12px;
-  padding: 18px 24px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 16px;
+  padding: 20px 24px;
 }
 
 .tripwire-badge {
   display: inline-block;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.12);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
   padding: 2px 8px;
   border-radius: 4px;
   margin-bottom: 6px;
@@ -1939,16 +1995,17 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .tripwire-title {
   margin: 0 0 6px 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .tripwire-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #475569);
+  font-size: 12.5px;
+  color: var(--text-secondary);
   max-width: 600px;
+  line-height: 1.5;
 }
 
 .tripwire-action {
@@ -1958,32 +2015,36 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .btn-tripwire-preview {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #cbd5e1);
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--text-primary, #1e293b);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--bg-hover, #f8fafc);
+    background: var(--bg-surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
 .btn-tripwire-buy {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: var(--accent);
   color: #ffffff;
   text-decoration: none;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: #1d4ed8;
+    background: var(--accent-hover);
   }
 }
 
@@ -1991,7 +2052,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2000,15 +2062,16 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .modal-dialog {
-  background: var(--bg-surface, #ffffff);
-  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   width: 100%;
   max-width: 680px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .modal-header {
@@ -2016,45 +2079,51 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .btn-close-modal {
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 20px;
   cursor: pointer;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-muted);
+
+  &:hover {
+    color: var(--text-primary);
+  }
 }
 
 .modal-sheet-tabs {
   display: flex;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .sheet-tab {
   flex: 1;
-  padding: 10px 12px;
-  font-size: 0.75rem;
+  padding: 10px 14px;
+  font-size: 13px;
   font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary);
   border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
 
   &.active {
-    color: var(--accent-color, #2563eb);
-    border-bottom-color: var(--accent-color, #2563eb);
-    background: var(--bg-surface, #ffffff);
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--bg-surface);
+    font-weight: 700;
   }
 }
 
@@ -2064,77 +2133,80 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .table-mockup {
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: 12.5px;
 }
 
 .mockup-header-row {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
-  padding: 8px 12px;
-  background: var(--bg-surface-elevated, #f1f5f9);
-  font-weight: 600;
-  color: var(--text-secondary, #475569);
+  padding: 10px 12px;
+  background: var(--bg-muted);
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .mockup-row {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
-  padding: 8px 12px;
-  border-top: 1px solid var(--border-color, #f1f5f9);
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-primary);
 
   &.highlight-row {
-    background: rgba(16, 185, 129, 0.08);
-    font-weight: 600;
-    color: #059669;
+    background: var(--accent-soft);
+    font-weight: 700;
+    color: var(--accent);
   }
 }
 
 .sheet-note {
   margin: 12px 0 0 0;
-  font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .radar-box {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background: var(--bg-surface-elevated, #f8fafc);
+  gap: 12px;
+  background: var(--bg-muted);
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .radar-title {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-primary, #1e293b);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .bar-chart-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 0.75rem;
+  font-size: 12.5px;
 
   .bar-label {
     width: 80px;
-    color: var(--text-secondary, #475569);
+    color: var(--text-secondary);
+    font-weight: 600;
   }
 
   .bar-track {
     flex: 1;
     height: 12px;
-    background: #e2e8f0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
     border-radius: 6px;
     overflow: hidden;
   }
 
   .bar-fill {
     height: 100%;
-    background: #94a3b8;
+    background: var(--text-muted);
 
     &.best-fill {
       background: #10b981;
@@ -2143,8 +2215,9 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
   .bar-val {
     width: 130px;
-    font-weight: 600;
+    font-weight: 700;
     text-align: right;
+    color: var(--text-primary);
   }
 
   &.highlight-bar .bar-val {
@@ -2157,27 +2230,28 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   justify-content: space-between;
   align-items: center;
   padding: 14px 20px;
-  border-top: 1px solid var(--border-color, #e2e8f0);
-  background: var(--bg-surface-elevated, #f8fafc);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-muted);
 }
 
 .pricing-badge {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 700;
   color: #dc2626;
 }
 
 .btn-modal-checkout {
-  background: #2563eb;
+  background: var(--accent);
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: #1d4ed8;
+    background: var(--accent-hover);
   }
 }
 
@@ -2185,29 +2259,29 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .disclaimer-box {
   display: flex;
   gap: 12px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
   padding: 14px 18px;
 }
 
 .disclaimer-icon {
-  font-size: 1.25rem;
+  font-size: 20px;
   line-height: 1;
 }
 
 .disclaimer-title {
   margin: 0 0 4px 0;
-  font-size: 0.8125rem;
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--text-primary, #334155);
+  color: var(--text-primary);
 }
 
 .disclaimer-text {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 12px;
   line-height: 1.5;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-muted);
 }
 
 /* Toast */
@@ -2215,15 +2289,16 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--text-primary);
+  color: var(--bg-surface);
   padding: 10px 18px;
   border-radius: 8px;
-  font-size: 0.8125rem;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   z-index: 1000;
 }
 

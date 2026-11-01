@@ -1013,8 +1013,8 @@ const showLegalModal = ref<boolean>(false);
 
     <!-- Industry Quick Presets & Monetization Bar -->
     <div class="no-print presets-bar">
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-bold text-gray-400">
+      <div class="presets-row flex items-center">
+        <span class="preset-label font-bold text-gray-400">
           {{ isEn ? 'Quick Industry Presets:' : '快速行业范本预设:' }}
         </span>
         <div class="preset-buttons">
@@ -1119,7 +1119,7 @@ const showLegalModal = ref<boolean>(false);
             <input
               v-model="invoice.client.company"
               type="text"
-              class="editable-bold text-base"
+              class="editable-bold"
               placeholder="客户公司名称 (Client Company Name)"
             />
             <input
@@ -1140,8 +1140,8 @@ const showLegalModal = ref<boolean>(false);
               class="editable-text text-muted"
               placeholder="客户注册经营地址 (Address, City, Country)"
             />
-            <div class="flex items-center gap-2 mt-1">
-              <span class="text-xs text-muted">{{ isEn ? 'Tax / VAT ID:' : '税号 / 统一信用代码:' }}</span>
+            <div class="tax-id-row flex items-center">
+              <span class="tax-id-label text-muted">{{ isEn ? 'Tax / VAT ID:' : '税号 / 统一信用代码:' }}</span>
               <input v-model="invoice.client.taxId" type="text" class="editable-mini" placeholder="可选 (Optional)" />
             </div>
           </div>
@@ -1222,7 +1222,7 @@ const showLegalModal = ref<boolean>(false);
           <div class="amount-words-box">
             <div class="words-title">{{ isEn ? 'AMOUNT IN WORDS' : '大写金额核验 (防止篡改与电汇对照)' }}</div>
             <div class="chinese-words font-bold">{{ chineseAmountWords }}</div>
-            <div class="english-words font-mono text-muted text-xs mt-1">{{ englishAmountWords }}</div>
+            <div class="english-words font-mono text-muted">{{ englishAmountWords }}</div>
 
             <!-- Receipt Stamp Seal (Visible in receipt stage) -->
             <div v-if="invoice.docType === 'receipt'" class="paid-stamp-seal">
@@ -1283,7 +1283,7 @@ const showLegalModal = ref<boolean>(false);
         <!-- 5. Milestone Payment Split (If Enabled) -->
         <div v-if="invoice.enableMilestones" class="milestones-section print-avoid-break">
           <div class="milestones-header">
-            <div class="font-bold text-sm">
+            <div class="milestones-title font-bold">
               {{ isEn ? 'MILESTONE PAYMENT SCHEDULE' : '分期与里程碑付款安排' }}
             </div>
             <div class="milestone-presets no-print flex gap-2">
@@ -1306,14 +1306,14 @@ const showLegalModal = ref<boolean>(false);
                   <option value="pending">{{ isEn ? 'Pending' : '待支付' }}</option>
                   <option value="paid">{{ isEn ? 'Paid' : '已结清' }}</option>
                 </select>
-                <span class="print-only text-xs font-bold" :class="m.status === 'paid' ? 'text-emerald-600' : 'text-amber-600'">
+                <span class="print-only milestone-status-badge font-bold" :class="m.status === 'paid' ? 'text-emerald-600' : 'text-amber-600'">
                   [{{ m.status === 'paid' ? 'PAID' : 'PENDING' }}]
                 </span>
               </div>
-              <div class="milestone-amount font-mono font-extrabold text-base">
+              <div class="milestone-amount font-mono font-extrabold">
                 {{ currentCurrencySymbol }}{{ m.amount.toFixed(2) }}
               </div>
-              <div class="milestone-date text-xs text-muted">
+              <div class="milestone-date text-muted">
                 {{ isEn ? 'Due' : '截止' }}: {{ m.dueDate }} ({{ m.percentage }}%)
               </div>
             </div>
@@ -1356,19 +1356,19 @@ const showLegalModal = ref<boolean>(false);
             </div>
 
             <!-- Optional Crypto Payment Box -->
-            <div v-if="invoice.crypto.enabled" class="crypto-box mt-3">
-              <div class="text-xs font-bold text-amber-500">
+            <div v-if="invoice.crypto.enabled" class="crypto-box">
+              <div class="crypto-title font-bold text-amber-500">
                 ⚡ {{ isEn ? 'Cryptocurrency Stablecoin Payment:' : '加密货币稳定币收款 (免跨境汇损)' }}
               </div>
               <div class="crypto-address-row">
-                <span class="text-xs font-mono font-bold text-gray-700">{{ invoice.crypto.network }} ({{ invoice.crypto.token }}):</span>
-                <input v-model="invoice.crypto.walletAddress" type="text" class="wire-input font-mono text-xs" />
+                <span class="crypto-net-label font-mono font-bold text-gray-700">{{ invoice.crypto.network }} ({{ invoice.crypto.token }}):</span>
+                <input v-model="invoice.crypto.walletAddress" type="text" class="wire-input font-mono" />
               </div>
             </div>
 
             <!-- Notes & Terms -->
-            <div class="notes-row mt-3">
-              <label class="text-xs font-bold text-muted">{{ isEn ? 'Notes & Terms' : '单据备注与商业条款' }}:</label>
+            <div class="notes-row">
+              <label class="notes-label font-bold text-muted">{{ isEn ? 'Notes & Terms' : '单据备注与商业条款' }}:</label>
               <textarea v-model="invoice.terms" rows="3" class="terms-textarea"></textarea>
             </div>
           </div>
@@ -1518,8 +1518,8 @@ const showLegalModal = ref<boolean>(false);
     <div v-if="showLegalModal" class="template-modal-overlay no-print" @click.self="showLegalModal = false">
       <div class="template-modal-card">
         <div class="modal-header">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">⚖️</span>
+          <div class="modal-header-left flex items-center">
+            <span class="modal-icon">⚖️</span>
             <h3 class="modal-title">
               {{ isEn ? 'Freelancer Bilingual Legal Contract & Demand Letter Pack' : '自由职业者标准双语外包服务合同范本与催款律师函话术包' }}
             </h3>
@@ -1605,38 +1605,41 @@ const showLegalModal = ref<boolean>(false);
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 4rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   color: var(--text-primary);
+  font-size: 14px;
 }
 
 /* Compliance Banner */
 .compliance-alert-banner {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
+  gap: 14px;
+  padding: 14px 18px;
   background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.35);
   border-radius: 12px;
-  margin-bottom: 1.5rem;
 }
 
 .alert-icon {
-  font-size: 1.75rem;
+  font-size: 24px;
   line-height: 1;
 }
 
 .alert-title {
-  font-size: 0.95rem;
+  font-size: 14.5px;
   font-weight: 800;
   color: #d97706;
 }
 
 .alert-text {
-  font-size: 0.82rem;
+  font-size: 12.5px;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-top: 0.35rem;
+  margin-top: 4px;
 }
 
 /* Action Toolbar */
@@ -1645,13 +1648,12 @@ const showLegalModal = ref<boolean>(false);
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 12px;
 }
 
 .stage-tabs {
   display: flex;
-  gap: 0.35rem;
+  gap: 4px;
   background: var(--bg-surface);
   padding: 4px;
   border-radius: 10px;
@@ -1659,8 +1661,8 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .stage-tab-btn {
-  padding: 0.45rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 7px 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-muted);
   background: none;
@@ -1668,6 +1670,10 @@ const showLegalModal = ref<boolean>(false);
   border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s ease;
+}
+
+.stage-tab-btn:hover {
+  color: var(--text-primary);
 }
 
 .stage-tab-btn.active {
@@ -1678,7 +1684,7 @@ const showLegalModal = ref<boolean>(false);
 .toolbar-right {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -1686,10 +1692,10 @@ const showLegalModal = ref<boolean>(false);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-muted);
   background: var(--bg-surface);
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 9999px;
   border: 1px solid var(--border-color);
 }
@@ -1704,43 +1710,60 @@ const showLegalModal = ref<boolean>(false);
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1rem;
+  gap: 6px;
+  padding: 8px 16px;
   background: var(--accent);
-  color: #fff;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
 }
 
 .btn-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.85rem;
+  gap: 6px;
+  padding: 8px 14px;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   border-radius: 8px;
-  font-size: 0.82rem;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--accent-border);
 }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.85rem;
+  gap: 6px;
+  padding: 8px 14px;
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-muted);
   border-radius: 8px;
-  font-size: 0.82rem;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .hidden {
@@ -1753,80 +1776,101 @@ const showLegalModal = ref<boolean>(false);
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 12px;
+  padding: 10px 16px;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
+  border-radius: 12px;
+}
+
+.presets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .preset-buttons {
   display: flex;
-  gap: 0.4rem;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .preset-tag {
-  padding: 0.3rem 0.65rem;
-  font-size: 0.75rem;
+  padding: 5px 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .preset-tag:hover {
   border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .contract-pack-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
+  gap: 6px;
+  padding: 6px 14px;
   background: rgba(168, 85, 247, 0.12);
   border: 1px solid rgba(168, 85, 247, 0.3);
   color: #a855f7;
-  font-size: 0.8rem;
+  font-size: 12.5px;
   font-weight: 700;
   border-radius: 8px;
   cursor: pointer;
 }
 
-/* Invoice Paper Container */
+/* Invoice Paper Container & Framing */
 .invoice-paper-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 2.5rem;
+  width: 100%;
+  margin: 0;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .invoice-paper {
   width: 100%;
   max-width: 960px;
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 3rem 3.5rem;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+  padding: 36px 40px;
+  box-shadow: var(--shadow-md);
+  font-size: 14px;
 }
 
 /* Header */
 .invoice-header {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 2px solid #f3f4f6;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--border-subtle);
 }
 
 .header-left {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1;
 }
 
@@ -1834,13 +1878,13 @@ const showLegalModal = ref<boolean>(false);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .editable-h1 {
-  font-size: 1.6rem;
+  font-size: 24px;
   font-weight: 900;
-  color: #111827;
+  color: var(--text-primary);
   border: none;
   background: transparent;
   outline: none;
@@ -1848,25 +1892,25 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .editable-text-bold {
-  font-size: 1.1rem;
+  font-size: 15px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   border: none;
   background: transparent;
   outline: none;
 }
 
 .editable-text {
-  font-size: 0.9rem;
-  color: #4b5563;
+  font-size: 13.5px;
+  color: var(--text-secondary);
   border: none;
   background: transparent;
   outline: none;
 }
 
 .editable-mini {
-  font-size: 0.82rem;
-  color: #6b7280;
+  font-size: 12.5px;
+  color: var(--text-muted);
   border: none;
   background: transparent;
   outline: none;
@@ -1875,14 +1919,14 @@ const showLegalModal = ref<boolean>(false);
 .meta-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #9ca3af;
-  font-size: 0.8rem;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 12.5px;
 }
 
 .doc-stage-badge {
-  font-size: 0.85rem;
-  font-weight: 900;
+  font-size: 12px;
+  font-weight: 800;
   letter-spacing: 0.5px;
   padding: 4px 12px;
   border: 2px solid;
@@ -1894,9 +1938,9 @@ const showLegalModal = ref<boolean>(false);
 .doc-date-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #4b5563;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .doc-number-row label,
@@ -1906,11 +1950,13 @@ const showLegalModal = ref<boolean>(false);
 
 .doc-num-input,
 .doc-date-row input {
-  border: 1px solid #e5e7eb;
-  padding: 3px 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  padding: 4px 8px;
   border-radius: 6px;
   font-family: monospace;
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -1918,29 +1964,42 @@ const showLegalModal = ref<boolean>(false);
 .client-billto-section {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  margin: 2rem 0;
+  gap: 24px;
+  margin: 24px 0;
 }
 
 .bill-to-box {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
 }
 
 .box-label {
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #9ca3af;
+  color: var(--text-muted);
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
+  margin-bottom: 6px;
+}
+
+.tax-id-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tax-id-label {
+  font-size: 12.5px;
+  color: var(--text-muted);
 }
 
 .editable-bold {
+  font-size: 14.5px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   border: none;
   background: transparent;
   outline: none;
@@ -1952,17 +2011,18 @@ const showLegalModal = ref<boolean>(false);
 
 .currency-select {
   width: 100%;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #d1d5db;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
-  background: #f9fafb;
+  background: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 .currency-hint {
-  font-size: 0.7rem;
-  color: #6b7280;
+  font-size: 12px;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -1974,26 +2034,34 @@ const showLegalModal = ref<boolean>(false);
 
 .items-table th {
   text-align: left;
-  padding: 0.65rem 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
-  font-size: 0.75rem;
+  padding: 10px 10px;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 12.5px;
   font-weight: 800;
-  color: #4b5563;
+  color: var(--text-secondary);
+  background: var(--bg-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .items-table td {
-  padding: 0.75rem 0.5rem;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-subtle);
   vertical-align: top;
+  font-size: 13.5px;
 }
 
 .col-desc { width: 48%; }
 .col-qty { width: 10%; text-align: center; }
 .col-unit { width: 14%; text-align: center; }
 .col-price { width: 14%; text-align: right; }
-.col-amount { width: 14%; text-align: right; }
+.col-amount {
+  width: 14%;
+  text-align: right;
+  font-size: 14px !important;
+  font-family: monospace;
+  font-weight: 700;
+}
 .col-actions { width: 4%; text-align: center; }
 
 .item-desc-input {
@@ -2001,9 +2069,9 @@ const showLegalModal = ref<boolean>(false);
   border: none;
   background: transparent;
   outline: none;
-  font-size: 0.9rem;
+  font-size: 13.5px;
   resize: vertical;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .item-num-input,
@@ -2013,15 +2081,23 @@ const showLegalModal = ref<boolean>(false);
   background: transparent;
   outline: none;
   text-align: inherit;
-  font-size: 0.9rem;
-  padding: 2px 4px;
+  font-size: 13.5px;
+  padding: 3px 6px;
   border-radius: 4px;
+  color: var(--text-primary);
 }
 
 .item-num-input:hover,
 .item-unit-input:hover,
 .item-desc-input:hover {
-  background: #f9fafb;
+  background: var(--bg-muted);
+}
+
+.item-num-input:focus,
+.item-unit-input:focus,
+.item-desc-input:focus {
+  background: var(--bg-muted);
+  border-color: var(--accent);
 }
 
 .del-item-btn {
@@ -2030,35 +2106,43 @@ const showLegalModal = ref<boolean>(false);
   color: #ef4444;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .add-item-row {
-  margin-top: 0.5rem;
-  padding: 0.5rem 0;
+  margin-top: 8px;
+  padding: 8px 0;
 }
 
 .add-row-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 6px;
   background: none;
-  border: 1px dashed #d1d5db;
-  padding: 0.45rem 0.85rem;
+  border: 1px dashed var(--border-color);
+  padding: 7px 14px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 12.5px;
   font-weight: 700;
-  color: #4b5563;
+  color: var(--text-secondary);
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.add-row-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 /* Summary */
 .summary-section {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  margin: 2rem 0;
-  padding-top: 1.5rem;
-  border-top: 2px solid #f3f4f6;
+  gap: 24px;
+  margin: 24px 0;
+  padding-top: 20px;
+  border-top: 2px solid var(--border-subtle);
 }
 
 .amount-words-box {
@@ -2067,61 +2151,72 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .words-title {
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 800;
-  color: #9ca3af;
+  color: var(--text-muted);
   letter-spacing: 0.5px;
 }
 
 .chinese-words {
-  font-size: 1.15rem;
-  color: #111827;
-  margin-top: 0.25rem;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.english-words {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
 .math-summary-box {
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
-  color: #4b5563;
+  font-size: 13.5px;
+  color: var(--text-secondary);
 }
 
 .summary-total-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.65rem;
-  border-top: 2px solid #111827;
-  margin-top: 0.25rem;
+  padding-top: 10px;
+  border-top: 2px solid var(--border-color);
+  margin-top: 4px;
 }
 
 .total-label {
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 800;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .total-amount {
-  font-size: 1.25rem;
+  font-size: 22px;
   font-weight: 900;
-  color: #111827;
+  color: var(--accent);
 }
 
 .mini-percent-input,
 .mini-label-input {
   width: 48px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
+  background: var(--bg-muted);
+  color: var(--text-primary);
   border-radius: 4px;
-  padding: 1px 4px;
-  font-size: 0.8rem;
+  padding: 2px 4px;
+  font-size: 12.5px;
   text-align: center;
 }
 
@@ -2150,52 +2245,59 @@ const showLegalModal = ref<boolean>(false);
   color: #10b981;
 }
 
-.stamp-text-top { font-size: 9px; font-weight: 900; letter-spacing: 1px; }
-.stamp-text-center { font-size: 14px; font-weight: 900; letter-spacing: 1px; }
-.stamp-text-bottom { font-size: 8px; font-weight: 700; }
+.stamp-text-top { font-size: 11px; font-weight: 900; letter-spacing: 1px; }
+.stamp-text-center { font-size: 15px; font-weight: 900; letter-spacing: 1px; }
+.stamp-text-bottom { font-size: 11px; font-weight: 700; }
 
 /* Milestones */
 .milestones-section {
-  margin: 1.5rem 0;
-  padding: 1.25rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg-muted);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
 }
 
 .milestones-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 12px;
 }
 
 .mini-btn {
-  padding: 2px 8px;
-  font-size: 0.75rem;
+  padding: 4px 10px;
+  font-size: 12px;
   font-weight: 600;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mini-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .milestones-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .milestone-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  padding: 0.75rem;
-  border-radius: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 8px;
 }
 
 .milestone-card.status-paid {
   border-color: #10b981;
-  background: #f0fdf4;
+  background: rgba(16, 185, 129, 0.08);
 }
 
 .milestone-top {
@@ -2205,19 +2307,47 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .status-select {
-  font-size: 0.72rem;
-  border: 1px solid #d1d5db;
+  font-size: 12px;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  padding: 2px 6px;
+}
+
+.milestones-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.milestone-amount {
+  font-size: 15px !important;
+  font-family: monospace;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.milestone-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.milestone-status-badge {
+  font-size: 12px;
+  font-weight: 700;
 }
 
 /* Payment Details */
 .payment-details-box {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #f3f4f6;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border-subtle);
 }
 
 .payment-left {
@@ -2225,41 +2355,68 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .section-sub-title {
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: #9ca3af;
+  color: var(--text-muted);
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
+  margin-bottom: 10px;
 }
 
 .wire-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
-  font-size: 0.82rem;
+  gap: 10px;
+  font-size: 13px;
 }
 
 .wire-lbl {
-  color: #6b7280;
+  color: var(--text-muted);
   display: block;
-  font-size: 0.75rem;
+  font-size: 12px;
 }
 
 .wire-input {
   width: 100%;
   border: none;
   background: transparent;
-  color: #1f2937;
-  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-size: 13px;
   outline: none;
 }
 
 .crypto-box {
-  background: #fefce8;
-  border: 1px dashed #facc15;
-  padding: 0.5rem 0.75rem;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  padding: 8px 12px;
   border-radius: 6px;
+  margin-top: 12px;
+}
+
+.crypto-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f59e0b;
+  margin-bottom: 4px;
+}
+
+.crypto-net-label {
+  font-size: 12.5px;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.notes-row {
+  margin-top: 12px;
+}
+
+.notes-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
 }
 
 .terms-textarea {
@@ -2267,9 +2424,9 @@ const showLegalModal = ref<boolean>(false);
   border: none;
   background: transparent;
   outline: none;
-  font-size: 0.78rem;
-  color: #4b5563;
-  line-height: 1.45;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
   resize: vertical;
 }
 
@@ -2284,9 +2441,9 @@ const showLegalModal = ref<boolean>(false);
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #ffffff;
+  background: var(--bg-surface);
   padding: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 }
 
@@ -2297,15 +2454,15 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .qr-label {
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 700;
-  color: #4b5563;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
 .upload-qr-btn {
   margin-top: 6px;
-  font-size: 0.7rem;
+  font-size: 12px;
   color: var(--accent);
   cursor: pointer;
   font-weight: 600;
@@ -2313,7 +2470,7 @@ const showLegalModal = ref<boolean>(false);
 
 .remove-qr-btn {
   margin-top: 4px;
-  font-size: 0.7rem;
+  font-size: 12px;
   color: #ef4444;
   background: none;
   border: none;
@@ -2324,9 +2481,9 @@ const showLegalModal = ref<boolean>(false);
 .signature-section {
   display: flex;
   justify-content: space-between;
-  gap: 3rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  gap: 36px;
+  margin-top: 28px;
+  padding-top: 20px;
 }
 
 .sign-box {
@@ -2334,24 +2491,24 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .sign-line {
-  border-bottom: 1px solid #111827;
+  border-bottom: 1px solid var(--border-color);
   height: 40px;
 }
 
 .sign-label {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: 12px;
+  color: var(--text-muted);
   margin-top: 6px;
 }
 
 /* PERMANENT WATERMARK FOOTER */
 .legal-watermark-footer {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
+  margin-top: 32px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
   text-align: center;
-  font-size: 9pt;
-  color: #9ca3af;
+  font-size: 12px;
+  color: var(--text-muted);
   user-select: none;
   pointer-events: none;
   font-family: system-ui, -apple-system, sans-serif;
@@ -2361,23 +2518,25 @@ const showLegalModal = ref<boolean>(false);
 .affiliate-recommend-section {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .affiliate-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+  gap: 8px;
+  font-size: 16px;
   font-weight: 800;
-  margin-bottom: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 16px;
 }
 
 .affiliate-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 16px;
 }
 
 @media (max-width: 768px) {
@@ -2387,10 +2546,10 @@ const showLegalModal = ref<boolean>(false);
 }
 
 .partner-card {
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1.1rem;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -2400,53 +2559,59 @@ const showLegalModal = ref<boolean>(false);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .partner-logo {
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 15px;
+  color: var(--text-primary);
 }
 
 .partner-badge {
-  font-size: 0.7rem;
+  font-size: 12px;
   font-weight: 700;
   background: rgba(16, 185, 129, 0.12);
   color: #10b981;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
 }
 
 .partner-desc {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-  margin-bottom: 1rem;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
 }
 
 .partner-btn {
   display: block;
   text-align: center;
-  padding: 0.45rem;
+  padding: 8px 12px;
   background: var(--accent);
   color: #ffffff;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.partner-btn:hover {
+  background: var(--accent-hover);
 }
 
 /* Legal Modal */
 .template-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 16px;
 }
 
 .template-modal-card {
@@ -2454,83 +2619,106 @@ const showLegalModal = ref<boolean>(false);
   max-width: 680px;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 1.75rem;
+  border-radius: 16px;
+  padding: 24px;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: var(--shadow-md);
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 14px;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.template-modal-card .text-xl,
+.text-xl {
+  font-size: 20px !important;
 }
 
 .modal-title {
-  font-size: 1.15rem;
+  font-size: 18px;
   font-weight: 800;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 20px;
   color: var(--text-muted);
   cursor: pointer;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: var(--text-primary);
 }
 
 .modal-desc {
-  font-size: 0.85rem;
+  font-size: 13px;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-bottom: 1.25rem;
+  margin-bottom: 18px;
 }
 
 .clause-preview-box {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .clause-item {
-  background: var(--bg-body);
-  border: 1px solid var(--border-color);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
-  padding: 0.85rem;
+  padding: 12px 14px;
 }
 
 .clause-badge {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 11px;
   font-weight: 800;
   color: #a855f7;
   background: rgba(168, 85, 247, 0.12);
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
 }
 
 .clause-title {
-  font-size: 0.85rem;
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
 }
 
 .clause-text {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.45;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .checkout-actions-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-  margin-bottom: 0.85rem;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 640px) {
@@ -2543,12 +2731,13 @@ const showLegalModal = ref<boolean>(false);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 9px;
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 13.5px;
   text-decoration: none;
+  transition: all 0.15s ease;
 }
 
 .mianbaoduo-btn {
@@ -2556,13 +2745,21 @@ const showLegalModal = ref<boolean>(false);
   color: #ffffff;
 }
 
+.mianbaoduo-btn:hover {
+  background: #059669;
+}
+
 .gumroad-btn {
   background: #ff5277;
   color: #ffffff;
 }
 
+.gumroad-btn:hover {
+  background: #f43f5e;
+}
+
 .legal-note {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--text-muted);
   text-align: center;
 }
@@ -2574,7 +2771,7 @@ const showLegalModal = ref<boolean>(false);
 /* RESPONSIVE SCREEN LAYOUT (Mobile Polish) */
 @media screen and (max-width: 768px) {
   .freelance-invoice-root {
-    padding: 1rem 0.5rem 3rem;
+    padding: 0;
   }
 
   .action-toolbar {
@@ -2591,15 +2788,20 @@ const showLegalModal = ref<boolean>(false);
     justify-content: flex-start;
   }
 
+  .invoice-paper-container {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
   .invoice-paper {
-    padding: 1.25rem 1rem;
+    padding: 18px 14px;
     border-radius: 8px;
   }
 
   .invoice-header {
     flex-direction: column;
-    gap: 1.25rem;
-    padding-bottom: 1.25rem;
+    gap: 18px;
+    padding-bottom: 18px;
   }
 
   .header-right {
@@ -2608,8 +2810,8 @@ const showLegalModal = ref<boolean>(false);
 
   .client-billto-section {
     flex-direction: column;
-    gap: 1.25rem;
-    margin: 1.25rem 0;
+    gap: 18px;
+    margin: 18px 0;
   }
 
   .currency-selector-box {
@@ -2620,7 +2822,7 @@ const showLegalModal = ref<boolean>(false);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 14px;
   }
 
   .items-table {
@@ -2629,8 +2831,8 @@ const showLegalModal = ref<boolean>(false);
 
   .summary-section {
     flex-direction: column-reverse;
-    gap: 1.5rem;
-    margin: 1.25rem 0;
+    gap: 20px;
+    margin: 18px 0;
   }
 
   .math-summary-box {
@@ -2639,7 +2841,7 @@ const showLegalModal = ref<boolean>(false);
 
   .payment-details-box {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 20px;
   }
 
   .wire-details-grid {
@@ -2652,7 +2854,7 @@ const showLegalModal = ref<boolean>(false);
 
   .signature-section {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 20px;
   }
 }
 
@@ -2688,14 +2890,51 @@ const showLegalModal = ref<boolean>(false);
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
+    border: none !important;
   }
 
   .invoice-paper {
     width: 100% !important;
     max-width: 100% !important;
+    background: #ffffff !important;
+    color: #111827 !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
+  }
+
+  .editable-h1,
+  .editable-text-bold,
+  .editable-text,
+  .editable-mini,
+  .editable-bold,
+  .chinese-words,
+  .total-label,
+  .total-amount,
+  .item-desc-input,
+  .item-num-input,
+  .item-unit-input,
+  .doc-num-input,
+  .doc-date-row input,
+  .wire-input,
+  .terms-textarea {
+    color: #111827 !important;
+  }
+
+  .items-table th {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    border-bottom: 2px solid #e5e7eb !important;
+  }
+
+  .items-table td {
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  .invoice-header,
+  .summary-section,
+  .payment-details-box {
+    border-color: #e5e7eb !important;
   }
 
   /* 3. Force background and borders to print sharply */

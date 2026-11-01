@@ -928,10 +928,13 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .saas-metrics-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
 }
 
 /* Header */
@@ -944,18 +947,18 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .tool-title {
-  margin: 0 0 6px 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
 .tool-subtitle {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 13.5px;
   line-height: 1.5;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary);
   max-width: 750px;
 }
 
@@ -963,73 +966,87 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   padding: 4px 8px;
 }
 
 .curr-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .curr-pill {
   background: none;
   border: 1px solid transparent;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 0.75rem;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--text-secondary, #475569);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--text-primary);
+  }
 
   &.active {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
+    font-weight: 700;
   }
 }
 
 /* Scorecards */
 .scorecards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .metric-card {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   &.highlight-metric {
-    border-color: rgba(37, 99, 235, 0.4);
-    background: rgba(37, 99, 235, 0.02);
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
   }
 }
 
 .card-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.5px;
 }
 
 .card-value {
-  font-size: 1.625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
   line-height: 1.2;
 
   &.text-accent {
-    color: var(--accent-color, #2563eb);
+    color: var(--accent);
   }
 
   &.text-danger {
@@ -1038,20 +1055,20 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .card-sub {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #94a3b8);
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 /* Health Gauge */
 .health-gauge-box {
-  background: var(--bg-surface, #ffffff);
+  background: var(--bg-surface);
   border: 2px solid #10b981;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .gauge-header {
@@ -1069,46 +1086,47 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .gauge-main-title {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .health-badge {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: #ffffff;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 12px;
 }
 
 .ratio-big-value {
-  font-size: 1.875rem;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 900;
   line-height: 1;
 }
 
 .health-progress-track {
   position: relative;
   display: flex;
-  height: 18px;
-  border-radius: 9px;
+  height: 26px;
+  border-radius: 13px;
   overflow: visible;
-  background: #e2e8f0;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
 }
 
 .zone {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.625rem;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: #ffffff;
   overflow: hidden;
 
   &.zone-danger {
     background: #ef4444;
-    border-radius: 9px 0 0 9px;
+    border-radius: 12px 0 0 12px;
   }
 
   &.zone-warning {
@@ -1117,48 +1135,56 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
   &.zone-healthy {
     background: #10b981;
-    border-radius: 0 9px 9px 0;
+    border-radius: 0 12px 12px 0;
   }
 }
 
 .gauge-pointer {
   position: absolute;
-  top: 19px;
+  top: 27px;
   transform: translateX(-50%);
-  font-size: 0.8125rem;
-  color: #0f172a;
+  font-size: 14px;
+  color: var(--text-primary);
   line-height: 1;
   transition: left 0.3s ease;
 }
 
 .health-diagnosis-text {
   margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--text-primary, #334155);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
 }
 
 /* Inputs Section */
 .inputs-grid-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 20px;
+  gap: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .section-subheading {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .inputs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 540px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .input-cell {
@@ -1168,25 +1194,26 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .cell-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-secondary, #475569);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .cell-input {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--border-color, #cbd5e1);
-  border-radius: 6px;
-  background: var(--bg-input, #ffffff);
-  color: var(--text-primary, #0f172a);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:focus {
-    border-color: var(--accent-color, #2563eb);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 }
 
@@ -1194,33 +1221,35 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .sandbox-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 20px;
+  gap: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .sandbox-title {
   margin: 0 0 4px 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 17.5px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .sandbox-subtitle {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .sliders-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  padding: 14px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border-radius: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  padding: 16px 20px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
 }
 
 .slider-box {
@@ -1232,18 +1261,24 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .slider-label-line {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-secondary, #475569);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .slider-val {
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 13.5px;
+  color: var(--accent);
+
+  &.text-danger {
+    color: #ef4444;
+  }
 }
 
 .styled-range {
   width: 100%;
-  accent-color: var(--accent-color, #2563eb);
+  accent-color: var(--accent);
 }
 
 .chart-container {
@@ -1257,8 +1292,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   align-items: center;
   flex-wrap: wrap;
   gap: 18px;
-  font-size: 0.75rem;
-  color: var(--text-secondary, #475569);
+  font-size: 12.5px;
+  color: var(--text-secondary);
 }
 
 .legend-item {
@@ -1269,58 +1304,61 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .legend-line {
   display: inline-block;
-  width: 16px;
+  width: 18px;
   height: 3px;
   border-radius: 2px;
 
   &.base-line {
-    background: #94a3b8;
+    background: var(--text-muted);
   }
 
   &.sim-line {
-    background: #2563eb;
+    background: var(--accent);
   }
 }
 
 .legend-stat {
   margin-left: auto;
-  font-size: 0.8125rem;
-  color: var(--text-primary, #0f172a);
+  font-size: 13px;
+  color: var(--text-primary);
 
   strong {
-    color: #10b981;
-    font-size: 0.9375rem;
+    color: var(--accent-secondary, #10b981);
+    font-size: 14.5px;
+    font-weight: 800;
   }
 }
 
 .svg-wrap {
   position: relative;
   width: 100%;
-  border: 1px solid var(--border-color, #f1f5f9);
-  border-radius: 8px;
-  background: var(--bg-surface, #ffffff);
-  padding: 8px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  padding: 12px 8px;
 }
 
 .chart-svg {
   width: 100%;
-  height: 220px;
+  height: 240px;
   display: block;
 }
 
 .grid-line {
-  stroke: var(--border-color, #f1f5f9);
+  stroke: var(--border-subtle);
   stroke-dasharray: 4 4;
 }
 
 .axis-text {
-  font-size: 10px;
-  fill: var(--text-secondary, #94a3b8);
+  font-size: 11px;
+  fill: var(--text-muted);
   font-family: inherit;
+  font-weight: 600;
 }
 
 .sim-area {
-  fill: rgba(37, 99, 235, 0.08);
+  fill: var(--accent-soft);
+  opacity: 0.7;
 }
 
 .chart-path {
@@ -1328,19 +1366,20 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   stroke-width: 2.5;
 
   &.base-path {
-    stroke: #94a3b8;
+    stroke: var(--text-muted);
     stroke-dasharray: 4 4;
   }
 
   &.sim-path {
-    stroke: #2563eb;
+    stroke: var(--accent);
+    stroke-width: 3;
   }
 }
 
 .chart-point {
-  fill: #2563eb;
-  stroke: #ffffff;
-  stroke-width: 2;
+  fill: var(--accent);
+  stroke: var(--bg-surface);
+  stroke-width: 2.5;
   cursor: pointer;
   transition: r 0.2s ease;
 
@@ -1352,12 +1391,13 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .chart-tooltip {
   position: absolute;
   transform: translateX(-50%);
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.6875rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  background: var(--bg-surface-elevated, #131a26);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  box-shadow: var(--shadow-md);
   pointer-events: none;
   white-space: nowrap;
   z-index: 10;
@@ -1366,115 +1406,123 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .tooltip-title {
   font-weight: 700;
   margin-bottom: 2px;
-  color: #93c5fd;
+  color: var(--accent);
 }
 
 .tooltip-row {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 }
 
 /* Valuation Section */
 .valuation-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 20px;
+  gap: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .valuation-title {
   margin: 0 0 4px 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 17.5px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .valuation-subtitle {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .valuation-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
 .val-tier-card {
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 
   &.highlight-tier {
-    border-color: rgba(37, 99, 235, 0.5);
-    background: rgba(37, 99, 235, 0.03);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    box-shadow: var(--shadow-sm);
   }
 }
 
 .val-tier-badge {
   display: inline-block;
   align-self: flex-start;
-  font-size: 0.6875rem;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   padding: 2px 8px;
   border-radius: 4px;
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 
   &.badge-median {
-    background: #dbeafe;
-    color: #1d4ed8;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent-border);
   }
 
   &.badge-premium {
-    background: #fef3c7;
+    background: rgba(245, 158, 11, 0.15);
     color: #b45309;
+    border-color: rgba(245, 158, 11, 0.3);
   }
 }
 
 .val-multiple {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .val-amount-range {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text-primary, #0f172a);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-primary);
+
+  &.text-accent {
+    color: var(--accent);
+  }
 }
 
 .val-desc {
   margin: 4px 0 0 0;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--text-secondary, #64748b);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 /* Levers Accordion */
 .levers-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border-top: 1px solid var(--border-color, #e2e8f0);
-  padding-top: 16px;
+  gap: 12px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 18px;
 }
 
 .levers-heading {
   margin: 0 0 4px 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .levers-accordion {
@@ -1484,14 +1532,14 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .lever-item {
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
-  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-muted);
   overflow: hidden;
   transition: all 0.2s ease;
 
   &.open {
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
   }
 }
 
@@ -1499,12 +1547,12 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   cursor: pointer;
-  background: var(--bg-surface-elevated, #f8fafc);
+  background: var(--bg-muted);
 
   &:hover {
-    background: var(--bg-hover, #f1f5f9);
+    background: var(--bg-surface-hover);
   }
 }
 
@@ -1515,29 +1563,29 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .lever-icon {
-  font-size: 0.6875rem;
-  color: var(--accent-color, #2563eb);
+  font-size: 12px;
+  color: var(--accent);
 }
 
 .lever-title {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-primary, #0f172a);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .lever-summary {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #64748b);
-  padding-left: 16px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  padding-left: 20px;
 }
 
 .lever-body {
-  padding: 12px 16px;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--text-primary, #334155);
-  background: var(--bg-surface, #ffffff);
-  border-top: 1px solid var(--border-color, #e2e8f0);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
 
   p {
     margin: 0;
@@ -1556,32 +1604,33 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .affiliate-panel {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
 }
 
 .panel-badge {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: #0284c7;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--accent);
 }
 
 .panel-title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .panel-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
+  font-size: 12.5px;
+  color: var(--text-secondary);
 }
 
 .affiliate-buttons {
@@ -1593,51 +1642,51 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 
 .aff-btn {
   display: block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #cbd5e1);
-  color: var(--text-primary, #1e293b);
-  font-size: 0.75rem;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--accent-color, #2563eb);
+    background: var(--accent);
     color: #ffffff;
-    border-color: var(--accent-color, #2563eb);
+    border-color: var(--accent);
   }
 }
 
 .tripwire-box {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%);
-  border: 1px solid rgba(37, 99, 235, 0.25);
-  border-radius: 12px;
-  padding: 18px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 16px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .tripwire-tag {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: #2563eb;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--accent);
 }
 
 .tripwire-title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .tripwire-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #475569);
-  line-height: 1.4;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .tripwire-actions {
@@ -1649,31 +1698,35 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .btn-tripwire-outline {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-color, #cbd5e1);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--text-primary, #1e293b);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--bg-hover, #f8fafc);
+    background: var(--bg-surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
 .btn-tripwire-solid {
-  background: #2563eb;
+  background: var(--accent);
   color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: #1d4ed8;
+    background: var(--accent-hover);
   }
 }
 
@@ -1681,7 +1734,8 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1690,15 +1744,16 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .modal-dialog {
-  background: var(--bg-surface, #ffffff);
-  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .modal-header {
@@ -1706,22 +1761,26 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .btn-close-modal {
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 20px;
   cursor: pointer;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-muted);
+
+  &:hover {
+    color: var(--text-primary);
+  }
 }
 
 .modal-body {
@@ -1736,24 +1795,24 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 }
 
 .preview-card-item {
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
-  padding: 14px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 14px 16px;
 }
 
 .card-item-title {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .card-item-desc {
   margin: 0;
-  font-size: 0.8125rem;
-  color: var(--text-secondary, #64748b);
-  line-height: 1.4;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .modal-footer {
@@ -1761,27 +1820,28 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   justify-content: space-between;
   align-items: center;
   padding: 14px 20px;
-  border-top: 1px solid var(--border-color, #e2e8f0);
-  background: var(--bg-surface-elevated, #f8fafc);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-muted);
 }
 
 .pricing-badge {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 700;
   color: #dc2626;
 }
 
 .btn-modal-checkout {
-  background: #2563eb;
+  background: var(--accent);
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: #1d4ed8;
+    background: var(--accent-hover);
   }
 }
 
@@ -1789,29 +1849,29 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
 .disclaimer-box {
   display: flex;
   gap: 12px;
-  background: var(--bg-surface-elevated, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
   padding: 14px 18px;
 }
 
 .disclaimer-icon {
-  font-size: 1.25rem;
+  font-size: 20px;
   line-height: 1;
 }
 
 .disclaimer-title {
   margin: 0 0 4px 0;
-  font-size: 0.8125rem;
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--text-primary, #334155);
+  color: var(--text-primary);
 }
 
 .disclaimer-text {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 12px;
   line-height: 1.5;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-muted);
 }
 
 /* Toast */
@@ -1819,15 +1879,16 @@ function handleAffiliateClick(url: string, platformName: string, ev: MouseEvent)
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--text-primary);
+  color: var(--bg-surface);
   padding: 10px 18px;
   border-radius: 8px;
-  font-size: 0.8125rem;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   z-index: 1000;
 }
 
