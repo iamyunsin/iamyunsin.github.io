@@ -25,3 +25,4 @@ rust-wasm/target/
 # rust-wasm/
 
 .agents
+.screenshots
