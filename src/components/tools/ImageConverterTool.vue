@@ -40,6 +40,7 @@ interface ProcessedImageItem {
   outputBlob: Blob | null;
   outputUrl: string;
   outputSize: number;
+  outputExt: string;
   savedPercent: number;
   status: 'processing' | 'done' | 'error';
   errorMsg?: string;
@@ -47,8 +48,32 @@ interface ProcessedImageItem {
 
 const items = ref<ProcessedImageItem[]>([]);
 const fileInputRef = ref<HTMLInputElement | null>(null);
+const encoderSupport = ref<{ webp: boolean; avif: boolean }>({ webp: true, avif: true });
+
+function detectCanvasEncoderSupport(): { webp: boolean; avif: boolean } {
+  if (typeof document === 'undefined') return { webp: true, avif: true };
+  try {
+    const c = document.createElement('canvas');
+    c.width = 2;
+    c.height = 2;
+    const ctx = c.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, 2, 2);
+    }
+    const webpUrl = c.toDataURL('image/webp', 0.8);
+    const avifUrl = c.toDataURL('image/avif', 0.8);
+    return {
+      webp: webpUrl.startsWith('data:image/webp'),
+      avif: avifUrl.startsWith('data:image/avif'),
+    };
+  } catch {
+    return { webp: false, avif: false };
+  }
+}
 
 onMounted(async () => {
+  encoderSupport.value = detectCanvasEncoderSupport();
   try {
     wasmExports.value = await initImageCodecWasm();
     wasmReady.value = true;
@@ -207,10 +232,10 @@ async function downloadAllAsZip() {
   try {
     const usedNames = new Set<string>();
     const entries: ZipEntry[] = [];
-    const ext = extMap[targetMime.value] || 'webp';
 
     for (const item of doneItems) {
       if (!item.outputBlob) continue;
+      const ext = item.outputExt || extMap[targetMime.value] || 'jpg';
       const baseName = item.name.trim() || 'image';
       let filename = `${baseName}_optimized.${ext}`;
       let counter = 1;
@@ -251,9 +276,10 @@ async function downloadAllSeparately() {
 
   for (let idx = 0; idx < doneItems.length; idx++) {
     const item = doneItems[idx];
+    const ext = item.outputExt || extMap[targetMime.value] || 'jpg';
     const link = document.createElement('a');
     link.href = item.outputUrl;
-    link.download = `${item.name}_optimized.${extMap[targetMime.value] || 'webp'}`;
+    link.download = `${item.name}_optimized.${ext}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -261,6 +287,125 @@ async function downloadAllSeparately() {
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
   }
+}
+
+function detectAlphaChannel(rgba: Uint8ClampedArray): boolean {
+  for (let i = 3; i < rgba.length; i += 16) {
+    if (rgba[i] < 250) return true;
+  }
+  return false;
+}
+
+function stripJpegMetadataLossless(bytes: Uint8Array): Blob | null {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  const chunks: Uint8Array[] = [bytes.subarray(0, 2)];
+  let pos = 2;
+  while (pos < bytes.length) {
+    if (bytes[pos] !== 0xff) return null;
+    while (pos < bytes.length && bytes[pos] === 0xff) pos++;
+    if (pos >= bytes.length) break;
+    const marker = bytes[pos];
+    pos++;
+
+    if (marker === 0xd9) {
+      chunks.push(new Uint8Array([0xff, 0xd9]));
+      break;
+    }
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
+      chunks.push(new Uint8Array([0xff, marker]));
+      continue;
+    }
+    if (pos + 2 > bytes.length) return null;
+    const segLen = (bytes[pos] << 8) | bytes[pos + 1];
+    if (segLen < 2 || pos + segLen > bytes.length) return null;
+
+    if (marker === 0xda) {
+      // SOS (Start of Scan): copy marker + rest of compressed bitstream to end
+      chunks.push(bytes.subarray(pos - 2));
+      break;
+    }
+    // Strip APP1..APP15 (0xE1..0xEF: EXIF, GPS, XMP, IPTC, MakerNote, ICC) and COM (0xFE)
+    const isMetadataSegment = (marker >= 0xe1 && marker <= 0xef) || marker === 0xfe;
+    if (!isMetadataSegment) {
+      chunks.push(bytes.subarray(pos - 2, pos + segLen));
+    }
+    pos += segLen;
+  }
+  return new Blob(chunks, { type: 'image/jpeg' });
+}
+
+function stripPngMetadataLossless(bytes: Uint8Array): Blob | null {
+  if (
+    bytes.length < 8 ||
+    bytes[0] !== 0x89 ||
+    bytes[1] !== 0x50 ||
+    bytes[2] !== 0x4e ||
+    bytes[3] !== 0x47
+  ) {
+    return null;
+  }
+  const chunks: Uint8Array[] = [bytes.subarray(0, 8)];
+  let pos = 8;
+  const stripTypes = new Set(['eXIf', 'tEXt', 'zTXt', 'iTXt', 'tIME']);
+  while (pos + 12 <= bytes.length) {
+    const len =
+      ((bytes[pos] << 24) |
+        (bytes[pos + 1] << 16) |
+        (bytes[pos + 2] << 8) |
+        bytes[pos + 3]) >>>
+      0;
+    const totalChunk = 12 + len;
+    if (pos + totalChunk > bytes.length) return null;
+    const typeStr = String.fromCharCode(
+      bytes[pos + 4],
+      bytes[pos + 5],
+      bytes[pos + 6],
+      bytes[pos + 7]
+    );
+    if (!stripTypes.has(typeStr)) {
+      chunks.push(bytes.subarray(pos, pos + totalChunk));
+    }
+    pos += totalChunk;
+    if (typeStr === 'IEND') break;
+  }
+  return new Blob(chunks, { type: 'image/png' });
+}
+
+async function tryLosslessMetadataStrip(
+  file: File
+): Promise<{ blob: Blob; ext: string } | null> {
+  try {
+    const buf = new Uint8Array(await file.arrayBuffer());
+    if (buf[0] === 0xff && buf[1] === 0xd8) {
+      const stripped = stripJpegMetadataLossless(buf);
+      if (stripped && stripped.size > 0 && stripped.size <= file.size) {
+        return { blob: stripped, ext: 'jpg' };
+      }
+    } else if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) {
+      const stripped = stripPngMetadataLossless(buf);
+      if (stripped && stripped.size > 0 && stripped.size <= file.size) {
+        return { blob: stripped, ext: 'png' };
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function canvasToBlobAsync(
+  canvas: HTMLCanvasElement,
+  mime: string,
+  q?: number
+): Promise<Blob> {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (b) => {
+        if (b) resolve(b);
+        else reject(new Error('Encoding failed'));
+      },
+      mime,
+      q
+    );
+  });
 }
 
 async function processSingleItem(item: ProcessedImageItem) {
@@ -304,37 +449,102 @@ async function processSingleItem(item: ProcessedImageItem) {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas 2D context unavailable');
 
-    // Fill white background if exporting to JPEG (which has no alpha channel)
-    if (targetMime.value === 'image/jpeg') {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, outW, outH);
-    }
     ctx.drawImage(img, 0, 0, outW, outH);
 
-    // 4. Pass RGBA buffer through Rust Wasm for color quantization & domain guard check
-    if (wasmExports.value) {
-      const imgData = ctx.getImageData(0, 0, outW, outH);
-      processRgbaBufferWithWasm(wasmExports.value, imgData.data, outW, quantizeLevel.value);
-      ctx.putImageData(imgData, 0, 0);
+    // 4. Inspect alpha channel & pass RGBA buffer through Rust Wasm quantization
+    const imgData = ctx.getImageData(0, 0, outW, outH);
+    const hasAlpha = detectAlphaChannel(imgData.data);
+
+    // Determine effective MIME type (handle iOS WebKit where canvas.toBlob('image/webp'|'image/avif') silently falls back to huge lossless PNG)
+    let effectiveMime = targetMime.value;
+    const isWebpUnsupported = effectiveMime === 'image/webp' && !encoderSupport.value.webp;
+    const isAvifUnsupported = effectiveMime === 'image/avif' && !encoderSupport.value.avif;
+
+    if (isWebpUnsupported || isAvifUnsupported) {
+      effectiveMime = hasAlpha ? 'image/png' : 'image/jpeg';
+    } else if (effectiveMime === 'image/png' && !hasAlpha && quantizeLevel.value > 1) {
+      // Keep PNG if explicitly chosen, but quantize
+      effectiveMime = 'image/png';
     }
 
-    // 5. Encode to target format Blob
-    const q = targetMime.value === 'image/png' ? undefined : quality.value / 100;
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (b) => {
-          if (b) resolve(b);
-          else reject(new Error('Encoding failed'));
-        },
-        targetMime.value,
-        q
-      );
-    });
+    // If exporting to JPEG and image has any transparency, composite over white
+    if (effectiveMime === 'image/jpeg' && hasAlpha) {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, outW, outH);
+      ctx.drawImage(img, 0, 0, outW, outH);
+    }
+
+    if (wasmExports.value) {
+      const effectiveQuantize =
+        effectiveMime === 'image/png' && (isWebpUnsupported || isAvifUnsupported)
+          ? Math.max(quantizeLevel.value, 8)
+          : quantizeLevel.value;
+      const currentImgData = ctx.getImageData(0, 0, outW, outH);
+      processRgbaBufferWithWasm(wasmExports.value, currentImgData.data, outW, effectiveQuantize);
+      ctx.putImageData(currentImgData, 0, 0);
+    }
+
+    // 5. Encode to target format Blob with iOS fallback verification & adaptive quality step-down
+    const baseQ = effectiveMime === 'image/png' ? undefined : quality.value / 100;
+    let blob = await canvasToBlobAsync(canvas, effectiveMime, baseQ);
+
+    // Runtime safeguard: if browser still silently fell back to image/png when lossy format was requested
+    if (effectiveMime !== 'image/png' && blob.type === 'image/png' && !hasAlpha) {
+      effectiveMime = 'image/jpeg';
+      blob = await canvasToBlobAsync(canvas, 'image/jpeg', quality.value / 100);
+    }
+
+    // Adaptive quality step-down: if lossy output is still >= 96% of original size, step down quality to achieve genuine compression
+    if (
+      effectiveMime !== 'image/png' &&
+      target.originalSize > 0 &&
+      blob.size >= target.originalSize * 0.96
+    ) {
+      const startQ = quality.value / 100;
+      const candidateQualities = [
+        Math.min(startQ - 0.1, 0.72),
+        Math.min(startQ - 0.22, 0.6),
+        Math.min(startQ - 0.34, 0.48),
+        0.38,
+      ].filter((qVal) => qVal > 0.15 && qVal < startQ);
+
+      for (const candQ of candidateQualities) {
+        const candBlob = await canvasToBlobAsync(canvas, effectiveMime, candQ);
+        if (candBlob.size < blob.size) {
+          blob = candBlob;
+        }
+        if (blob.size <= target.originalSize * 0.88) {
+          break;
+        }
+      }
+    }
+
+    let finalExt = extMap[blob.type] || extMap[effectiveMime] || 'jpg';
+
+    // 6. Never-inflate guardrail: if 100% scale and re-encoded blob is still >= originalSize, compare with lossless binary EXIF-stripped file
+    if (scalePercent.value === 100 && blob.size >= target.originalSize) {
+      // Also try JPEG if input was an opaque PNG screenshot and user wanted compression (WebP/AVIF)
+      if (effectiveMime === 'image/png' && !hasAlpha && targetMime.value !== 'image/png') {
+        const jpegFallback = await canvasToBlobAsync(canvas, 'image/jpeg', Math.min(quality.value / 100, 0.76));
+        if (jpegFallback.size < blob.size) {
+          blob = jpegFallback;
+          finalExt = 'jpg';
+        }
+      }
+      if (blob.size >= target.originalSize) {
+        const stripped = await tryLosslessMetadataStrip(target.file);
+        if (stripped && stripped.blob.size < blob.size) {
+          blob = stripped.blob;
+          finalExt = stripped.ext;
+        }
+      }
+    }
 
     if (target.outputUrl) URL.revokeObjectURL(target.outputUrl);
     target.outputBlob = blob;
     target.outputUrl = URL.createObjectURL(blob);
     target.outputSize = blob.size;
+    target.outputExt = finalExt;
     target.savedPercent =
       target.originalSize > 0
         ? Math.round(((target.originalSize - blob.size) / target.originalSize) * 1000) / 10
@@ -375,6 +585,7 @@ async function handleFiles(fileList: FileList | File[]) {
     outputBlob: null,
     outputUrl: '',
     outputSize: 0,
+    outputExt: extMap[targetMime.value] || 'webp',
     savedPercent: 0,
     status: 'processing',
   }));
@@ -674,7 +885,7 @@ const totalStats = computed(() => {
           <div class="info-col">
             <div class="file-title-line">
               <span class="file-name">{{ item.file.name }}</span>
-              <span class="format-pill">{{ item.headerInfo.format }} → {{ extMap[targetMime].toUpperCase() }}</span>
+              <span class="format-pill">{{ item.headerInfo.format }} → {{ (item.outputExt || extMap[targetMime]).toUpperCase() }}</span>
             </div>
 
             <div class="meta-line">
@@ -713,7 +924,7 @@ const totalStats = computed(() => {
             <a
               v-if="item.status === 'done' && item.outputUrl"
               :href="item.outputUrl"
-              :download="`${item.name}_optimized.${extMap[targetMime]}`"
+              :download="`${item.name}_optimized.${item.outputExt || extMap[targetMime]}`"
               class="dl-btn"
             >
               {{ isEn ? '⬇ Download' : '⬇ 下载图片' }}
