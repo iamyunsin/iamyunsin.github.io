@@ -1,0 +1,90 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import AutoLoanTcoTool from '@/components/tools/AutoLoanTcoTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Multi-Currency Account',
+    description: 'Pay for international car rentals, overseas auto parts, and cross-border transfers at the real Reuters mid-market exchange rate.',
+    ctaText: 'Open Wise Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Host your personal telemetry logger, TeslaMate server, or fleet dashboard with a 25% exclusive discount.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: '$25 Registration Bonus',
+    title: 'Payoneer Business Settlement',
+    description: 'Collect global freelance and e-commerce payouts seamlessly into your local bank account.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does a dealer "3.0% annual flat fee" auto loan actually equal a 6%–8% True APR (IRR)?',
+    answer:
+      'Auto dealerships frequently quote "flat-rate" (add-on interest) loans rather than standard reducing-balance amortization. Under a flat-rate loan, you pay monthly interest calculated on 100% of the initial borrowed amount even in month 35 when almost all principal has already been repaid. Because your average outstanding balance over the loan lifecycle is roughly half of the original principal, the true Internal Rate of Return (IRR) is nearly 1.9x the quoted flat rate — and jumps even higher once upfront origination or GPS fees are factored in.',
+  },
+  {
+    question: 'How is the Vehicle Purchase Tax calculated in China?',
+    answer:
+      'The statutory purchase tax rate is 10% of the VAT-exclusive invoice price. Since retail car prices include a 13% Value-Added Tax (VAT), the formula is: Purchase Tax = (Invoice Price ÷ 1.13) × 10% (roughly 8.85% of the sticker price). Qualifying New Energy Vehicles (NEVs) enjoy either full exemption (capped at ¥30,000 tax relief) or a 50% reduction (capped at ¥15,000 relief).',
+  },
+  {
+    question: 'How many kilometers per year do I need to drive for an EV to beat a gas car in 5-year TCO?',
+    answer:
+      'While an electric vehicle costs roughly ¥0.08–¥0.10 per km in electricity compared to ¥0.55–¥0.65 per km for gasoline, EVs often carry slightly higher annual insurance premiums and steeper 5-year depreciation curves. Use Module 3 above to slide your annual mileage: if the EV benefits from purchase tax exemption and similar sticker pricing, it wins from Day 1; if the EV has a higher upfront price, the break-even threshold typically falls between 10,000 and 15,000 km per year.',
+  },
+  {
+    question: 'How does the calculator compute the True Effective APR?',
+    answer:
+      'It deducts any upfront dealer service/origination fees from your net borrowed principal at Period 0, constructs the exact monthly repayment cashflow stream, and applies the Newton-Raphson numerical root-finding algorithm to solve for the monthly Internal Rate of Return (IRR), reporting both Nominal Annualized APR (IRR × 12) and Compound Effective Annual Rate (EAR).',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="Car Out-the-Door Price, Dealer Flat-Fee True APR & EV vs. Gas 5-Year TCO Calculator"
+  description="Calculate true out-the-door car prices, expose hidden dealer flat-rate loan APRs via IRR, and compare 5-year Total Cost of Ownership (TCO) between EV and gas vehicles."
+  alternateZh="/tools/auto-loan-tco-calculator/"
+  alternateEn="/en/tools/auto-loan-tco-calculator/"
+  wasmSizeLabel="OTD, IRR & EV TCO"
+  offers={offers}
+  faqs={faqs}
+>
+  <AutoLoanTcoTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>The Complete Car Buyer Financial Playbook: OTD Pricing, Dealer APR Traps & EV TCO</h2>
+    <p>
+      Buying an automobile involves three distinct financial negotiations: the <strong>Out-the-Door (OTD) cash price</strong>, the <strong>financing structure</strong>, and the <strong>5-year Total Cost of Ownership (TCO)</strong>. Dealerships often concede discounts on the sticker price only to recover thousands in hidden loan origination fees and deceptive "flat-rate" financing quotes.
+    </p>
+
+    <h3>1. Out-the-Door (OTD) Cash Price Formula</h3>
+    <pre><code>OTD Total = Bare Car Invoice + Purchase Tax + Compulsory Ins. + Vessel Tax + Registration + Commercial Ins.</code></pre>
+
+    <h3>2. Exposing Flat-Rate Auto Loans via Internal Rate of Return (IRR)</h3>
+    <p>
+      When a dealer advertises a <strong>"0.25% monthly fee (3.0% annual fee)"</strong>, they charge interest on the original principal throughout all 36 or 60 months regardless of principal paydown. By solving the Net Present Value (NPV = 0) equation using the Newton-Raphson method after deducting upfront dealer fees, our calculator reveals the true APR you are paying so you can compare it apples-to-apples against a bank reducing-balance loan.
+    </p>
+
+    <h3>3. 5-Year Total Cost of Ownership (Gas vs. Electric)</h3>
+    <p>
+      Evaluating a gas vehicle against an electric vehicle (NEV) requires looking beyond pump prices vs. kWh rates. Our 5-year TCO model incorporates purchase tax exemptions, per-kilometer energy savings, scheduled maintenance differentials, insurance premiums, and 5-year resale value retention to pinpoint your exact break-even annual mileage.
+    </p>
+  </div>
+</ToolLayout>

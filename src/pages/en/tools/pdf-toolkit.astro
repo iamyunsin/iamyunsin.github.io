@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import PdfToolkitTool from '@/components/tools/PdfToolkitTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Document Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 — Store & Distribute PDFs with $0 Bandwidth Fees',
+    description: 'Archive encrypted contracts, invoices, and user manuals on Cloudflare R2 with S3-compatible APIs and zero egress charges.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🎨 Pitch Decks & Proposals',
+    highlight: '30-Day Pro Trial',
+    title: 'Canva Pro — Design Print-Ready PDF Proposals & E-Books',
+    description: 'Create client proposals, media kits, and invoices with thousands of agency templates and instant CMYK PDF export.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '🚀 Cloud Infrastructure',
+    highlight: 'Official Partner Rebates',
+    title: 'Alibaba Cloud & Tencent Cloud Document Storage Deals',
+    description: 'Reliable object storage (OSS/COS) and cloud instances for enterprise document management systems.',
+    ctaText: 'Explore Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why is a 100% client-side PDF builder safer for contracts, IDs, and tax invoices?',
+    answer:
+      'Traditional online PDF converters upload your sensitive scans (passports, signed NDAs, bank statements, medical records) to remote servers where files may be logged or cached. Our PDF Toolkit constructs a compliant ISO PDF 1.4 binary stream directly inside your browser memory using typed arrays—your documents never leave your device.',
+  },
+  {
+    question: 'How does the binary PDF 1.4 generator work without external libraries or server APIs?',
+    answer:
+      'Each page is composited onto a high-resolution HTML5 Canvas (applying A4 scaling, margins, rotation, and optional diagonal watermarks), encoded as a DCTDecode JPEG byte stream, and wrapped into a native PDF 1.4 object graph with an exact byte-offset cross-reference (xref) table.',
+  },
+  {
+    question: 'When should I use the Vertical Long-Image Stitcher mode?',
+    answer:
+      'When sharing multi-page receipts, chat logs, or slide decks on mobile messaging apps or social media where scrolling a single tall PNG/WebP image is faster and more convenient than opening a PDF attachment.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Local Privacy PDF Toolkit — Multi-Image to A4 PDF Builder, Watermarker & Long-Image Stitcher"
+  description="100% client-side PDF and document scan workbench. Merge multiple images or scans into a standard A4 PDF 1.4 file with custom margins and anti-fraud watermarks, or stitch pages into a vertical long image with zero server uploads."
+  alternateZh="/tools/pdf-toolkit/"
+  alternateEn="/en/tools/pdf-toolkit/"
+  wasmSizeLabel="PDF 1.4 Binary Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <PdfToolkitTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>100% Client-Side PDF 1.4 Synthesis &amp; Document Long-Image Stitching</h2>
+    <p>
+      Never upload confidential contracts, KYC identity scans, or financial invoices to third-party cloud PDF mergers again. Our <strong>Local Privacy PDF Toolkit</strong> runs entirely inside your browser’s memory with zero server uploads and no page count paywalls.
+    </p>
+    <ul>
+      <li><strong>Native Binary PDF 1.4 Engine:</strong> Directly assembles PDF Catalog, Page trees, <code>/DCTDecode</code> image streams, and byte-accurate <code>xref</code> tables in pure TypeScript for instant <code>.pdf</code> downloads.</li>
+      <li><strong>Anti-Fraud Diagonal Watermarking:</strong> Stamp semi-transparent confidential watermarks and page numbers onto sensitive ID or contract scans before sharing them externally.</li>
+      <li><strong>Seamless Vertical Long-Image Stitcher:</strong> Combine multiple document pages or screenshots into a single high-DPI PNG, WebP, or JPEG long image.</li>
+    </ul>
+  </div>
+</ToolLayout>

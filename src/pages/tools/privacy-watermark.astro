@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import PrivacyWatermarkTool from '@/components/tools/PrivacyWatermarkTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级图片与静态站点加载，支持绑定自有备案域名，新老用户专享轻量应用服务器、存储包与 CDN 流量组合特惠。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 云小站官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — 云服务器 ECS 与对象存储 OSS 特惠',
+    description: '独立开发者自建企业级电子签章与全栈应用首选，汇集阿里云爆款轻量服务器与 OSS 存储资源包官方补贴价。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + Zero Trust 安全架构',
+    description: '构建企业级零信任安全文档系统，全球 CDN 边缘直出且彻底免除下行带宽流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么千万不要用普通免费在线工具给身份证、营业执照加水印？',
+    answer:
+      '身份证正反面、手持身份证照、房产证与企业营业执照属于最高敏感级别的个人/法人资产。如果使用需要将图片上传到后端服务器的在线工具，就等于亲手将未加水印的高清证件原件交给了未知的第三方网站。本工具 100% 运行在您本地浏览器的 Canvas 内存中，支持开启飞行模式或拔掉网线操作，从物理层面杜绝泄露。',
+  },
+  {
+    question: '什么是“防 AI 去水印高频微噪点干扰纹（Anti-AI Guilloche Wave）”？',
+    answer:
+      '传统的纯色半透明文字水印很容易被不法分子利用色彩通道分离或 AI 图像修复（Inpainting）工具一键抹除。本工具在文字笔画上叠加了仿钞票防伪的正弦波团花干扰线（Guilloche Sine Pattern）与高频微噪点，并且让水印横跨人像与关键字段，能显著增加自动化去水印模型的还原难度。',
+  },
+  {
+    question: '给身份证复印件加防盗用水印有哪些规范写法？',
+    answer:
+      '公安与法务部门建议采用三要素格式：①明确限定唯一用途（如“仅供办理XX房屋租赁合同备案使用”）；②声明超范围无效（“他用无效 / 再次复印无效”）；③标注精确签署日期（如“2026-11-01”）。同时建议将水印斜跨在身份证正面人像肩部与住址空白交界处，但不要完全遮挡姓名与公民身份号码的识别。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="身份证/营业执照防盗用满屏防伪水印、敏感号段打码与 A4 正反面打印页生成器"
+  description="100% 纯浏览器本地运行的证件防盗用水印加注工具：支持租房/入职/实名认证预设模板、防 AI 抹除团花干扰纹、交互式马赛克框选打码及 A4 身份证正反面 1:1 居中复印件合成。"
+  alternateZh="/tools/privacy-watermark/"
+  alternateEn="/en/tools/privacy-watermark/"
+  wasmSizeLabel="100% Offline Privacy Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <PrivacyWatermarkTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么提交身份证、房产证、营业执照电子件前必须加注防盗用全屏水印？</h2>
+    <p>
+      在日常办理<strong>房屋租赁备案、新员工入职背调、电信宽带开户、二手车过户、ICP 网站备案或企业平台实名认证（KYC）</strong>时，我们经常需要通过微信或邮件发送身份证正反面、驾驶证或营业执照扫描件。一旦无水印原件流入黑灰产，极易被冒用于注册空壳公司、开通网络借贷或从事电信诈骗。
+    </p>
+    <ul>
+      <li><strong>断网级零上传安全承诺：</strong> 所有图片解码、马赛克像素化遮挡与水印图层合成均在本地浏览器内存中完成，绝不产生任何网络上传请求。</li>
+      <li><strong>防 AI 抹除正弦干扰纹：</strong> 独创高频团花防伪波纹（Guilloche Pattern）与微噪点叠加技术，有效抵御自动化去水印脚本。</li>
+      <li><strong>A4 身份证正反面 1:1 标准复印页一键合成：</strong> 支持同时导入身份证人像面与国徽面，自动按照标准 A4 纸比例居中排版并加注防伪水印，连打印机即可直接输出合规复印件。</li>
+    </ul>
+  </div>
+</ToolLayout>

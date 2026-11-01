@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import HardwareScreenTesterTool from '@/components/tools/HardwareScreenTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🖥️ 云桌面与远程开发机',
+    highlight: '轻量云低至 38元/年',
+    title: '腾讯云 & 阿里云高性能轻量应用服务器专场',
+    description: '把高负载编译、Docker 容器与 24 小时挂机任务交给云端服务器，让本地笔记本风扇彻底静音。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 开发者算力补贴',
+    highlight: '云小站官方折上折',
+    title: '阿里云 ECS 与无影云电脑开发者特惠',
+    description: '随时随地通过浏览器或平板连接云端高配开发环境，新老用户专享官方补贴代金券。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '🛡️ 硬件安全密钥首选',
+    highlight: '开源芯片防钓鱼',
+    title: 'OneKey 硬件钱包与 FIDO2 物理安全密钥',
+    description: '除了检测显示器与键鼠外设，您还可以用物理硬件签名设备保护 GitHub、Google 与链上资产安全。',
+    ctaText: '了解 OneKey 极客硬件设备',
+    url: AFFILIATE_LINKS.ledger,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '新买的显示器或笔记本电脑，什么是“亮点”、“暗点（坏点）”和“IPS 漏光”？',
+    answer:
+      '1. 亮点（Stuck Pixel）：在纯黑画面下依然常亮发光的红、绿、蓝或白色小点，通常是单个子像素晶体管卡死在导通状态；2. 暗点/死点（Dead Pixel）：在纯白及红绿蓝纯色画面下永远呈现黑色的点，代表该像素彻底不发光；3. 边缘漏光（Backlight Bleed）：在全黑环境展示纯黑画面时，屏幕四角或边框处出现明显泛白或泛黄光斑。建议收货 7 天无理由期内使用本工具全屏逐一排查。',
+  },
+  {
+    question: '为什么我买了 144Hz / 165Hz 电竞显示器，在这里测试却只显示 60Hz？',
+    answer:
+      '这是因为 Windows 或 macOS 连接新显示器时默认往往锁定在 60Hz 节能档位。请右键桌面打开“显示设置 -> 高级显示器设置 -> 选择刷新率”，手动将 60Hz 切换为 144Hz 或 240Hz，本工具的实时帧率表与 UFO 飞碟对比跑道会立即同步跳升至满血高刷状态。',
+  },
+  {
+    question: '鼠标微动双击故障（连击）是怎么测出来的？多少毫秒算故障？',
+    answer:
+      '正常人类手指单次按压再松开再次按下的生理极限间隔通常在 110ms~180ms 以上。当鼠标使用一两年后，内部机械微动开关的铜片氧化或回弹疲劳，会在你手指只按下一瞬间产生接触抖动（Switch Bounce），在 5ms~75ms 内向电脑发送两次点击信号，导致单击变双击、拖拽文件半路掉下。本工具通过高精度时间戳捕捉小于 80ms 的脉冲并自动标红报警。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="dev-network"
+  title="显示器屏幕坏点/漏光/高刷帧率 (Hz) & 鼠标微动双击故障/键盘全键无冲在线验机台"
+  description="新买电脑、显示器、手机与外设必测：一键全屏切换纯色/渐变/网格检出亮点暗点与边缘漏光；实时测算屏幕真实刷新率 (60~360Hz)；毫秒级捕捉鼠标微动老化误双击连击与键盘全键响应。"
+  alternateZh="/tools/hardware-screen-tester/"
+  alternateEn="/en/tools/hardware-screen-tester/"
+  wasmSizeLabel="Sub-ms Hardware Timer"
+  offers={offers}
+  faqs={faqs}
+>
+  <HardwareScreenTesterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>新买显示器、笔记本与键鼠外设免安装一站式在线验机指南</h2>
+    <p>
+      无论是双 11 / 618 购入全新高刷显示器、二手收来 MacBook 笔记本，还是感觉手头的罗技/雷蛇鼠标偶尔“单击变双击”、机械键盘某个轴体失灵，你都不必下载存在捆绑风险的未知 <code>.exe</code> 验机软件，直接在浏览器内即可完成四大核心硬件体检：
+    </p>
+    <ul>
+      <li><strong>显示器面板坏点与灰阶断层全屏排查：</strong> 涵盖纯黑、纯白、RGB 三原色、CMY 混合色、256 级灰阶渐变与几何对焦网格 10 大专业图卡，支持空格键与鼠标左键全屏盲切。</li>
+      <li><strong>高刷帧率 (Hz) 与 UFO 运动拖影跑道：</strong> 基于浏览器垂直同步 <code>requestAnimationFrame</code> 亚毫秒级采样，同屏直观对比满帧高刷与 30FPS / 15FPS 的流畅度差距。</li>
+      <li><strong>鼠标微动开关双击老化与键盘 NKRO 全键无冲检测：</strong> 独立监控左键、滚轮中键、右键的毫秒级触发间隔，精准揪出 <code>&lt;80ms</code> 的微动簧片氧化连击，并测试机械键盘最高同时按下无冲突键数。</li>
+    </ul>
+  </div>
+</ToolLayout>

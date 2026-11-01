@@ -1,0 +1,93 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import CompoundFireTool from '@/components/tools/CompoundFireTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🌍 全球资产配置与跨境结算',
+    highlight: '银行间真实汇率 · 零隐性加价',
+    title: 'Wise 跨境多币种资产管理账户',
+    description: '持有并自由转换美元、欧元、英镑、港币与新加坡元等 40+ 币种，低成本连接全球指数基金与海外数字游民生活。',
+    ctaText: '免费开通 Wise 多币种账户',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🛡️ 数字资产长期冷存储',
+    highlight: '开源安全芯片 · 防黑客盗币',
+    title: 'OneKey 开源硬件冷钱包',
+    description: '针对定投比特币 (BTC) 与链上生息资产的长期主义投资者，物理隔离私钥签名，杜绝中心化交易所暴雷与钓鱼风险。',
+    ctaText: '选购 OneKey 硬件钱包',
+    url: AFFILIATE_LINKS.ledger,
+  },
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '打造被动收入 Micro-SaaS 独立站、量化交易监控脚本与个人品牌网站，新用户首购享 25% 专属补贴优惠。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '什么是 FIRE（Financial Independence, Retire Early）运动的“4% 安全提领法则”？',
+    answer:
+      '4% 法则（又称三一学院研究 Trinity Study）源于美国三一大学教授对过去近百年股债投资组合历史回测的结论：如果退休后每年从投资组合中提取首年本金的 4% 作为生活费（随后每年按通货膨胀率微调提领金额），那么一个股债平衡的投资组合有超过 95% 的概率在 30 年以上的时间跨度内永远花不完！反过来推导，您的【标准 FIRE 目标本金 = 理想年支出 ÷ 4% = 理想年支出的 25 倍】（即理想月支出的 300 倍）。若采取更保守的 3.5% 提领率，则目标本金约为年支出的 28.6 倍。',
+  },
+  {
+    question: '为什么计算复利和退休目标时，必须看“扣除通胀后的真实购买力”而不是账面名义金额？',
+    answer:
+      '这是普通复利计算器最大的误区！假设年均通胀率为 2.5%，30 年后的 100 万元账面名义资金，其实际购买力仅相当于今天的 47.6 万元。如果只看名义账面资产突破 300 万就匆忙辞职退休，届时物价早已翻倍，被动收入将无法维持当前的生活水准。本模拟器内置【费雪真实收益率折现引擎】，所有 FIRE 里程碑（Lean / Standard / Fat / Coast FIRE）均严格以“今日真实购买力”为基准进行对齐测算。',
+  },
+  {
+    question: 'Lean FIRE、Standard FIRE、Fat FIRE 和 Coast FIRE（滑行 FIRE）分别代表什么？',
+    answer:
+      '1. Lean FIRE（极简财务自由）：被动收入足以覆盖基础极简生活开支（设定为标准理想支出的 70%），脱离生存性打工焦虑；2. Standard FIRE（标准财务自由）：被动收入 100% 覆盖您设定的理想月支出，实现完全财务独立；3. Fat FIRE（宽裕财务自由）：被动收入达到理想支出的 150%，享受充裕的高品质旅行与生活；4. Coast FIRE（滑行/咖啡师半退休）：指您当前攒下的本金已经足够大，哪怕从今天起每月的定投储蓄降为 0 元（赚多少花多少，换一份轻松无压力的兼职或兴趣工作），仅靠现有本金的复利滚雪球，也能在 60 岁正常退休年龄自动涨到标准 FIRE 目标！',
+  },
+  {
+    question: '如何缩短达成 FIRE 财务自由的年限？定投率、收益率与支出哪个影响最大？',
+    answer:
+      '在 FIRE 数学模型中，【储蓄率（每月定投占收入比例）】和【目标年支出】拥有双重杠杆效应：降低 1,000 元不必要月支出，不仅让每月定投本金多出 1,000 元，同时还让您的最终 FIRE 目标本金直接减少 300,000 元（按 4% 法则算）！您可以在左侧面板拖动定投金额、年化收益率与目标月支出滑块，实时观察右侧复利曲线与退休年龄的跃迁变化。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="ai-cost"
+  title="复利定投 & FIRE（提前退休）财务自由模拟器 · 4%法则与通胀真实购买力推演"
+  description="基于三一学院 4% 安全提领率 (SWR) 与费雪通胀折现模型，精准测算 Lean / Standard / Fat / Coast FIRE 四大财务自由里程碑、退休倒计时年龄与逐年复利滚雪球曲线。"
+  alternateZh="/tools/compound-fire-calculator/"
+  alternateEn="/en/tools/compound-fire-calculator/"
+  wasmSizeLabel="复利滚雪球 & FIRE 精算"
+  offers={offers}
+  faqs={faqs}
+>
+  <CompoundFireTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>复利定投的第八大奇迹与 FIRE（财务独立、提前退休）科学推演</h2>
+    <p>
+      很多人在规划长期定投（如宽基指数基金、红利低波 ETF、全球股债组合）时，容易陷入两个极端：要么低估了<strong>10 年以上复利指数级爆发的拐点威力</strong>，要么忽略了<strong>长期通货膨胀对名义货币购买力的隐性侵蚀</strong>。本工具将定投复利计算与国际主流的 FIRE（Financial Independence, Retire Early）三一法则融为一体，帮您绘制清晰的个人财务自由路线图。
+    </p>
+
+    <h3>FIRE 财务自由三大核心数学公式</h3>
+    <ul>
+      <li>
+        <strong>1. 4% 法则与 FIRE 目标本金公式：</strong>
+        <code>FIRE 目标本金 = 退休后理想年支出 ÷ 安全提领率 (SWR)</code>。当 SWR 取经典 <code>4.0%</code> 时，目标本金等于年支出的 <strong>25 倍</strong>（月支出的 300 倍）；当取更稳健的 <code>3.5%</code> 时，目标本金约为年支出的 <strong>28.57 倍</strong>。
+      </li>
+      <li>
+        <strong>2. 费雪真实年化收益率公式（剔除通胀幻觉）：</strong>
+        设名义预期年化收益率为 <code>r</code>，预期年均通货膨胀率为 <code>i</code>，则您的财富真实购买力增长率并非简单的相减，而是满足费雪方程：<code>r_real = (1 + r) / (1 + i) - 1</code>。
+      </li>
+      <li>
+        <strong>3. Coast FIRE（滑行半退休）今日临界本金：</strong>
+        <code>Coast FIRE 阈值 = 标准 FIRE 目标本金 ÷ (1 + r_real)^(60 - 当前年龄)</code>。一旦您的现有投资本金跨过这一门槛，意味着即便从今天起停止存钱（月光状态），现有本金在复利驱动下也能在 60 岁时准时抵达财务自由终点。
+      </li>
+    </ul>
+  </div>
+</ToolLayout>

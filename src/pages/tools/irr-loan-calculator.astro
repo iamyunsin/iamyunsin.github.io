@@ -1,0 +1,103 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import IrrLoanCalculatorTool from '@/components/tools/IrrLoanCalculatorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 汇损极低首选',
+    highlight: '中间市场汇率 0 额外加价',
+    title: 'Wise 商业跨境多币种账户',
+    description: '告别传统银行电汇与支付网关 3.5%~4% 隐性汇率点差，按路孚特实时中间汇率透明结算美元、欧元、英镑。',
+    ctaText: '立即注册 Wise 享受超低费率',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🌍 跨境收款标配',
+    highlight: '最高立减 1.2% 提现费率',
+    title: 'Payoneer 派安盈外贸收款通道',
+    description: '支持全球自由职业平台、独立站与亚马逊站点合规结汇，零隐性砍头费直提国内银行卡。',
+    ctaText: '开通派安盈领 $25 礼金',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么银行信用卡账单分期宣传“每期手续费仅 0.6%，年化费率 7.2%”，算出来的真实年化 (IRR) 却超过 13%？',
+    answer:
+      '这是消费金融领域最经典的【等本等息（Flat Fee）】视觉错觉。当您分 12 期归还 12,000 元账单时，每个月您都在归还 1,000 元本金；到了第 12 个月，您实际上只欠银行最后 1,000 元本金了，但银行依然按照最初的 12,000 元全额收取 0.6%（72元）的手续费！从全年来看，您平均占用的银行本金只有约 6,500 元（本金占用率仅 54.2%），用全年支付的 864 元手续费除以平均实际占用本金，通过内部收益率（IRR）公式折算出的真实单利年化高达 13.03%（复利 EAR 高达 13.84%），几乎是表面费率的 1.85 倍。',
+  },
+  {
+    question: '“单利年化 (Nominal APR)”和“复利有效年化 (EAR)”有什么区别？央行规定展示的是哪一种？',
+    answer:
+      '根据中国人民银行（央行）2021 年第 3 号公告规定，所有贷款与分期机构必须向借款人明示年化利率，既可采用【单利（即月度 IRR × 12）】也可采用【复利（即 (1 + 月度 IRR)^12 - 1）】。国内绝大多数商业银行 App 和持牌消费金融公司展示的是数字略低一点的【单利年化 APR】，而国际信用卡组织与华尔街标准采用的是考虑了每月利息再投资时间价值的【复利有效年化 EAR】。本工具同时为您精准列出这两个核心指标。',
+  },
+  {
+    question: '什么是“前置砍头息 / 金融服务费 / 咨询费”？它是如何推高真实年化利率的？',
+    answer:
+      '许多网贷、助贷中介或融资租赁公司在放款 100,000 元的同时，会以“风险评估费、担保服务费、GPS安装费、会员权益费”等名义在放款当天直接扣走 3,000~5,000 元。这意味着您在第 0 期实际拿到手能支配的净本金只有 95,000 元，但后续 12~36 期却依然要按照 100,000 元的合同名义本金归还本息。在现金流折现模型中，期初现金流入骤减会导致真实 IRR 呈指数级飙升。',
+  },
+  {
+    question: '国家法律对民间借贷与网贷利率的司法保护红线是多少？',
+    answer:
+      '目前司法实践中，民间借贷利率的司法保护上限通常锚定为【一年期贷款市场报价利率（1Y LPR）的 4 倍】（约 12.4%~14% 左右浮动），而持牌金融机构消费信贷在监管窗口指导下普遍要求综合年化成本控制在 24% 以内（绝对红线不超过 36%）。若您通过本照妖镜测算出的真实年化利率（含担保费、服务费）超过 24%，强烈建议立即停止借贷或提前结清止损。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="ai-cost"
+  title="信用卡分期 / 网贷 / 融资租赁真实年化利率 (IRR) 照妖镜与砍头息穿透计算器"
+  description="别被“每期手续费仅 0.5%”忽悠！支持等本等息、先息后本、融资租赁保证金与前置砍头息服务费，基于牛顿-拉夫逊法毫秒级穿透真实单利 APR 与复利 EAR，给出防坑风险评级。"
+  alternateZh="/tools/irr-loan-calculator/"
+  alternateEn="/en/tools/irr-loan-calculator/"
+  wasmSizeLabel="牛顿法IRR求解器"
+  offers={offers}
+  faqs={faqs}
+>
+  <IrrLoanCalculatorTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>信贷防坑必修课：用内部收益率 (IRR) 一键照穿“低月息、零利息、低手续费”套路</h2>
+    <p>
+      在日常生活中，我们无时无刻不被各种诱导性信贷话术包围：<strong>“信用卡账单分期每期费率低至 0.5%”、“买车分期月息仅 2 厘 5”、“企业过桥先息后本月息 4 厘，仅收 2% 服务费”</strong>。为什么这些听起来比房贷还便宜的分期方案，实际还完却让人觉得利息沉重？核心原因就在于金融机构混淆了<strong>“按初始全额本金计收的每期费率”</strong>与<strong>“按剩余未还本金计收的真实年化利率 (IRR)”</strong>。
+    </p>
+
+    <h3>一、内部收益率 (IRR) 的黄金数学定义</h3>
+    <p>
+      在现代金融工程与央行明示年化利率规范中，衡量任何一笔贷款真实资金成本的唯一标尺是<strong>内部收益率 (Internal Rate of Return, IRR)</strong>——即让借款人期初<strong>实际到手净现金流 (<code>CF_0</code>)</strong> 与未来各期<strong>实际支出还款现金流 (<code>CF_t</code>)</strong> 的净现值（NPV）恰好等于零的折现率 <code>r</code>：
+    </p>
+    <pre><code>NPV = CF_0 - ∑ [ Payment_t / (1 + r)^t ] = 0   (t = 1, 2, ..., n)</code></pre>
+    <ul>
+      <li>
+        <strong>期初实际到手净本金 (<code>CF_0</code>)：</strong>
+        <code>CF_0 = 合同名义借款本金 - 前置砍头息/服务费/担保费 - 期初冻结保证金</code>。
+      </li>
+      <li>
+        <strong>央行明示单利年化 (Nominal APR)：</strong>
+        <code>APR = 每期内部收益率 r × 每年还款期数 k</code>（按月还款则 <code>k = 12</code>）。
+      </li>
+      <li>
+        <strong>国际标准复利有效年化 (Effective Annual Rate, EAR)：</strong>
+        <code>EAR = (1 + r)^k - 1</code>。
+      </li>
+    </ul>
+
+    <h3>二、为什么“等本等息”的真实利率接近表面费率的 2 倍？</h3>
+    <p>
+      在 12 期等本等息还款中，您第 1 个月借用了银行 100% 的本金，第 6 个月只占用了约 50% 的本金，第 12 个月只占用了 1/12（8.33%）的本金。全周期平均算下来，您的<strong>实际本金占用率仅为 <code>(n + 1) / (2n) ≈ 54.17%</code></strong>。然而金融机构在每一期都按 100% 的初始本金向您收取手续费，因此其真实年化利率满足近似换算律：
+    </p>
+    <pre><code>真实年化利率 APR ≈ 表面名义年费率 × [ 2n / (n + 1) ] ≈ 表面年费率 × 1.85</code></pre>
+  </div>
+</ToolLayout>

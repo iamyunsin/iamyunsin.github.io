@@ -1,0 +1,90 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import DiscountBillSplitterTool from '@/components/tools/DiscountBillSplitterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Multi-Currency Card & Account',
+    description: 'Shop international sales, split travel bills across currencies, and pay in USD, EUR, GBP, or JPY with zero foreign transaction fees.',
+    ctaText: 'Get Wise Multi-Currency Card',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Creator Discount',
+    description: 'Launch your e-commerce tools, price trackers, and web apps on Alibaba Cloud ECS and OSS with an exclusive 25% discount.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: '$25 Welcome Reward',
+    title: 'Payoneer Cross-Border Settlement',
+    description: 'Receive global affiliate commissions, e-commerce payouts, and freelance invoices seamlessly into your local bank.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How does e-commerce stacked coupon proration (filler item refund strategy) work?',
+    answer:
+      'During major shopping festivals like 618, Double 11, or Black Friday, platforms apply tiered cross-store discounts (e.g., ¥50 off every ¥300) and threshold coupons (e.g., ¥80 off ¥1,000) proportionally across all items in your checkout cart. If your main items total ¥865, adding a ¥135 filler item pushes the cart over ¥1,000 to unlock both an extra ¥50 tiered discount and the ¥80 coupon. When you refund the filler item after checkout, your main items retain their prorated share of the unlocked discounts!',
+  },
+  {
+    question: 'What is the fairest way to split a group takeout order with delivery fees and promo coupons?',
+    answer:
+      'Splitting discounts or delivery fees equally in a group order penalizes people who ordered inexpensive items. The mathematically fair method is Proportional Scaling: each person pays (Their Menu Subtotal ÷ Group Menu Subtotal) × Actual Final Total Paid. Our calculator also lets you toggle between fully proportional splitting and equal delivery fee + proportional discount splitting.',
+  },
+  {
+    question: 'Can I copy a formatted bill breakdown for WeChat, WhatsApp, or Slack group chats?',
+    answer:
+      'Yes! In Tab 2 (Fair Group Takeout Bill Splitter), click the "Copy Group Bill Text" button to copy a clean, itemized summary showing the total discount percentage and each person’s exact original price, savings, and net amount to pay.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="E-Commerce Stacked Coupon Prorator & Fair Group Takeout Bill Splitter"
+  description="Dual-mode everyday calculator: Prorate stacked cross-store discounts, VIP coupons, and filler-item refunds for online shopping, or split group takeout bills fairly with proportional delivery fees and promo codes."
+  alternateZh="/tools/discount-bill-splitter/"
+  alternateEn="/en/tools/discount-bill-splitter/"
+  wasmSizeLabel="Coupon Proration & AA Split"
+  offers={offers}
+  faqs={faqs}
+>
+  <DiscountBillSplitterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Mathematical Fairness in Stacked E-Commerce Coupons & Group Dining Splits</h2>
+    <p>
+      From multi-tier shopping festival promotions (cross-store thresholds, category vouchers, and VIP percentage discounts) to daily office lunch delivery orders with shared promo codes and packing fees, proportional proration is the key to accurate cost accounting.
+    </p>
+
+    <h3>1. E-Commerce Filler Item & Refund Proration Formula</h3>
+    <ul>
+      <li>
+        <strong>Proportional Discount Weight:</strong>
+        Each item in a combined checkout receives a share of cross-store and platform coupons proportional to its price weight: <code>Weight_i = Price_i / Sum(Prices)</code>.
+      </li>
+      <li>
+        <strong>Standalone vs. Filler Comparison:</strong>
+        Our simulator runs two checkouts in parallel—one with your Main (Keep) items alone, and one combined with Filler items—so you can see the exact extra savings unlocked after refunding the filler items.
+      </li>
+    </ul>
+
+    <h3>2. Proportional Group Takeout Bill Splitting</h3>
+    <pre><code>Person Share to Pay = Actual Final Bill Paid × (Person Menu Price ÷ Total Group Menu Price)</code></pre>
+    <p>
+      Use the one-click copy button to paste a transparent summary directly into your group chat so everyone sees their menu price, discount saved, and exact net payment.
+    </p>
+  </div>
+</ToolLayout>

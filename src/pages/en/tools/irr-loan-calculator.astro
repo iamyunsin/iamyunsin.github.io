@@ -1,0 +1,102 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import IrrLoanCalculatorTool from '@/components/tools/IrrLoanCalculatorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Business Multi-Currency Account',
+    description: 'Eliminate hidden 3.5%–4.0% currency conversion markups. Settle international invoices and transfers at the real mid-market rate.',
+    ctaText: 'Open Wise Business Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: '$25 Registration Bonus',
+    title: 'Payoneer Cross-Border Payout Gateway',
+    description: 'Collect international marketplace and contractor payments with transparent tiered pricing.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Deploy quantitative finance apps, APIs, and analytics servers with a 25% creator discount.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does a credit card installment plan with a "0.6% monthly fee (7.2% per year)" actually cost over 13% APR?',
+    answer:
+      'Because "flat-fee" installment plans charge the 0.6% monthly fee against 100% of the original borrowed balance every single month, even though you are paying back 1/12th of the principal each month. By month 12, you only owe 1/12th of the original principal, yet you still pay interest on the full 100% amount. Since your average outstanding principal across 12 months is only 54.2% of the initial loan, solving for the Internal Rate of Return (IRR) reveals a true Nominal APR of 13.03% (and a Compound EAR of 13.84%) — roughly 1.85x the advertised flat rate.',
+  },
+  {
+    question: 'What is the difference between Nominal APR and Effective Annual Rate (EAR)?',
+    answer:
+      'Nominal APR (Simple Annualized Rate) multiplies the periodic IRR by the number of payment periods per year (e.g., Monthly IRR × 12), which is the standard Truth-in-Lending disclosure metric in the US and China. Effective Annual Rate (EAR) incorporates intra-year compounding via the formula (1 + Monthly IRR)^12 - 1, reflecting the true compound annual cost of capital.',
+  },
+  {
+    question: 'How do upfront origination fees ("cut-off interest") and security deposits inflate the true APR?',
+    answer:
+      'When a lender deducts a 3% origination or service fee upfront from a $100,000 loan, you only receive $97,000 in net usable cash at Period 0, yet your periodic payments are still calculated on the full $100,000 face value. Similarly, a locked security deposit reduces your net capital utilization during the loan term, sharply driving up the true IRR.',
+  },
+  {
+    question: 'How does the Newton-Raphson IRR solver work?',
+    answer:
+      'There is no closed-form algebraic formula for high-order polynomial cashflows (such as loans combining upfront fees, regular payments, deposits, and balloon buyouts). Our engine constructs the exact period-by-period cashflow vector and iteratively solves for the discount rate r where Net Present Value (NPV) equals zero to 1e-9 precision.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="True Loan APR & Internal Rate of Return (IRR / EAR) Cashflow Detector"
+  description="Unmask deceptive 'low monthly flat fee' credit card installments, online loans, upfront origination fees, and equipment leases using our Newton-Raphson IRR solver."
+  alternateZh="/tools/irr-loan-calculator/"
+  alternateEn="/en/tools/irr-loan-calculator/"
+  wasmSizeLabel="Newton-Raphson IRR"
+  offers={offers}
+  faqs={faqs}
+>
+  <IrrLoanCalculatorTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Unmasking Deceptive Loan Quotes with Internal Rate of Return (IRR)</h2>
+    <p>
+      Credit card issuers, online consumer lenders, and auto/equipment leasing companies routinely advertise deceptively low headline rates such as <strong>"0.5% monthly handling fee"</strong> or <strong>"zero interest with a 3% upfront processing fee."</strong> Because borrowers repay principal every month while fees continue to be assessed on the original face value, the true cost of capital is nearly double the advertised rate.
+    </p>
+
+    <h3>1. Mathematical Definition of True APR & EAR via IRR</h3>
+    <p>
+      To compare any credit product on a level playing field, financial regulators mandate solving for the periodic <strong>Internal Rate of Return (<code>r</code>)</strong> that equates the Net Present Value (NPV) of your net cash received at <code>T = 0</code> with all subsequent outflows:
+    </p>
+    <pre><code>NPV = CF_0 - ∑ [ Outflow_t / (1 + r)^t ] = 0   (t = 1, 2, ..., n)</code></pre>
+    <ul>
+      <li>
+        <strong>Net Initial Cash Inflow (<code>CF_0</code>):</strong>
+        <code>CF_0 = Face Principal - Upfront Origination Fees - Locked Security Deposit</code>.
+      </li>
+      <li>
+        <strong>Nominal Annual Percentage Rate (APR):</strong>
+        <code>APR = r × k</code> (where <code>k = 12</code> for monthly payments).
+      </li>
+      <li>
+        <strong>Effective Annual Rate (Compound EAR):</strong>
+        <code>EAR = (1 + r)^k - 1</code>.
+      </li>
+    </ul>
+
+    <h3>2. Why Flat-Fee Installment Loans Cost ~1.85x Their Quoted Rate</h3>
+    <p>
+      In an <code>n</code>-month equal-principal installment plan, your average principal utilization ratio is <code>(n + 1) / (2n)</code> (only <strong>54.17%</strong> over 12 months). Paying a flat fee on 100% of the initial balance every month translates into an effective annualized rate roughly equal to <code>Quoted Flat Rate × [ 2n / (n + 1) ]</code>.
+    </p>
+  </div>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoTranscoderTool from '@/components/tools/VideoTranscoderTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ 零出口流量费媒体存储',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + 全球流媒体分发',
+    description: '将压缩后的 WebM / MP4 短视频与 WAV 音频托管在 Cloudflare R2，全球边缘 CDN 直出且彻底免除下行流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🇨🇳 国内音视频加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与云点播专场',
+    description: '国内毫秒级短视频与博客音频加载，支持绑定自有备案域名，新老用户专享轻量服务器与流量包官方补贴。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 云小站官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — ECS 与 OSS 媒体存储特惠',
+    description: '独立开发者自建播客音频站与全栈应用首选，汇集阿里云爆款轻量服务器与 OSS 存储资源包官方补贴价。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '如何从 MP4 或 MOV 视频中无损提取背景音乐（BGM）或人声录音？',
+    answer:
+      '1. 纯本地 WebAudio 硬件解码：拖入视频文件后，切换到“模式一：一键提取视频无损音频轨道”，浏览器会调用底层 `AudioContext.decodeAudioData` 直接将音轨还原为双声道浮点采样数组；2. 可视化波形裁剪与淡入淡出：在波形图下方拖动起止时间滑块剔除片头片尾杂音，并可设置 `0.2s~1.5s` 的平滑淡入淡出与音量增益放大；3. 16-Bit PCM WAV 直出：点击下载即可获得无任何二次有损压缩的广播级 `.wav` 音频文件，可直接导入剪映、Premiere 或 Audition。',
+  },
+  {
+    question: '手机拍的视频动辄几百 MB 无法发微信群或上传系统，如何快速瘦身？',
+    answer:
+      '视频文件大小完全取决于**视频码率（Bitrate）× 时长**。切换到“模式二：视频格式转换与码率瘦身”，将目标码率从手机原片的 `20000+ kbps` 调低至 `1000 kbps (1 Mbps)` 或 `2000 kbps (2 Mbps)`，配合 `75%` 分辨率缩放与 `VP9` 高压缩编码，通常可在肉眼画质几乎无损的前提下将视频体积缩减 70%~85%。',
+  },
+  {
+    question: '手机竖屏拍摄的视频导入电脑后歪了 90 度或左右镜像反了怎么办？',
+    answer:
+      '许多手机前置摄像头录制的视频带有旋转元数据标签（Rotation Flag），在部分播放器或网页中会横置或左右文字颠倒。您可以在本工具的“画面旋转角度”中选择顺时针 `90°`、`180°`、`270°` 或勾选“水平左右镜像翻转”，在实时监视器确认方向正确后重新编码输出即可永久固化正确方向。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="视频格式转码瘦身、画面旋转镜像与无损 WAV 音频提取工作台"
+  description="100% 浏览器本地运行的视频转码压缩与音轨分离工具。支持从 MP4/MOV/WebM 一键提取 16-Bit PCM 无损 WAV 音频（带波形可视化裁剪与淡入淡出），以及视频码率瘦身、90°/180° 旋转纠正与水平镜像翻转。"
+  alternateZh="/tools/video-transcoder/"
+  alternateEn="/en/tools/video-transcoder/"
+  wasmSizeLabel="WebAudio PCM + MediaRecorder"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoTranscoderTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么选择纯浏览器本地的视频转码瘦身与无损音轨提取工作台？</h2>
+    <p>
+      在日常剪辑短视频、提取网课/会议录像中的纯音频文稿，或者将手机拍摄的超大 4K MOV 视频压缩上传至政务/企业报名系统时，把几百 MB 的私密视频上传到第三方网站不仅速度极其缓慢，还存在严重的个人隐私泄露风险。
+    </p>
+    <ul>
+      <li><strong>广播级 <code>16-Bit PCM WAV</code> 无损音轨分离：</strong> 直接在浏览器内存构建标准 44 字节 RIFF/WAVE 二进制文件头，支持双声道交错采样、音量增益放大与包络淡入淡出，秒级提取视频中的 BGM 与伴奏。</li>
+      <li><strong>硬件加速码率瘦身与旋转镜像修正：</strong> 结合 HTML5 离屏 <code>Canvas</code> 几何变换矩阵与 <code>MediaRecorder</code> 硬件编码管线，支持精准指定 <code>500 kbps ~ 8000 kbps</code> 目标码率与 <code>90° / 180° / 270°</code> 方向纠正。</li>
+    </ul>
+  </div>
+</ToolLayout>

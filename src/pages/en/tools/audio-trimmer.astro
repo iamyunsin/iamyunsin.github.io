@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import AudioTrimmerTool from '@/components/tools/AudioTrimmerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency media storage, streaming CDN, and cloud servers for Asia-Pacific and global web applications.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: 'Up to 35% Partner Rebate',
+    title: 'Alibaba Cloud ECS & OSS Official Store',
+    description: 'Deploy self-hosted media apps or podcast portals on high-performance cloud instances.',
+    ctaText: 'Explore Alibaba Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ Zero-Egress Media Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 Object Storage',
+    description: 'Host podcast episodes, WAV/MP3 audio assets, and video files on Cloudflare R2 with $0 egress bandwidth fees.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Can I extract and trim background music directly from an MP4 video file?',
+    answer:
+      'Yes! Simply select any MP4 or WebM video file using the Open Audio/Video button. Our Web Audio API pipeline automatically demuxes and decodes the stereo audio track into memory so you can trim it and export a lossless 16-bit PCM WAV file without uploading the video.',
+  },
+  {
+    question: 'Why are Fade-In and Fade-Out envelopes essential for ringtones and podcast clips?',
+    answer:
+      'Cutting an audio track mid-beat creates an abrupt amplitude jump that sounds like a harsh click or pop. Applying a 1.0–1.5 second Fade-In and Fade-Out envelope smoothly ramps the volume up and down for studio-grade transitions.',
+  },
+  {
+    question: 'Are my private voice recordings or unreleased song demos uploaded to a server?',
+    answer:
+      'Never. All audio decoding, stereo waveform rendering, gain boosting, and 16-bit RIFF WAVE binary encoding happen 100% locally inside your browser.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private Visual Audio Trimmer, Video-to-WAV Extractor & Ringtone Maker"
+  description="100% client-side visual audio cutter and ringtone studio powered by Web Audio API. Trim MP3, WAV, M4A, FLAC, or extract audio from MP4 videos with interactive stereo waveforms, fade-in/out envelopes, volume gain boost, and 16-bit PCM WAV export."
+  alternateZh="/tools/audio-trimmer/"
+  alternateEn="/en/tools/audio-trimmer/"
+  wasmSizeLabel="Web Audio + 16-Bit PCM"
+  offers={offers}
+  faqs={faqs}
+>
+  <AudioTrimmerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>100% Client-Side Stereo Waveform Cutter & Lossless WAV Ringtone Studio</h2>
+    <p>
+      Whether you are cutting a chorus for a custom smartphone ringtone, extracting background music from an <strong>MP4 video</strong>, or cleaning up a confidential voice memo, uploading large media files to remote servers is slow and risks exposing private recordings.
+    </p>
+    <ul>
+      <li><strong>Interactive High-DPI Stereo Waveform:</strong> Drag the green and amber handles to set exact start and end points while watching the live Fade-In / Fade-Out envelope curve adjust in real time.</li>
+      <li><strong>Direct Video Audio Extraction:</strong> Drop in `.mp4` or `.webm` videos alongside `.mp3`, `.wav`, `.m4a`, and `.ogg` audio files.</li>
+      <li><strong>Lossless 16-Bit PCM WAV Export:</strong> Encodes your trimmed segment with sample-accurate fade ramps and up to 200% volume gain directly in browser memory.</li>
+    </ul>
+  </div>
+</ToolLayout>

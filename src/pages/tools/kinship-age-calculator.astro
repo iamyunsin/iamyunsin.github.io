@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import KinshipAgeCalculatorTool from '@/components/tools/KinshipAgeCalculatorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 节日贺卡与族谱排版',
+    highlight: '支持免费试用 Pro',
+    title: 'Canva 可画 Pro — 春节拜年海报、家族纪念册与人生日历设计',
+    description: '内置海量国潮新春贺卡、宝宝周岁宴邀请函与家庭相册模板，一键导出印刷级高清图片。',
+    ctaText: '免费体验 Canva Pro 设计工坊',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '🇨🇳 家庭私有相册云存储',
+    highlight: '轻量云 + 对象存储特惠',
+    title: '腾讯云轻量应用服务器 — 自建 Immich 家庭私密云相册',
+    description: '将全家人珍贵的老照片与视频备份在自己的云服务器上，支持人脸识别分类且永不限速。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 官方补贴云服务器',
+    highlight: '低至 38元/年',
+    title: '阿里云云小站 — 个人博客与数字生活实验室首选',
+    description: '超低成本搭建个人主页、家庭百科 Wiki 或纪念日提醒机器人，新老用户同享官方补贴。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么中国的亲戚称呼比英文复杂这么多？“堂”和“表”到底怎么区分？',
+    answer:
+      '英语中无论叔叔、伯父、舅舅、姑父、姨父统称为 Uncle，所有同辈兄弟姐妹统称为 Cousin；而中国传统宗法制严格区分“宗亲（父系同姓）”与“外亲/姻亲（异姓）”。凡是爸爸的亲兄弟（伯父、叔叔）的儿女，与你同姓同宗，一律称为“堂兄妹”；凡是爸爸的姐妹（姑妈）或妈妈的兄弟姐妹（舅舅、姨妈）的儿女，皆称为“表兄妹（姑表、舅表、姨表）”。',
+  },
+  {
+    question: '法律上的“周岁”和老一辈常说的“虚岁”是怎么换算的？',
+    answer:
+      '1. 法定周岁（Chronological Age）：从出生当天算起为 0 岁，每过完一次阳历生日才加 1 岁，入学、考公、买票、医疗及法律责任均以周岁为准；2. 传统虚岁（East Asian Reckoning）：计入在母亲怀胎十月的生命期，刚出生落地即算 1 岁，此后每逢农历正月初一（春节）全家人统一长 1 岁。因此虚岁通常比周岁大 1 到 2 岁。',
+  },
+  {
+    question: '什么是刷屏全网的“人生 900 个月格子图”？',
+    answer:
+      '如果按中国人平均约 75~80 岁的健康周期计算，75 年恰好等于 900 个月。把这 900 个月画成一张 30 行 × 30 列的方格表，每过完一个月就涂满一格。当你直观看到已经涂成橙色的过去岁月，以及除去睡眠和琐事后仅剩的绿色黄金奋斗格子，能给人带来极强的时间紧迫感与珍惜当下的触动。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="中国三姑六婆亲戚称呼计算器 & 精确周岁虚岁/节气星座/人生 900 个月格子可视化"
+  description="过年走亲戚社恐救星：像按计算器一样点选“父/母/夫/妻/兄/弟/姐/妹/子/女”秒算复杂亲属称呼与双方互称；内置精确到天的周岁/虚岁/生肖星座换算与刷屏全网的“人生 900 个月格子图”生成。"
+  alternateZh="/tools/kinship-age-calculator/"
+  alternateEn="/en/tools/kinship-age-calculator/"
+  wasmSizeLabel="125+ Kinship Graph"
+  offers={offers}
+  faqs={faqs}
+>
+  <KinshipAgeCalculatorTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>春节走亲戚防社死指南：三姑六婆称呼图谱与人生时间管理</h2>
+    <p>
+      每逢春节拜年、家族聚餐或婚礼敬酒，面对平时少见的七大姑八大姨，叫错辈分往往让人无比尴尬。本工具将复杂的中国传统九族宗亲与姻亲关系编码为有向图代数化简引擎：
+    </p>
+    <ul>
+      <li><strong>支持双向互称与方言俗称对照：</strong> 不仅能算出你该叫对方什么（如“表伯”、“舅姥爷”、“连襟”、“妯娌”），点击 <code>🔄 对方称呼我</code> 还能秒查自己在长辈眼里属于“内侄”、“外甥孙”还是“堂侄”，帮长辈给孩子包红包时不再犯难。</li>
+      <li><strong>精确到天的周岁/虚岁与人生 900 格沙盘：</strong> 一键算清自己来到人世间的准确天数、天干地支生肖与星座，并通过 30×30 人生格子图审视当下生命进度。</li>
+    </ul>
+  </div>
+</ToolLayout>

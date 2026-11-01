@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import BarcodeBatchPrinterTool from '@/components/tools/BarcodeBatchPrinterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🛍️ E-Commerce Storefront',
+    highlight: '$1/mo Starter Promo',
+    title: 'Shopify Partner Offer — Launch Your Global DTC Store & POS',
+    description: 'Manage SKU inventory, EAN-13/UPC-A retail barcodes, and omnichannel POS checkout on the world’s leading commerce platform.',
+    ctaText: 'Start Shopify for $1/Month',
+    url: AFFILIATE_LINKS.shopifyPartner,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: 'Multi-Currency Accounts',
+    title: 'Payoneer & Wise Business — Borderless E-Commerce Treasury',
+    description: 'Receive Amazon FBA, Shopify, and Stripe payouts in USD, EUR, and GBP with low FX conversion fees.',
+    ctaText: 'Open Wise Business Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '☁️ Self-Hosted ERP / WMS',
+    highlight: 'Cloud Instances from $4/mo',
+    title: 'Alibaba Cloud & Tencent Cloud — Host Odoo or ERPNext',
+    description: 'Deploy your own warehouse management system (WMS) and barcode inventory backend on high-speed cloud servers.',
+    ctaText: 'Explore Cloud Server Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How does automatic GS1 check digit calculation work for EAN-13 and UPC-A?',
+    answer:
+      'Retail EAN-13 (13 digits) and North American UPC-A (12 digits) barcodes use a Modulo-10 weighted checksum as their final digit to detect scanning errors. You can enter either the 12-digit base code (or 11 digits for UPC-A) and our engine automatically computes and appends the exact GS1 check digit.',
+  },
+  {
+    question: 'When should I use Code 128-B vs. EAN-13?',
+    answer:
+      'Use EAN-13 or UPC-A for retail point-of-sale (POS) products that require numeric GS1 identifiers. Use Code 128-B for warehouse SKUs, Amazon FBA box labels, shipping tracking numbers, and asset tags that include uppercase/lowercase letters, numbers, and hyphens.',
+  },
+  {
+    question: 'Why are vector SVG barcodes better for A4 sticker printing?',
+    answer:
+      'Raster JPEG/PNG barcodes often suffer from anti-aliasing blur when scaled by printer drivers, causing laser barcode scanners to fail. Our A4 grid renders pure mathematical SVG rectangles that print at your laser or thermal printer’s native DPI.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Bulk Barcode Generator & A4 Label Sheet Printer — EAN-13, Code 128, UPC-A & Decoder"
+  description="100% client-side bulk 1D barcode generator, automatic GS1 check digit calculator, A4 sticker sheet layout printer, and offline scanline barcode image decoder."
+  alternateZh="/tools/barcode-batch-printer/"
+  alternateEn="/en/tools/barcode-batch-printer/"
+  wasmSizeLabel="GS1 Vector Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <BarcodeBatchPrinterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Print-Ready Vector Barcodes & A4 Sticker Sheets in Your Browser</h2>
+    <p>
+      Whether you are labeling inventory for an e-commerce warehouse, preparing retail packaging with <strong>EAN-13 / UPC-A</strong> codes, or tagging office equipment with <strong>Code 128 / Code 39</strong>, this 100% client-side workbench generates razor-sharp vector SVG barcodes ready for A4 adhesive label sheets.
+    </p>
+    <ul>
+      <li><strong>Bulk Code + Product Header Format:</strong> Paste dozens of lines in <code>CODE | Product Name &amp; Price</code> format to generate an entire A4 sticker sheet in milliseconds.</li>
+      <li><strong>Automatic GS1 Checksum Verification:</strong> Enter 12 digits for EAN-13 or 11 digits for UPC-A and let the built-in GS1 Modulo-10 calculator complete the barcode automatically.</li>
+      <li><strong>Offline Scanline Decoder:</strong> Test and verify barcode screenshots locally using our built-in luminance run-length scanline decoder.</li>
+    </ul>
+  </div>
+</ToolLayout>

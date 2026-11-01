@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import BarcodeBatchPrinterTool from '@/components/tools/BarcodeBatchPrinterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🛍️ 跨境独立站首选',
+    highlight: '首月仅需 $1 极速开店',
+    title: 'Shopify 官方合作伙伴特惠 — 全球 DTC 电商建站与库存条码管理',
+    description: '一键关联 EAN-13 / UPC-A / SKU 条形码，打通全球仓储履约、POS 扫码收银与多币种结账。',
+    ctaText: '领取 Shopify $1/月开店特惠',
+    url: AFFILIATE_LINKS.shopifyPartner,
+  },
+  {
+    badge: '🌍 跨境电商收款',
+    highlight: '亚马逊 / 独立站卖家标配',
+    title: '连连国际 (LianLian Global) / Payoneer 派安盈跨境收款',
+    description: '支持 Amazon FBA、Shopify、TikTok Shop 多平台原币入账，超低提现费率直达国内银行卡。',
+    ctaText: '免费开通连连国际跨境收款',
+    url: AFFILIATE_LINKS.lianlianGlobal,
+  },
+  {
+    badge: '🇨🇳 进销存 ERP 云主机',
+    highlight: '轻量云服务器 38元/年起',
+    title: '腾讯云 / 阿里云轻量服务器 — 自建开源进销存与仓储 WMS',
+    description: '低成本私有化部署 ERPNext、Odoo 或自研扫码出入库系统，数据 100% 掌握在自己手中。',
+    ctaText: '查看腾讯云轻量服务器特惠',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'EAN-13 商品条形码的第 13 位校验码（Check Digit）是怎么算出来的？',
+    answer:
+      '根据国际物品编码协会（GS1）标准，EAN-13 的前 12 位为国家代码（如 690~699 代表中国大陆）、厂商识别代码与商品项目代码，第 13 位为模 10 加权校验位。计算规则为：从右向左（第12位到第1位）奇数位乘以 3、偶数位乘以 1 求和，再用 10 减去个位数。本工具支持只输入前 12 位数字，系统会自动计算并补全第 13 位合法校验码，确保超市激光扫码枪 100% 一扫即过。',
+  },
+  {
+    question: 'Code 128 和 EAN-13 应该如何选择？',
+    answer:
+      '如果您的商品需要进入线下商超、便利店或京东自营大仓，必须使用纯数字的 13 位 EAN-13（或北美 12 位 UPC-A）标准商品条码；如果您是打印内部仓库货架号、顺丰/快递物流单号、亚马逊 FBA 标签或包含英文字母与连字符的 SKU 编码（如 SKU-KB-2026），请选择高密度的 Code 128-B 格式。',
+  },
+  {
+    question: '如何使用普通激光打印机或热敏打印机打印 A4 不干胶条码纸？',
+    answer:
+      '在右侧设置好 A4 排版列数（如 3 列或 4 列）与标签间距后，点击“一键打印 A4 不干胶标签页”按钮，在浏览器打印预览中将“边距”设为“默认”或“无”，即可直接输出 100% 矢量 SVG 级锐利黑条，彻底告别位图缩放导致的模糊扫不出问题。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="条形码批量生成与 A4 标签排版打印工具 — EAN-13 / Code128 / UPC-A 校验位计算与离线解码"
+  description="100% 纯前端批量条形码生成器、GS1 校验位自动补全计算器与 A4 不干胶标签网格排版打印工作台。支持 EAN-13、Code 128、UPC-A、Code 39 矢量 SVG 导出及条形码图片离线扫描线识别。"
+  alternateZh="/tools/barcode-batch-printer/"
+  alternateEn="/en/tools/barcode-batch-printer/"
+  wasmSizeLabel="GS1 Vector Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <BarcodeBatchPrinterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么电商卖家与仓储管理员需要纯矢量 SVG 批量条形码打印工作台？</h2>
+    <p>
+      在日常电商发货、亚马逊 FBA 贴标、线下商超铺货以及公司固定资产盘点中，使用 Excel 插件或收费条码软件往往配置繁琐，且导出的低分辨率 JPG 图片在打印后容易出现边缘锯齿，导致红光/激光扫码枪无法识别。
+    </p>
+    <ul>
+      <li><strong>GS1 标准校验位自动补全：</strong> 输入 12 位 EAN-13 或 11 位 UPC-A 数字，引擎自动根据模 10 权重算法补全最后一位校验位，杜绝人工算错导致的整批包装报废。</li>
+      <li><strong>A4 不干胶多列网格直印：</strong> 支持 <code>编码 | 商品名称与零售价</code> 批量粘贴，自由切换 2~5 列网格与裁切虚线，直接调用系统打印或另存为矢量级 PDF。</li>
+      <li><strong>自研 Scanline 离线扫描线解码器：</strong> 内置灰度游程编码（Run-Length Encoding）条纹解析器，无需联网即可反向验证条形码图片中的真实数据。</li>
+    </ul>
+  </div>
+</ToolLayout>

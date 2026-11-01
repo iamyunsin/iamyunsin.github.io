@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoFrameExtractorTool from '@/components/tools/VideoFrameExtractorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 自媒体爆款封面设计',
+    highlight: '海量小红书/B站分镜模板',
+    title: 'Canva 可画 Pro — 影视解说封面与九宫格排版神器',
+    description: '将提取出的 4K 视频帧与台词长图一键套入 Canva 爆款小红书笔记、B站视频封面模板，支持 AI 自动抠图与品牌字体库。',
+    ctaText: '免费试用 Canva 可画 Pro',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + Image Transformations',
+    description: '把高清视频故事板与 PNG/WebP 剧照托管在 Cloudflare R2，全球 CDN 边缘直出且彻底免除下行带宽流量费。',
+    ctaText: '免费开通 Cloudflare R2 图床',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级剧照与静态站点加载，支持绑定自有备案域名，新老用户专享轻量应用服务器与存储包组合特惠。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么直接用手机或播放器全屏截图不如本工具提取的原帧清晰？',
+    answer:
+      '1. 避免屏幕缩放与 UI 遮挡：系统截屏受限于您当前显示器或手机窗口的实际缩放比例，且经常误截入播放器的进度条、弹幕或半透明阴影；2. 1:1 原始像素直出：本工具直接读取视频流解码缓冲区的原始分辨率（如 `1920×1080` 或 `3840×2160` 4K），通过离屏 Canvas 1:1 无损绘制并导出为 PNG 或 WebP，画质与剪辑软件导出的静帧完全一致。',
+  },
+  {
+    question: '“影视台词底部拼接长图”功能是如何运作的？如何调整台词区域高度？',
+    answer:
+      '制作豆瓣、小红书、微博常见的“电影经典台词长图”时，如果把每张图完整竖向拼接，画面会显得冗长重复。本工具会自动将您勾选的**第 1 帧保留 100% 完整构图**作为主视觉，而后续所有帧仅精准裁切底部 `14%~35%`（默认 `22%`）的字幕切片并无缝叠拼在下方。您可以根据电影是否有黑边（Letterbox）或双语字幕高度，随时拖动滑块实时预览拼接效果。',
+  },
+  {
+    question: '如何精准捕捉人物表情最好看、不眨眼的那一帧？',
+    answer:
+      '普通视频播放器拖动进度条往往只能精确到 1 秒左右，极易错过高速运动或人物微表情瞬间。您可以使用监视器下方的 `⏮ -1帧 (1/30s)` 与 `⏭ +1帧 (1/30s)` 步进按钮，以 `0.033 秒` 的电影级精度逐帧前后微调，定格最完美的瞬间后点击“抓取当前高清帧”。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="视频逐帧截图、3×3 故事板网格与影视台词拼接长图生成工作台"
+  description="100% 浏览器本地运行的视频高清抽帧与台词长图拼接工具。支持 1/30 秒逐帧微调、按秒或固定张数自动批量截帧、3×3/4×4 故事板网格导出，以及小红书/豆瓣爆款电影台词底部叠拼长图一键合成。"
+  alternateZh="/tools/video-frame-extractor/"
+  alternateEn="/en/tools/video-frame-extractor/"
+  wasmSizeLabel="Pure Local Canvas Pipeline"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoFrameExtractorTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么自媒体博主、影视解说与设计师都在用纯本地视频抽帧与台词长图工作台？</h2>
+    <p>
+      无论是整理电影经典台词发小红书/豆瓣、从 4K 实拍视频中挑选最佳帧作为 B 站/YouTube 视频封面，还是拉片分析广告分镜构图（Storyboard Contact Sheet），传统做法往往需要打开笨重的 Premiere / 剪映逐张导出再去 Photoshop 裁切对齐，耗时费力。
+    </p>
+    <ul>
+      <li><strong>毫秒级 <code>1/30s</code> 逐帧步进与批量均匀采样：</strong> 支持按固定时间间隔（每 0.5s / 1s / 2s / 5s）或固定总张数（6 / 9 / 12 / 16 张）自动遍历视频时间轴，一秒生成完整分镜画廊。</li>
+      <li><strong>一键合成“电影台词长图”与“3×3 故事板”：</strong> 首帧保留完整剧照氛围，后续帧智能截取底部 <code>22%</code> 字幕带纵向无缝叠拼，彻底告别手动拉参考线裁图。</li>
+    </ul>
+  </div>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import GifStudioTool from '@/components/tools/GifStudioTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 Meme & Sticker Design Suite',
+    highlight: '30-Day Free Pro Trial',
+    title: 'Canva Pro — Animated Stickers, Background Remover & Meme Studio',
+    description: 'Import unpacked PNG frames into Canva Pro for one-click AI background removal, custom typography, and animated sticker exports.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ Zero-Egress Media CDN',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Global Edge Delivery',
+    description: 'Host your animated GIFs and web assets on Cloudflare R2 with $0 egress bandwidth fees across 300+ global locations.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage and edge caching for web applications and developer communities.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How do I unpack an animated GIF into individual PNG frames or reverse it?',
+    answer:
+      'Simply drag and drop any `.gif` file into the studio. Our WebCodecs `ImageDecoder` and binary Graphic Control Extension (`0x21 0xF9`) parser immediately unpacks every frame into an interactive gallery with its exact millisecond delay. You can save any single frame as a lossless PNG, click **Reverse GIF** to play it backwards, or adjust speed from `0.5x` to `2.0x`.',
+  },
+  {
+    question: 'How does "Drop Every 2nd Frame" shrink GIF file size without changing playback speed?',
+    answer:
+      'When you click **Drop Every 2nd Frame (-50%)**, the studio unchecks every even-numbered frame and automatically doubles the delay duration (`delayMs`) of the remaining frames. Your animation plays at the exact same overall speed while cutting frame count and file size nearly in half—perfect for Discord, Slack, or WeChat sticker limits.',
+  },
+  {
+    question: 'Can I combine multiple static PNG/JPG images into a new animated GIF?',
+    answer:
+      'Yes! Select multiple `PNG`, `JPEG`, or `WebP` files at once and drop them into the studio. They will be aligned onto a shared canvas where you can customize per-frame delays, add top/bottom Impact-style meme captions, and export a looping `.gif`.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Animated GIF Frame Unpacker, Reverser, Speed Changer, Compressor & Meme Studio"
+  description="100% client-side GIF studio. Unpack any GIF into individual PNG frames, combine static images into a GIF, reverse frame order, change playback speed (0.5x–2x), drop every 2nd frame to halve file size, and burn in outlined meme captions."
+  alternateZh="/tools/gif-studio/"
+  alternateEn="/en/tools/gif-studio/"
+  wasmSizeLabel="WebCodecs + GIF89a Studio"
+  offers={offers}
+  faqs={faqs}
+>
+  <GifStudioTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Client-Side Animated GIF Studio & Unpacker?</h2>
+    <p>
+      Whether you want to inspect the frame-by-frame timing of a UI micro-interaction, reverse a reaction GIF, add bold outlined meme captions, or shrink an oversized GIF to fit Discord/Slack emoji limits, this workbench handles everything locally inside your browser.
+    </p>
+    <ul>
+      <li><strong>Frame-Accurate Unpacking & Per-Frame Delay Editing:</strong> Reads binary Graphic Control Extensions (`0x21 0xF9`) to preserve original frame timing and lets you tweak individual frame delays in milliseconds.</li>
+      <li><strong>Smart Frame Dropping & Palette Quantization:</strong> Cut file sizes by 50%–75% by combining every-other-frame decimation with 128/64/32-color adaptive palette compression.</li>
+    </ul>
+  </div>
+</ToolLayout>

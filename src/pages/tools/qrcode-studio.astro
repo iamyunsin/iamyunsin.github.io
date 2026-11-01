@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import QrcodeStudioTool from '@/components/tools/QrcodeStudioTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 品牌海报设计首选',
+    highlight: '海量可商用门店物料模板',
+    title: 'Canva 可画 Pro — 公众号配图与门店扫码立牌设计神器',
+    description: '将生成的无损 SVG 矢量二维码拖入 Canva，一键套用数万款桌面台卡、展会易拉宝、挪车牌与名片印刷模板。',
+    ctaText: '免费体验 Canva Pro 专业版',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '🇨🇳 活码落地页托管',
+    highlight: '轻量云服务器低至 38元/年',
+    title: '腾讯云 / 阿里云轻量应用服务器专场',
+    description: '告别第三方收费活码平台“扫码满 100 次即失效”的套路，用自有域名 + 轻量云服务器部署永久受控的品牌落地页。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '☁️ 全球边缘短链跳转',
+    highlight: '每天 10 万次免费请求',
+    title: 'Cloudflare Workers + KV 零成本自建高可用活码路由',
+    description: '利用 Cloudflare 全球 300+ 边缘节点构建毫秒级二维码跳转服务，随时在后台修改目标链接而无需重印纸质物料。',
+    ctaText: '免费开通 Cloudflare Workers',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么很多在线二维码生成器扫几次就提示“额度耗尽/二维码已失效”？',
+    answer:
+      '市面上许多打着“免费”旗号的二维码网站，默认会把您的网址偷偷替换成他们自己的中转短链（即“商业活码”），等您把传单或包装盒印刷出来后，再以“超过 50 次扫描限制”强制收取每年数百元的会员费。本工具严格遵循 ISO/IEC 18004 国际标准，直接将您的原始网址或文本 100% 静态编码进二维码矩阵中，不经过任何第三方服务器中转，哪怕 50 年后依然永久有效、不限扫码次数。',
+  },
+  {
+    question: '免密码一键连 WiFi 贴纸和 vCard 电子名片码的工作原理是什么？',
+    answer:
+      '智能手机（iOS 相机、华为/小米/OPPO 原生相机及微信扫一扫）内置了标准协议识别器：当扫描到以 WIFI:T:WPA;S:名称;P:密码;; 开头的标准字符串时，系统会自动弹出“加入无线局域网”确认框；当扫描到 BEGIN:VCARD 标准格式时，会自动弹出“新建联系人”卡片，全过程无需联网且密码绝不离开您的浏览器。',
+  },
+  {
+    question: '本地二维码识别解码器支持哪些操作方式？',
+    answer:
+      '切换到顶部的“本地图片/截图批量扫码识别解码器”标签后，您可以直接将电脑上的二维码或条形码图片拖入虚线框，或者使用微信/系统截图工具截图后直接在页面按 Ctrl + V 粘贴，即可在浏览器本地瞬间提取出二维码背后的真实网址与隐藏文本。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="二维码全能工坊 — 艺术二维码生成、WiFi贴纸、挪车码与本地扫码识别器"
+  description="100% 纯前端 ISO/IEC 18004 标准二维码生成与离线解码工作台。支持圆角/波点渐变配色、中心 Logo、免密连 WiFi 贴纸、挪车牌海报、vCard 电子名片及截图 Ctrl+V 批量扫码识别，永久有效不过期。"
+  alternateZh="/tools/qrcode-studio/"
+  alternateEn="/en/tools/qrcode-studio/"
+  wasmSizeLabel="ISO/IEC 18004 Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <QrcodeStudioTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>拒绝“商业活码劫持”：为什么你应该使用 100% 纯静态标准二维码？</h2>
+    <p>
+      在制作产品外包装、展会易拉宝、餐厅桌面 WiFi 台卡或车载挪车牌时，最令人崩溃的事情莫过于：物料已经批量印刷下发，用户扫码却弹出<strong>“该二维码扫描次数已达上限，请机主充值 VIP 解锁”</strong>。
+    </p>
+    <ul>
+      <li><strong>零中转、永不过期：</strong> 本工具基于纯前端 Galois Field <code>GF(256)</code> Reed-Solomon 纠错算法直接生成矩阵，您的原始 URL、WiFi 密码与手机号被直接编码为黑白/彩色几何模块，没有任何中间商服务器可以拦截或关停您的二维码。</li>
+      <li><strong>四大高频场景海报一键生成：</strong> 内置标准网址活码、<code>WIFI:T:WPA</code> 免密连网台卡、高对比度蓝牌车载挪车码（扫码直接唤起手机拨号盘）、以及 <code>vCard 3.0</code> 商务电子名片。</li>
+      <li><strong>无损矢量 SVG 与高清 PNG 双格式导出：</strong> 设计师可直接下载无限放大不失真的 <code>.svg</code> 矢量文件导入 Illustrator / Figma / Canva 进行印刷排版。</li>
+    </ul>
+  </div>
+</ToolLayout>

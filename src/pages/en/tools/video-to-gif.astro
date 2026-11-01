@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoToGifTool from '@/components/tools/VideoToGifTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Global Edge CDN',
+    description: 'Host your product demo GIFs and documentation media on Cloudflare R2 with $0 egress bandwidth fees and instant edge delivery.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage and edge caching for web applications, developer blogs, and media assets.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: 'Up to 35% Partner Rebate',
+    title: 'Alibaba Cloud ECS & OSS Official Store',
+    description: 'Deploy self-hosted media hubs, documentation sites, and full-stack apps on high-performance cloud instances.',
+    ctaText: 'Explore Alibaba Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Do my video files ever get uploaded to a server during GIF conversion?',
+    answer:
+      'Never. Unlike traditional online MP4-to-GIF converters that upload your private screen recordings or family videos to remote cloud servers, this tool decodes video frames and encodes the GIF89a LZW binary stream 100% locally inside your browser memory. There are no file size paywalls, no watermarks, and zero privacy risks.',
+  },
+  {
+    question: 'How can I reduce the output GIF file size for GitHub READMEs, Discord, or Slack?',
+    answer:
+      '1. Lower Width & FPS: Set Target Width to `320px` or `480px` and Frame Rate to `10 FPS` for the sweet spot between sharpness and size; 2. Palette Quantization: Switch from `256 Colors` to `128 Colors` or `64 Colors` to dramatically improve LZW dictionary compression efficiency; 3. Prune Redundant Frames: Uncheck static start/end frames in the Sampled Frame Strip and click Re-encode.',
+  },
+  {
+    question: 'When should I enable or disable Bayer 4×4 Ordered Dithering?',
+    answer:
+      'Because GIF89a supports at most 256 colors per frame, natural videos with sky gradients or lighting transitions can suffer from visible color banding. Enabling `Bayer 4×4` dithering uses a structured pixel matrix to smooth out color transitions. For flat-color software UI recordings or terminal demos, disabling dithering keeps solid backgrounds uniform and shrinks the LZW output size.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private Video to GIF Converter & Palette Optimizer (MP4 / WebM / MOV)"
+  description="100% client-side MP4/WebM/MOV to animated GIF89a converter. Features clip trimming, FPS & resolution control, 256/128/64/32-color adaptive palette quantization, Bayer dithering, caption overlays, and frame-by-frame pruning."
+  alternateZh="/tools/video-to-gif/"
+  alternateEn="/en/tools/video-to-gif/"
+  wasmSizeLabel="Pure Local GIF89a Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoToGifTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Client-Side Video to GIF89a Workbench?</h2>
+    <p>
+      Whether you are embedding an interactive UI walkthrough in a GitHub <code>README.md</code>, creating a bug reproduction clip for Linear/Jira, or crafting a reaction meme for Discord, <strong>animated GIFs</strong> remain the most universally supported autoplay format across web browsers and email clients.
+    </p>
+    <ul>
+      <li><strong>Instant Startup Without Heavy 30MB FFmpeg Downloads:</strong> Powered by a custom client-side RGB555 histogram palette quantizer and 12-bit variable-length LZW encoder that works in every modern browser without requiring <code>SharedArrayBuffer</code> headers.</li>
+      <li><strong>Frame-Level Precision & Caption Overlays:</strong> Inspect every sampled frame on an interactive filmstrip, uncheck unwanted transition frames, and burn crisp outlined top/bottom captions directly into your GIF.</li>
+    </ul>
+  </div>
+</ToolLayout>

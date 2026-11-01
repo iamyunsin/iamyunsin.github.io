@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import PrivacyWatermarkTool from '@/components/tools/PrivacyWatermarkTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage, image processing, and cloud servers for Asia-Pacific and global web applications.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: 'Up to 35% Partner Rebate',
+    title: 'Alibaba Cloud ECS & OSS Official Store',
+    description: 'Deploy self-hosted document tools or full-stack web apps on high-performance cloud instances.',
+    ctaText: 'Explore Alibaba Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Zero Trust Security',
+    description: 'Host your web assets and secure internal apps with Cloudflare R2 and Zero Trust.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why should I never upload my ID card, passport, or business license to an online watermark website?',
+    answer:
+      'Uploading unwatermarked identity documents to a remote server exposes you to data breaches and identity theft. Our Privacy Watermark Workbench runs 100% offline inside your browser using HTML5 Canvas—your sensitive scans never leave your computer or phone.',
+  },
+  {
+    question: 'What is the Anti-AI Removal Guilloche Wave pattern?',
+    answer:
+      'Simple flat-color text watermarks can be easily stripped by color-channel thresholding or AI inpainting tools. Enabling the Anti-AI Guilloche Wave superimposes high-frequency sinusoidal security lines and micro-stipple noise across the text strokes, making automated removal significantly harder.',
+  },
+  {
+    question: 'How do I redact sensitive digits and combine Front + Back ID scans onto an A4 page?',
+    answer:
+      'Simply drag your mouse directly across the preview canvas to pixelate sensitive ID numbers or addresses, and switch to "A4 Front+Back Sheet" mode to center both sides of your ID card onto a standard A4 printable canvas.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Offline ID Card & Document Privacy Watermark, Mosaic Redactor & A4 Sheet Composer"
+  description="100% client-side anti-counterfeit watermark tool for ID cards, passports, KYC documents, and business licenses. Features Anti-AI Guilloche security waves, interactive mosaic redaction, and A4 front+back 1:1 printable layout."
+  alternateZh="/tools/privacy-watermark/"
+  alternateEn="/en/tools/privacy-watermark/"
+  wasmSizeLabel="100% Offline Privacy Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <PrivacyWatermarkTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Protect Your ID Cards, Passports & KYC Scans Before Sharing Online</h2>
+    <p>
+      Whenever you submit scans of your <strong>driver’s license, national ID card, passport, rental lease, or corporate registration certificate</strong> for KYC verification, HR onboarding, or banking applications, sending an unmarked file puts you at risk of unauthorized reuse and identity fraud.
+    </p>
+    <ul>
+      <li><strong>Zero Server Uploads (Air-Gapped Ready):</strong> Works completely offline in your browser memory—disconnect Wi-Fi anytime to verify.</li>
+      <li><strong>Anti-AI Inpainting Guilloche Security Pattern:</strong> Interleaves sinusoidal guilloche waves and micro-dots with your custom text and date stamp.</li>
+      <li><strong>Interactive Mosaic Redaction & A4 1:1 Sheet:</strong> Drag on the canvas to pixelate sensitive digits, or combine Front and Back ID scans onto a single printable A4 page.</li>
+    </ul>
+  </div>
+</ToolLayout>

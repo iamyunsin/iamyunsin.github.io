@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import QrcodeStudioTool from '@/components/tools/QrcodeStudioTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 Print & Poster Design',
+    highlight: '30-Day Free Pro Trial',
+    title: 'Canva Pro — Print-Ready QR Table Tents & Business Cards',
+    description: 'Import your lossless SVG QR codes into Canva Pro to customize restaurant WiFi table tents, flyers, packaging labels, and business cards.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ Edge URL Redirects',
+    highlight: '100,000 Free Req/Day',
+    title: 'Cloudflare Workers — Self-Host Your Own Dynamic QR Router',
+    description: 'Never pay $29/month for predatory "dynamic QR" SaaS again. Route custom short URLs at the edge on your own domain for $0.',
+    ctaText: 'Deploy on Cloudflare Workers',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+  {
+    badge: '🚀 Cloud Hosting',
+    highlight: 'Developer Cloud Deals',
+    title: 'Alibaba Cloud & Tencent Cloud Official Partner Store',
+    description: 'Host your high-speed landing pages, digital menus, and portfolio sites on reliable global cloud instances.',
+    ctaText: 'Explore Cloud Server Offers',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Do the QR codes generated here ever expire or have scan limits?',
+    answer:
+      'Never. Many "free" QR generators secretly encode their own tracking redirect URL and deactivate your QR code after 14 days unless you pay a monthly subscription. Our generator encodes your exact URL, WiFi credentials, or vCard payload directly into the ISO/IEC 18004 QR matrix with Reed-Solomon Level M error correction. They work forever with unlimited scans.',
+  },
+  {
+    question: 'Are my WiFi passwords or phone numbers uploaded to any server?',
+    answer:
+      'No. 100% of the QR matrix computation, gradient rendering, and barcode scanning runs locally inside your browser using JavaScript and HTML5 Canvas. Your WiFi password and contact info never leave your device.',
+  },
+  {
+    question: 'How can I scan a QR code from a screenshot on my computer?',
+    answer:
+      'Switch to the "Offline QR & Barcode Image Scanner" tab at the top, then either drag and drop an image file or simply press Ctrl+V (Cmd+V on Mac) to paste a screenshot directly from your clipboard.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="All-in-One QR Code Studio — Artistic QR, WiFi Sticker, vCard & Offline Scanner"
+  description="100% client-side ISO/IEC 18004 QR code generator and offline image scanner. Create custom rounded/dot gradient QR codes, printable WiFi guest cards, parking signs, and vCard business cards that never expire."
+  alternateZh="/tools/qrcode-studio/"
+  alternateEn="/en/tools/qrcode-studio/"
+  wasmSizeLabel="ISO/IEC 18004 Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <QrcodeStudioTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Static, Zero-Tracking QR Code Studio?</h2>
+    <p>
+      Nothing is worse than printing 5,000 product labels or restaurant menus only to discover that a third-party QR generator has disabled your link behind a paywall. Because our <strong>ISO/IEC 18004 Reed-Solomon QR Engine</strong> encodes your raw data directly into the matrix with zero middleman redirects, your QR codes are <strong>100% permanent and scan-unlimited</strong>.
+    </p>
+    <ul>
+      <li><strong>Four Built-in Scene Templates:</strong> Generate standard URL/text codes, one-scan <code>WIFI:T:WPA</code> guest stickers, dashboard parking call signs (<code>tel:</code>), and <code>vCard 3.0</code> digital business cards.</li>
+      <li><strong>Artistic Styling & Print-Ready SVG:</strong> Customize module shapes (classic square, liquid rounded, polka dots), diagonal color gradients, and center logos/emojis, then export crisp PNG posters or infinite-resolution vector SVGs.</li>
+      <li><strong>Clipboard Screenshot Decoder:</strong> Paste any screenshot with <code>Ctrl+V</code> to inspect the exact raw payload inside any QR code or 1D barcode offline.</li>
+    </ul>
+  </div>
+</ToolLayout>

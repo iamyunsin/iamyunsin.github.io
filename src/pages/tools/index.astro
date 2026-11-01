@@ -4,15 +4,27 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
-import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
+import { SITE, TOOLS, TOOL_CATEGORIES, getToolsByGroup } from '@/consts';
+
+const hotKeywords = [
+  { label: '🔥 视频转GIF', q: '视频转GIF', group: 'media' },
+  { label: '📸 视频逐帧截图', q: '抽帧', group: 'media' },
+  { label: '🪪 证件照换底控KB', q: '证件照', group: 'media' },
+  { label: '🏠 提前还房贷划算吗', q: '提前还贷', group: 'calculator' },
+  { label: '🚗 车贷真实年化IRR', q: '车贷', group: 'calculator' },
+  { label: '💰 年终奖临界点避税', q: '年终奖', group: 'calculator' },
+  { label: '🏁 二维码生成/识别', q: '二维码', group: 'daily-qr' },
+  { label: '🏷️ 条形码批量A4打印', q: '条形码', group: 'daily-qr' },
+  { label: '📄 纯本地PDF转长图', q: 'PDF', group: 'daily-qr' },
+];
 ---
 
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <BaseHead
-      title={`极客工具箱 & 底层原理交互实验室 (Rust Wasm) · ${SITE.title}`}
-      description="100% 浏览器本地运行的开发者效率工具箱与底层原理交互式实验室，基于 Rust + WebAssembly 构建，零文件上传、极致速度、保护数据隐私。"
+      title={`全能在线工具箱 (${TOOLS.length}款)：视频转GIF / 房贷车贷计算器 / 二维码条码 / 极客实验室 · ${SITE.title}`}
+      description="100% 浏览器本地运行的免费无水印在线工具箱：涵盖视频转GIF、视频高清抽帧、证件照控KB、房贷提前还贷与车贷真实年化计算器、二维码/条形码批量打印、本地PDF及底层原理实验室。"
       alternateZh="/tools/"
       alternateEn="/en/tools/"
     />
@@ -22,77 +34,261 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     <BodyWrapper>
       <header class="tools-banner">
         <div class="banner-top">
-          <span class="wasm-tag">⚡ Powered by Rust + WebAssembly</span>
+          <div class="banner-badges">
+            <span class="wasm-tag">⚡ 100% 浏览器本地运行 · 零上传免登录</span>
+            <span class="count-tag">📦 已上线 {TOOLS.length} 款免费工具 · 6 大分类</span>
+          </div>
           <a href="/en/tools/" class="lang-link">🌐 English Version →</a>
         </div>
-        <h1 class="tools-title">🛠️ 极客在线工具箱 & 原理实验室</h1>
+        <h1 class="tools-title">🛠️ 全能隐私在线工具箱 & 原理实验室</h1>
         <p class="tools-subtitle">
-          100% 纯浏览器端运行（每个工具与可视化沙盒均由微型 Rust Wasm 模块驱动），数据绝不离开你的设备，涵盖高频开发效率工具与硬核源码交互式可视化实验。
+          所有视频处理、图像证件转换、二维码/条码排印、金融精算与源码沙盒均 <strong>100% 在您的浏览器本地执行</strong>（由原生 WebCodecs 硬件加速与微型 Rust Wasm 驱动），文件绝不上传服务器，永久免费无水印。
         </p>
+
+        <!-- Search & Category Filter Bar -->
+        <div class="directory-controls">
+          <div class="search-box-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input
+              id="tool-search-input"
+              type="search"
+              class="tool-search-input"
+              placeholder="搜索工具名称、痛点或关键词（如：视频转GIF、提前还贷、证件照20KB、二维码、年终奖、PDF...）"
+              autocomplete="off"
+            />
+            <button id="tool-search-clear" type="button" class="search-clear-btn" hidden>清除</button>
+          </div>
+
+          <div class="hot-tags-bar">
+            <span class="hot-label">高频直达：</span>
+            {hotKeywords.map((hk) => (
+              <button type="button" class="hot-tag-btn" data-query={hk.q}>
+                {hk.label}
+              </button>
+            ))}
+          </div>
+
+          <nav class="category-tabs" aria-label="工具分类筛选">
+            <button type="button" class="cat-tab is-active" data-group="all">
+              <span>✨ 全部工具</span>
+              <span class="cat-count">{TOOLS.length}</span>
+            </button>
+            {TOOL_CATEGORIES.map((cat) => {
+              const items = getToolsByGroup(cat.id);
+              return (
+                <button type="button" class="cat-tab" data-group={cat.id}>
+                  <span>{cat.icon} {cat.shortTitle}</span>
+                  <span class="cat-count">{items.length}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </header>
 
-      <div class="section-heading">
-        <h2 class="section-title">⚡ 开发者实用工具箱 (Developer Utilities)</h2>
-        <span class="section-desc">日常高频效率、隐私转换、移动端唤醒与 Web3 安全检测</span>
+      <div id="empty-search-state" class="empty-search-box" hidden>
+        <p class="empty-title">🙈 未找到匹配的工具</p>
+        <p class="empty-sub">请尝试换个关键词（如“GIF”、“房贷”、“二维码”、“水印”），或点击下方按钮查看全部工具。</p>
+        <button id="reset-filter-btn" type="button" class="reset-btn">显示全部 {TOOLS.length} 款工具</button>
       </div>
 
-      <section class="tools-grid">
-        {UTILITY_TOOLS.map((tool) => (
-          <a
-            href={tool.pathZh}
-            class={`tool-card ${tool.status === 'coming-soon' ? 'is-upcoming' : ''}`}
+      {TOOL_CATEGORIES.map((cat) => {
+        const groupTools = getToolsByGroup(cat.id);
+        return (
+          <section
+            id={cat.id === 'principle-lab' ? 'labs' : cat.id}
+            data-section-group={cat.id}
+            class="category-section"
           >
-            <div class="card-meta">
-              <span class={`status-badge ${tool.status}`}>{tool.badge}</span>
-              {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
-            </div>
-            <h3 class="card-title">{tool.title}</h3>
-            <p class="card-desc">{tool.description}</p>
-            <div class="card-footer">
-              <span class="enter-text">
-                {tool.status === 'live' ? '立即使用工具 →' : '敬请期待 (规划中)'}
-              </span>
-            </div>
-          </a>
-        ))}
-      </section>
-
-      <div id="labs" class="section-heading labs-heading">
-        <h2 class="section-title">🧪 底层原理交互实验室 (Interactive Principle Labs)</h2>
-        <span class="section-desc">与站内硬核技术博文深度联动，动手单步推演编译器、事件循环、Diff 算法与网络协议</span>
-      </div>
-
-      <section class="tools-grid">
-        {LAB_TOOLS.map((tool) => (
-          <div class="tool-card lab-card">
-            <a href={tool.pathZh} class="card-main-link">
-              <div class="card-meta">
-                <span class="status-badge lab-badge">{tool.badge}</span>
-                {tool.wasmPowered && <span class="engine-badge">Rust Wasm</span>}
+            <div class="section-heading">
+              <div class="heading-left">
+                <h2 class="section-title">{cat.title}</h2>
+                <p class="section-desc">{cat.description}</p>
               </div>
-              <h3 class="card-title">{tool.title}</h3>
-              <p class="card-desc">{tool.description}</p>
-            </a>
-            {tool.relatedPosts && tool.relatedPosts.length > 0 && (
-              <div class="related-post-bar">
-                <span class="related-label">📖 配套源码精读：</span>
-                <div class="related-links">
-                  {tool.relatedPosts.map((post) => (
-                    <a href={post.url} class="related-link">{post.title}</a>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div class="card-footer">
-              <a href={tool.pathZh} class="enter-text">进入交互实验室 →</a>
+              <span class="section-count-pill">共 {groupTools.length} 款</span>
             </div>
-          </div>
-        ))}
-      </section>
+
+            <div class="tools-grid">
+              {groupTools.map((tool) => {
+                const searchCorpus = [
+                  tool.title,
+                  tool.description,
+                  tool.badge,
+                  ...(tool.keywords || []),
+                ]
+                  .join(' ')
+                  .toLowerCase();
+
+                return (
+                  <div
+                    class={`tool-card ${tool.section === 'lab' ? 'lab-card' : ''} ${tool.status === 'coming-soon' ? 'is-upcoming' : ''}`}
+                    data-tool-card
+                    data-tool-group={cat.id}
+                    data-search={searchCorpus}
+                  >
+                    <a href={tool.pathZh} class="card-main-link">
+                      <div class="card-meta">
+                        <span class={`status-badge ${tool.status}`}>{tool.badge}</span>
+                        {tool.wasmPowered ? (
+                          <span class="engine-badge is-wasm">⚡ Rust Wasm</span>
+                        ) : (
+                          <span class="engine-badge">🔒 100% 本地</span>
+                        )}
+                      </div>
+                      <h3 class="card-title">{tool.title}</h3>
+                      <p class="card-desc">{tool.description}</p>
+                    </a>
+                    {tool.relatedPosts && tool.relatedPosts.length > 0 && (
+                      <div class="related-post-bar">
+                        <span class="related-label">📖 配套源码精读：</span>
+                        <div class="related-links">
+                          {tool.relatedPosts.map((post) => (
+                            <a href={post.url} class="related-link">{post.title}</a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div class="card-footer">
+                      <a href={tool.pathZh} class="enter-text">
+                        {tool.section === 'lab'
+                          ? '进入交互实验室 →'
+                          : tool.status === 'live'
+                            ? '立即使用工具 →'
+                            : '敬请期待'}
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
 
       <AdSlot lang="zh" category="ai-cost" position="bottom" />
     </BodyWrapper>
     <Footer />
+
+    <script is:inline data-astro-rerun>
+      (function () {
+        const searchInput = document.getElementById('tool-search-input');
+        const clearBtn = document.getElementById('tool-search-clear');
+        const resetBtn = document.getElementById('reset-filter-btn');
+        const emptyState = document.getElementById('empty-search-state');
+        const tabBtns = Array.from(document.querySelectorAll('.cat-tab'));
+        const hotBtns = Array.from(document.querySelectorAll('.hot-tag-btn'));
+        const sections = Array.from(document.querySelectorAll('[data-section-group]'));
+        const cards = Array.from(document.querySelectorAll('[data-tool-card]'));
+
+        let activeGroup = 'all';
+        let query = '';
+
+        function applyFilters() {
+          const cleanQuery = query.trim().toLowerCase();
+          if (clearBtn) {
+            clearBtn.hidden = cleanQuery.length === 0;
+          }
+
+          tabBtns.forEach((btn) => {
+            const g = btn.getAttribute('data-group');
+            btn.classList.toggle('is-active', g === activeGroup);
+          });
+
+          let totalVisible = 0;
+
+          sections.forEach((sec) => {
+            const secGroup = sec.getAttribute('data-section-group');
+            const groupMatches = activeGroup === 'all' || activeGroup === secGroup;
+            if (!groupMatches) {
+              sec.hidden = true;
+              return;
+            }
+
+            const secCards = Array.from(sec.querySelectorAll('[data-tool-card]'));
+            let visibleInSec = 0;
+            secCards.forEach((card) => {
+              const corpus = card.getAttribute('data-search') || '';
+              const textMatches = !cleanQuery || corpus.includes(cleanQuery);
+              card.hidden = !textMatches;
+              if (textMatches) {
+                visibleInSec++;
+                totalVisible++;
+              }
+            });
+
+            sec.hidden = visibleInSec === 0;
+          });
+
+          if (emptyState) {
+            emptyState.hidden = totalVisible > 0;
+          }
+        }
+
+        function syncFromHash() {
+          const rawHash = (window.location.hash || '').replace(/^#/, '');
+          if (!rawHash) return;
+          const mapped = rawHash === 'labs' ? 'principle-lab' : rawHash;
+          const validGroups = ['all', 'media', 'calculator', 'daily-qr', 'creator-biz', 'dev-ai-web3', 'principle-lab'];
+          if (validGroups.includes(mapped)) {
+            activeGroup = mapped;
+            applyFilters();
+          }
+        }
+
+        tabBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const g = btn.getAttribute('data-group') || 'all';
+            activeGroup = g;
+            if (g === 'all') {
+              history.replaceState(null, '', window.location.pathname);
+            } else {
+              history.replaceState(null, '', '#' + (g === 'principle-lab' ? 'labs' : g));
+            }
+            applyFilters();
+          });
+        });
+
+        hotBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const q = btn.getAttribute('data-query') || '';
+            if (searchInput) {
+              searchInput.value = q;
+            }
+            activeGroup = 'all';
+            query = q;
+            applyFilters();
+          });
+        });
+
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            query = e.target.value || '';
+            applyFilters();
+          });
+        }
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            query = '';
+            if (searchInput) searchInput.value = '';
+            applyFilters();
+          });
+        }
+
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            query = '';
+            activeGroup = 'all';
+            if (searchInput) searchInput.value = '';
+            history.replaceState(null, '', window.location.pathname);
+            applyFilters();
+          });
+        }
+
+        window.addEventListener('hashchange', syncFromHash);
+        syncFromHash();
+      })();
+    </script>
   </body>
 </html>
 
@@ -107,7 +303,7 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     @media (max-width: 640px) {
       padding: 16px 14px;
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
   }
 
@@ -116,6 +312,13 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .banner-badges {
+    display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 8px;
   }
@@ -130,6 +333,18 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     background-color: var(--accent-soft);
     color: var(--accent);
     border: 1px solid var(--accent-border);
+  }
+
+  .count-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: var(--bg-surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
   }
 
   .lang-link {
@@ -151,45 +366,237 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
   }
 
   .tools-subtitle {
-    margin: 0;
+    margin: 0 0 18px;
     font-size: 14px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.65;
+  }
+
+  .directory-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-color);
+  }
+
+  .search-box-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .tool-search-input {
+    width: 100%;
+    padding: 11px 70px 11px 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-muted);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+  }
+
+  .hot-tags-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .hot-label {
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .hot-tag-btn {
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-surface);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      background-color: var(--accent-soft);
+    }
+  }
+
+  .category-tabs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 2px;
+  }
+
+  .cat-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    &.is-active {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+
+      .cat-count {
+        background-color: rgba(255, 255, 255, 0.22);
+        color: #fff;
+      }
+    }
+  }
+
+  .cat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    background-color: var(--bg-muted);
+    color: var(--text-muted);
+  }
+
+  .empty-search-box {
+    margin: 24px 0;
+    padding: 36px 20px;
+    border-radius: 16px;
+    border: 1px dashed var(--border-color);
+    background-color: var(--bg-surface);
+    text-align: center;
+  }
+
+  .empty-title {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .empty-sub {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+
+  .reset-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--accent-border);
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .category-section {
+    margin-bottom: 30px;
+    scroll-margin-top: 84px;
   }
 
   .section-heading {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     margin: 8px 0 14px;
     padding-bottom: 10px;
     border-bottom: 1px dashed var(--border-color);
+  }
 
-    &.labs-heading {
-      margin-top: 32px;
-      scroll-margin-top: 84px;
-    }
+  .heading-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .section-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 800;
     color: var(--text-primary);
   }
 
   .section-desc {
+    margin: 0;
     font-size: 13px;
     color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .section-count-pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: var(--bg-muted);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
   }
 
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    margin-bottom: 24px;
+    gap: 16px;
 
     @media (max-width: 820px) {
       grid-template-columns: 1fr;
@@ -199,13 +606,17 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
   .tool-card {
     display: flex;
     flex-direction: column;
-    padding: 22px 24px;
+    padding: 20px 22px;
     border-radius: 16px;
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
     text-decoration: none;
     transition: all 0.22s ease;
     min-width: 0;
+
+    &[hidden] {
+      display: none !important;
+    }
 
     @media (max-width: 640px) {
       padding: 16px 14px;
@@ -235,7 +646,7 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .status-badge {
@@ -257,18 +668,22 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
     font-weight: 600;
     color: var(--text-muted);
     font-family: monospace;
+
+    &.is-wasm {
+      color: var(--accent);
+    }
   }
 
   .card-title {
-    margin: 0 0 10px;
-    font-size: 17px;
+    margin: 0 0 8px;
+    font-size: 16.5px;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.4;
   }
 
   .card-desc {
-    margin: 0 0 14px;
+    margin: 0 0 12px;
     font-size: 13.5px;
     color: var(--text-secondary);
     line-height: 1.6;
@@ -309,7 +724,7 @@ import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
   }
 
   .card-footer {
-    padding-top: 12px;
+    padding-top: 10px;
     border-top: 1px dashed var(--border-color);
   }
 

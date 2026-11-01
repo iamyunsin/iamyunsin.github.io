@@ -5,7 +5,7 @@ import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
 import AffiliateCard, { type AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
-import { SITE, TOOLS } from '@/consts';
+import { SITE, TOOLS, getCategoryMeta, getToolsByGroup } from '@/consts';
 
 export interface FaqItem {
   question: string;
@@ -40,6 +40,10 @@ const switchLangUrl = lang === 'en' ? alternateZh : alternateEn;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || SITE.domain).toString();
 const matchedTool = TOOLS.find((t) => t.pathZh === alternateZh || t.pathEn === alternateEn);
 const relatedPosts = matchedTool?.relatedPosts || [];
+const currentGroup = matchedTool?.group || 'media';
+const categoryMeta = getCategoryMeta(currentGroup);
+const siblingTools = getToolsByGroup(currentGroup);
+const otherSiblingTools = siblingTools.filter((t) => t.slug !== matchedTool?.slug);
 
 // Automatic WebApplication + FAQPage JSON-LD Schema for Google Rich Snippets
 const jsonLdSchemas: Record<string, any>[] = [
@@ -210,8 +214,16 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
       <nav class="tool-breadcrumb" aria-label="Breadcrumb">
         <div class="crumb-links">
           <a href={lang === 'en' ? '/en/tools/' : '/tools/'}>
-            {lang === 'en' ? '🛠️ Indie Tools' : '🛠️ 极客工具箱'}
+            {lang === 'en' ? '🛠️ Tools Directory' : '🛠️ 工具箱大盘'}
           </a>
+          {categoryMeta && (
+            <>
+              <span class="crumb-sep">/</span>
+              <a href={`${lang === 'en' ? '/en/tools/' : '/tools/'}#${categoryMeta.id}`}>
+                {categoryMeta.icon} {lang === 'en' ? categoryMeta.shortTitleEn : categoryMeta.shortTitle}
+              </a>
+            </>
+          )}
           <span class="crumb-sep">/</span>
           <span class="crumb-current">{title}</span>
         </div>
@@ -241,6 +253,32 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
                   {lang === 'en' ? p.titleEn : p.title} →
                 </a>
               ))}
+            </div>
+          </div>
+        )}
+        {siblingTools.length > 1 && (
+          <div class="hero-suite-switcher">
+            <span class="suite-switcher-label">
+              {categoryMeta?.icon} {lang === 'en' ? `${categoryMeta?.shortTitleEn} Suite:` : `${categoryMeta?.shortTitle}同系工具切换：`}
+            </span>
+            <div class="suite-switcher-pills">
+              {siblingTools.map((st) => {
+                const isCurrent = st.slug === matchedTool?.slug;
+                return (
+                  <a
+                    href={lang === 'en' ? st.pathEn : st.pathZh}
+                    class={`suite-pill ${isCurrent ? 'is-active' : ''}`}
+                    aria-current={isCurrent ? 'page' : undefined}
+                  >
+                    <span class="suite-pill-badge">{(lang === 'en' ? st.badgeEn : st.badge).split('·')[0].trim()}</span>
+                    <span class="suite-pill-name">
+                      {lang === 'en'
+                        ? st.titleEn.split('(')[0].trim()
+                        : st.title.split('（')[0].split('(')[0].trim()}
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}
@@ -301,12 +339,40 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
           </section>
         )}
 
+        {otherSiblingTools.length > 0 && (
+          <section class="related-tools-section">
+            <div class="related-tools-header">
+              <h2 class="related-tools-heading">
+                {categoryMeta?.icon}{' '}
+                {lang === 'en'
+                  ? `More in ${categoryMeta?.shortTitleEn || 'Related Tools'}`
+                  : `更多【${categoryMeta?.shortTitle || '同分类'}】免费在线工具推荐`}
+              </h2>
+              <a href={`${lang === 'en' ? '/en/tools/' : '/tools/'}#${currentGroup}`} class="related-all-link">
+                {lang === 'en' ? `Browse All ${ TOOLS.length } Tools →` : `查看全部 ${ TOOLS.length } 款工具 →`}
+              </a>
+            </div>
+            <div class="related-tools-grid">
+              {otherSiblingTools.map((rt) => (
+                <a href={lang === 'en' ? rt.pathEn : rt.pathZh} class="related-tool-card">
+                  <div class="rt-meta">
+                    <span class="rt-badge">{lang === 'en' ? rt.badgeEn : rt.badge}</span>
+                    {rt.wasmPowered && <span class="rt-wasm">Rust Wasm</span>}
+                  </div>
+                  <h3 class="rt-title">{lang === 'en' ? rt.titleEn : rt.title}</h3>
+                  <p class="rt-desc">{lang === 'en' ? rt.descriptionEn : rt.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
         <!-- Automatic Zero-Support Legal Disclaimer -->
         <footer class="tool-disclaimer">
           <p>
             {lang === 'en'
-              ? '⚖️ Disclaimer: All tokenization, encoding, and pricing estimations run 100% locally in your browser via WebAssembly. No input prompts or files are ever transmitted to or stored on any server. Pricing data is provided for estimation only; please refer to official vendor billing pages for final invoices.'
-              : '⚖️ 免责声明：本工具所有文本分词、编码与价格测算均通过 WebAssembly 在您的浏览器本地完成，不会向服务器上传或存储任何输入数据。各模型单价与汇率估算仅供参考，实际账单请以各云厂商或官方 API 平台结算为准。'}
+              ? '⚖️ Disclaimer: All file processing, media encoding, financial calculations, and barcode generation run 100% locally in your browser. No files, photos, or inputs are ever uploaded to or stored on any server. Financial, loan, and tax estimations are for reference only; please consult official bank or tax authorities for final figures.'
+              : '⚖️ 免责声明：本工具所有音视频编解码、图像证件处理、二维码生成及财务测算均 100% 在您的浏览器本地完成，绝不向任何服务器上传或留存您的文件与隐私数据。房贷、车贷、利率与个税测算结果仅供参考，实际结算请以银行合同或税务机关官方标准为准。'}
           </p>
         </footer>
       </article>
@@ -737,5 +803,164 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
       margin: 0;
       line-height: 1.6;
     }
+  }
+
+  .hero-suite-switcher {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .suite-switcher-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  .suite-switcher-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .suite-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    &.is-active {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent);
+      font-weight: 700;
+    }
+  }
+
+  .suite-pill-badge {
+    font-size: 11px;
+    opacity: 0.9;
+  }
+
+  .related-tools-section {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+  }
+
+  .related-tools-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .related-tools-heading {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    color: var(--text-primary);
+  }
+
+  .related-all-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    @media (max-width: 720px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-color);
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      background-color: var(--bg-surface);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  .rt-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .rt-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .rt-wasm {
+    font-size: 10.5px;
+    font-family: monospace;
+    color: var(--text-muted);
+  }
+
+  .rt-title {
+    margin: 0 0 6px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    line-height: 1.4 !important;
+  }
+
+  .rt-desc {
+    margin: 0 !important;
+    font-size: 12.5px !important;
+    color: var(--text-secondary) !important;
+    line-height: 1.55 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>

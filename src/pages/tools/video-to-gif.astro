@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoToGifTool from '@/components/tools/VideoToGifTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + 全球边缘 CDN',
+    description: '将生成的教程 GIF 动图与短视频托管在 Cloudflare R2，全球 300+ 节点高速分发且彻底免除下行流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2 图床',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内公众号、技术文档与小程序高清动图毫秒级加载，新老用户专享轻量服务器与 CDN 流量包官方补贴。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 云小站官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — ECS 与 OSS 媒体存储特惠',
+    description: '独立开发者自建博客图床与全栈应用首选，汇集阿里云爆款轻量应用服务器与 OSS 存储包专属折扣。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么传统的在线 MP4 转 GIF 网站经常排队失败或泄露隐私？',
+    answer:
+      '1. 隐私与合规风险：绝大多数在线转换网站会将您的手机录屏或相机视频上传至远程 Linux 服务器调用 FFmpeg，若视频中包含客户后台数据、源代码或个人生活画面，极易造成敏感数据外泄；2. 严苛的免费限制：为节省云端算力，同类网站往往限制“单文件不超过 15MB”、“时长不超过 5 秒”或强制添加右下角水印；3. 纯本地 GIF89a 引擎优势：本工具 100% 在您的浏览器内存中完成视频关键帧解码、RGB555 自适应调色板量化与 LZW 可变长字典压缩，零服务器上传，断网也能无限次高清转换。',
+  },
+  {
+    question: '如何把生成的 GIF 动图体积压缩到微信表情包（1MB~2MB 以内）限制以下？',
+    answer:
+      '1. 控制输出宽度与帧率：制作微信表情包建议将宽度设为 `240px` 或 `320px`，帧率选择 `8 FPS` 或 `10 FPS`，肉眼依然流畅但总像素量直降 75%；2. 调色板色彩降维：将调色板从 `256色原画` 切换为 `128色平衡` 或 `64色高压缩`，可提升 LZW 字典重复串命中率；3. 剔除首尾静止废帧：在底部“抽帧时间轴胶片条”中取消勾选开头或结尾画面静止的冗余帧，立竿见影缩减 20%~40% 体积。',
+  },
+  {
+    question: '什么是 Bayer 4×4 有序抖动（Ordered Dithering）？什么时候应该开启或关闭？',
+    answer:
+      '由于 GIF89a 标准规定单帧最多只能包含 256 种颜色，当原始视频包含天空、阴影或霓虹渐变时，直接截断颜色会出现明显的“水波纹色阶断层（Color Banding）”。开启 `Bayer 4×4` 有序抖动会通过规律的微米级像素交错模拟中间过渡色，显著提升摄影与影视画面的细腻度；而如果您转换的是扁平化软件 UI 录屏或纯色动漫，关闭抖动可让大面积同色块保持一致，从而获得更小的 LZW 压缩体积。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="视频转 GIF 动图与调色板瘦身工作台（MP4 / WebM / MOV 纯本地无损合成）"
+  description="100% 浏览器本地运行的视频转 GIF89a 动图制作工具。支持起止时间裁剪、FPS 帧率控制、256/128/64/32 色自适应调色板压缩、Bayer 有序抖动抗色带、上下字幕叠加与单帧勾选剔除。"
+  alternateZh="/tools/video-to-gif/"
+  alternateEn="/en/tools/video-to-gif/"
+  wasmSizeLabel="Pure Local GIF89a Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoToGifTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么开发者与自媒体创作者需要纯前端视频转 GIF 工作台？</h2>
+    <p>
+      在撰写 GitHub <code>README.md</code> 功能演示、掘金/知乎技术教程、小红书产品笔记或制作微信斗图表情包时，<strong>GIF89a 动图</strong>依然是唯一无需点击播放按钮、在所有 Markdown 渲染器与富文本编辑器中自动循环播放的通用格式。然而，直接用录屏软件导出的 GIF 往往动辄 20MB 以上，不仅拖慢网页加载，还无法通过社交平台的体积校验。
+    </p>
+    <ul>
+      <li><strong>零上传、无懼 <code>SharedArrayBuffer</code> 跨域限制：</strong> 许多基于重型 <code>ffmpeg.wasm</code> (30MB+) 的网页工具因缺少 COOP/COEP 响应头经常卡死在加载界面。本工具采用纯原生 TypeScript 编写的 RGB555 频次直方图量化器与 12-bit LZW 编码管线，秒开即用。</li>
+      <li><strong>逐帧可视化的“废帧手术刀”：</strong> 自动将采样后的每一帧铺开为胶片时间轴，支持一键取消勾选眨眼帧、黑屏过渡帧或静止冗余帧，并支持直接在画布层合成带黑色描边的顶部/底部神评字幕。</li>
+    </ul>
+  </div>
+</ToolLayout>

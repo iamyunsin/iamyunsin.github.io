@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SignatureScannerCleanerTool from '@/components/tools/SignatureScannerCleanerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🇨🇳 企业云盘与办公协作',
+    highlight: '对象存储 + 轻量云特惠',
+    title: '腾讯云轻量应用服务器与企业云存储专场',
+    description: '自建私有化电子签章归档、合同文档加密备份与团队 Nextcloud 协同平台，国内节点高速直连。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 办公上云官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — 独立开发者与中小企业服务器特惠',
+    description: '部署私有 Stirling-PDF、Docuseal 电子合同系统或内部 OA 服务，享受阿里云官方补贴折扣。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '🎨 在线商务排版设计',
+    highlight: '支持免费试用 Pro',
+    title: 'Canva 可画 Pro — 企业证书、合同封面与电子公文排版',
+    description: '将抠出的高清透明手写签名直接拖入 Canva 商务模板，快速制作授权书、结业证书与电子报价单。',
+    ctaText: '免费体验 Canva Pro 商务套件',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么直接把手机拍的手写签名插入 Word 或 PDF 会有一块难看的灰底？',
+    answer:
+      '手机拍摄白纸上的签名时，受室内灯光与手机阴影影响，白纸在照片里的真实像素并非纯白（#FFFFFF），而是分布不均的灰黄色（#C8C5BE ~ #E5E3DC）。如果直接贴入 Word，就会遮挡底部的合同文字和下划线。本工具采用局部积分图（Integral Image）自适应光照背景估算算法，将纸张底色 100% 转化为 Alpha = 0 的全透明通道，仅保留顺滑的手写笔迹与鲜红印章。',
+  },
+  {
+    question: '我的个人手写签名和公司公章非常敏感，使用本工具会有泄露风险吗？',
+    answer:
+      '绝对不会！手写签名与公章属于极高风险的法律与财务隐私，绝不应上传到任何需要服务端处理的在线抠图网站或小程序。本工具 100% 运行在您的浏览器本地内存（HTML5 Canvas + TypedArray）中，没有任何网络上传请求，您甚至可以在打开网页后断开 Wi-Fi 离线抠图。',
+  },
+  {
+    question: '如果同一张纸上既有黑色手写签字，又有红色印章，能同时保留两种颜色吗？',
+    answer:
+      '可以！在“笔迹与印泥色彩映射”下拉框中选择默认的“保留原色（黑笔 + 鲜红印章共存）”，算法会自动通过 RGB 色度差（Chroma Dominance）识别朱红印泥像素并对其进行增艳保护，同时将黑色/深蓝钢笔字迹锐化提纯。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="手写签名照一键抠出透明背景电子签名 (PNG) & 手机拍文档去黑底阴影漂白器"
+  description="用手机拍下白纸上的手写签名或红色印章，本地自适应色阶与阈值算法 1 秒抠出背景 100% 透明的电子签名（支持黑/蓝/红笔迹增艳与粗细微调）；同时可将发灰带阴影的手机拍件一键漂白为打印级白底文档。"
+  alternateZh="/tools/signature-scanner-cleaner/"
+  alternateEn="/en/tools/signature-scanner-cleaner/"
+  wasmSizeLabel="100% Local Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <SignatureScannerCleanerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>如何在 Word / PDF 电子合同中插入完美无白框的手写签名？</h2>
+    <p>
+      在远程办公、异地签署租房协议、商务报价单或学校审批表时，我们经常需要把纸质手写签名变成电子版贴进文档。使用本工作台只需 3 步即可获得媲美专业数位板的透明签名：
+    </p>
+    <ul>
+      <li><strong>第一步（拍照或加载示例）：</strong> 在白纸上用黑色签字笔或钢笔签字（可同时盖章），用手机正对纸面拍下照片并上传。</li>
+      <li><strong>第二步（微调阈值与笔锋加粗）：</strong> 拖动“自适应纸张去底阈值”滑块消除纸面阴影，若手机拍照字迹偏细，可开启 <code>+1px 加粗</code> 或切换为“钢笔宝蓝签 / 纯黑商务签”。</li>
+      <li><strong>第三步（实景预览并导出 PNG）：</strong> 在底部的“合同落款盖章实景预览”中确认签名压在横线上毫无白框遮挡后，点击下载透明 PNG 即可直接拖入 Word（设置图片环绕方式为“浮于文字上方”）或 PDF 阅读器。</li>
+    </ul>
+  </div>
+</ToolLayout>

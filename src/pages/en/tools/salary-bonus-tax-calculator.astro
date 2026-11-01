@@ -1,0 +1,93 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SalaryBonusTaxTool from '@/components/tools/SalaryBonusTaxTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Multi-Currency Account for Expats & Remote Workers',
+    description: 'Receive salary and contractor payouts in USD, EUR, GBP, and CNY at real interbank exchange rates without hidden bank wire markups.',
+    ctaText: 'Open a Wise Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🌍 Global Contractor Payouts',
+    highlight: '$25 Welcome Bonus',
+    title: 'Payoneer Global Payment Gateway',
+    description: 'Collect international consulting fees, remote salaries, and marketplace royalties with seamless local bank settlement.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Creator Subsidy Campaign',
+    description: 'Deploy your side projects, personal blogs, and AI applications on Alibaba Cloud ECS and OSS with an exclusive 25% discount.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does earning ¥1 more in year-end bonus sometimes reduce net take-home pay by thousands of yuan?',
+    answer:
+      'Under China Individual Income Tax (IIT) rules for Separate Year-End Bonus Taxation, your tax bracket is determined by dividing the bonus by 12, but the Quick Deduction subtracted from the gross tax is only 1/12th of the annual quick deduction. Crossing any of the 6 bracket thresholds (¥36k, ¥144k, ¥300k, ¥420k, ¥660k, ¥960k) by even ¥1 subjects the entire bonus to a higher tax rate without sufficient quick deduction offset, creating 6 notorious "Tax Cliff" blind zones.',
+  },
+  {
+    question: 'Should I choose "Separate Bonus Tax" or "Combined Comprehensive Income Tax"?',
+    answer:
+      '1. Separate Bonus Tax: Best for most full-time employees whose annual regular salary already exceeds the ¥60,000 standard deduction plus social insurance and special deductions, because it gives the bonus a fresh low-rate tax bracket starting at 3%; 2. Combined Tax: Best if your regular annual taxable salary is very low or negative after deductions, allowing unused tax-free allowances to absorb your year-end bonus.',
+  },
+  {
+    question: 'Why is my monthly take-home pay higher in January and lower in November/December?',
+    answer:
+      'Monthly salaries use the Cumulative Withholding Method (累计预扣法). In the first few months of the year, your cumulative taxable income sits in the 3% or 10% bracket. As cumulative income grows later in the year, it crosses into the 20%, 25%, or 30% brackets, increasing monthly tax withheld in Q3 and Q4.',
+  },
+  {
+    question: 'How does the Smart Bonus Split Optimizer save tax legally?',
+    answer:
+      'When your year-end bonus lands inside a tax cliff zone (for example, ¥37,000 or ¥150,000), capping the separate bonus at the exact bracket edge (¥36,000 or ¥144,000) and shifting the excess into regular monthly salary avoids triggering the cliff rate jump on the entire bonus pool, immediately increasing your net cash take-home.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="China Salary, 5-Insurance Housing Fund & Year-End Bonus Tax Cliff Calculator"
+  description="Calculate monthly take-home pay, 12-month cumulative tax withholding, bilateral housing fund value, Separate vs. Combined bonus tax, and detect the 6 Year-End Bonus Tax Cliffs."
+  alternateZh="/tools/salary-bonus-tax-calculator/"
+  alternateEn="/en/tools/salary-bonus-tax-calculator/"
+  wasmSizeLabel="IIT & Bonus Cliff Solver"
+  offers={offers}
+  faqs={faqs}
+>
+  <SalaryBonusTaxTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Mastering China Individual Income Tax (IIT) & Year-End Bonus Optimization</h2>
+    <p>
+      Whether you are evaluating a tech job offer in Beijing, Shanghai, Shenzhen, or Hangzhou, or planning your annual tax filing, understanding the interplay between <strong>Social Insurance contribution caps, bilateral Housing Fund matching (5%–12%), Special Additional Deductions, and Year-End Bonus taxation</strong> is essential to maximizing your real take-home cash.
+    </p>
+
+    <h3>How the 6 Year-End Bonus Tax Cliffs Work</h3>
+    <ul>
+      <li>
+        <strong>1. Separate Bonus Tax Formula:</strong>
+        Divide the one-time annual bonus by 12 to look up the monthly tax rate and monthly quick deduction: <code>Bonus Tax = Gross Bonus × Rate - Monthly Quick Deduction</code>.
+      </li>
+      <li>
+        <strong>2. The Cliff Mechanism:</strong>
+        At <code>¥36,000</code>, the tax rate is 3% (tax = ¥1,080, net = ¥34,920). At <code>¥36,001</code>, the rate jumps to 10% across the entire bonus while the quick deduction is only ¥210 (tax = ¥3,390.10, net = ¥32,610.90)—a net loss of <strong>¥2,310.07</strong> for earning ¥1 more.
+      </li>
+      <li>
+        <strong>3. Cumulative Monthly Withholding:</strong>
+        Regular salary tax is withheld cumulatively over 12 months after deducting ¥5,000/month standard allowance, employee social insurance & housing fund contributions, and up to 7 categories of Special Additional Deductions.
+      </li>
+    </ul>
+  </div>
+</ToolLayout>

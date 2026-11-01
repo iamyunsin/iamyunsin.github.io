@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import AudioTrimmerTool from '@/components/tools/AudioTrimmerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级音视频流媒体与静态站点加载，支持绑定自有备案域名，新老用户专享轻量应用服务器与 CDN 流量组合特惠。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 云小站官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — 云服务器 ECS 与对象存储 OSS 特惠',
+    description: '独立播客主理人托管音频文件与全栈站点首选，汇集阿里云爆款轻量服务器与 OSS 存储资源包官方补贴价。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ 零出口流量费存储',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + 全球边缘分发',
+    description: '托管播客 MP3/WAV 音频与视频素材，全球 CDN 边缘直出且彻底免除高昂的下行带宽流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '如何从 MP4 短视频中直接提取背景音乐（BGM）并剪辑成手机铃声？',
+    answer:
+      '您无需先用第三方软件把视频转成 MP3。直接点击上方“导入本地音频或 MP4 视频”，本工具会调用浏览器硬件加速的 Web Audio 解码管线，直接抽离视频文件中的立体声音轨并绘制双声道波形，让您拖拽截取高潮段落并一键导出为无损 WAV 音频。',
+  },
+  {
+    question: '为什么制作手机来电铃声或短视频配乐时建议开启“首尾淡入淡出（Fade-In / Fade-Out）”？',
+    answer:
+      '如果直接从歌曲副歌中间生硬切断，音频波形在非零交叉点（Non-Zero Crossing）突变会产生刺耳的“啪嗒”爆音，来电响铃时也容易吓一跳。设置 1.0~1.5 秒的淡入与淡出包络，能让铃声由弱渐强平滑过渡，听感堪比专业录音室混音。',
+  },
+  {
+    question: '我的录音笔访谈音频或未公开 Demo 歌曲会上传到云端服务器吗？',
+    answer:
+      '绝对不会。无论是 100MB 的会议录音还是私人音乐 Demo，所有的音频解码、波形渲染、淡入淡出包络计算与 16-Bit PCM WAV 二进制封装均 100% 在您的本地浏览器内存中完成，零服务器上传，极速且彻底保护商业机密与个人隐私。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="本地可视化音频波形剪辑、MP4 视频提取音乐、淡入淡出与无损铃声制作工具"
+  description="100% 浏览器本地运行的 Web Audio 音频剪辑工作台：支持 MP3/WAV/M4A/FLAC 及 MP4 视频伴奏提取，双声道高帧率波形拖拽截取、首尾淡入淡出、音量增益放大与 16-Bit PCM WAV 导出。"
+  alternateZh="/tools/audio-trimmer/"
+  alternateEn="/en/tools/audio-trimmer/"
+  wasmSizeLabel="Web Audio + 16-Bit PCM"
+  offers={offers}
+  faqs={faqs}
+>
+  <AudioTrimmerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>零上传、毫秒级精度的 Web Audio 可视化音频剪辑与手机铃声工作台</h2>
+    <p>
+      无论是短视频创作者截取<strong>抖音/B站热门 BGM 副歌高潮</strong>、播客主理人剪除会议访谈录音的开头空白，还是制作专属的 <strong>iPhone / 安卓渐强来电铃声</strong>，传统的在线剪歌网站往往要求先将几十兆的音视频上传到远程服务器排队转码，既慢又容易泄露未公开的录音隐私。
+    </p>
+    <ul>
+      <li><strong>支持音频与 MP4 视频直接混导：</strong> 自动剥离视频容器中的无损 PCM 采样流，并在本地高分屏 Canvas 上实时渲染左右双声道镜像波形。</li>
+      <li><strong>所见即所得的淡入淡出包络线（Envelope Curve）：</strong> 调节 Fade-In / Fade-Out 滑块时，波形图上的绿色包络折线与柱状峰值会同步动态缩放，试听效果与最终导出的 16-Bit WAV 文件分毫不差。</li>
+      <li><strong>高达 200% 音量增益与倍速试听：</strong> 针对录音音量偏小的访谈或伴奏素材，支持最高 2 倍无损振幅放大并内置防削波限幅保护（Hard Limiter）。</li>
+    </ul>
+  </div>
+</ToolLayout>

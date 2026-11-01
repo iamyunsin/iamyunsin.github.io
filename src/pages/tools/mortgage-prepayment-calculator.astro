@@ -1,0 +1,106 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import MortgagePrepaymentTool from '@/components/tools/MortgagePrepaymentTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！个人建站、量化理财脚本与 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🟢 汇损极低首选',
+    highlight: '中间市场汇率 0 额外加价',
+    title: 'Wise 跨境多币种资产管理账户',
+    description: '自由职业与全球资产配置必备，以路孚特实时中间汇率持有和兑换美元、欧元、英镑等 40+ 币种，透明超低费率。',
+    ctaText: '免费开通 Wise 多币种账户',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🔥 轻量云爆款',
+    highlight: '高性价比开发测试服务器',
+    title: '腾讯云 · 轻量应用服务器专场',
+    description: '2核2G / 4核8G 高性能云主机特惠，适合部署全天候个人记账系统、家庭财务看板与自动化工具服务。',
+    ctaText: '查看腾讯云特惠活动',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '提前还房贷时，“缩短还款年限”和“减少每月月供”到底哪个更划算？',
+    answer:
+      '从绝对节省利息总额来看，【缩短还款年限（月供基本不变）】永远远超【减少每月月供（年限不变）】。因为房贷利息严格按“当期剩余本金 × 月利率 × 占用时间”计收，缩短年限使得剩余本金在更短的周期内迅速归零，斩断了中后期复利计息的时间跨度，通常省息金额是减少月供方案的 2 到 2.5 倍。但若您当前面临失业风险或育儿现金流紧张，选择【减少月供】则能立刻降低每月刚性支出压力。',
+  },
+  {
+    question: '网上常说“等额本息还到一半、等额本金还到三分之一就不适合提前还贷了”，是真的吗？',
+    answer:
+      '这一说法有一定数学依据，但并非绝对。在等额本息的 30 年（360 期）周期中，前 10~12 年的月供中约 60%~75% 都在支付利息，当归还至第 15 年时，您其实已经付清了原定总利息的约 70%，后期月供绝大部分在归还本金。但即便如此，决定“现在提前还贷划不划算”的唯一黄金标准依然是【您的存量房贷年化利率 vs 手头闲钱的稳健理财年化收益率】：只要房贷利率（如 3.35%）高于国债/大额存单收益率（如 2.1%），提前还贷依然稳赚利差。',
+  },
+  {
+    question: '组合贷款（商业贷款 + 公积金贷款）提前还款时应该优先还哪一部分？',
+    answer:
+      '毫无疑问应当指定【优先提前偿还商业贷款部分】！当前首套公积金 5 年以上贷款年利率仅为 2.60%（存量或二套约 2.85%~3.075%），属于国家给予购房者的低息福利杠杆，甚至与部分长期稳健理财收益接近；而商业贷款利率普遍在 3.10%~4.20% 之间。在手机银行预约提前还款时，务必单独选择冲抵商贷本金。',
+  },
+  {
+    question: '等额本息和等额本金到底有什么本质区别？该怎么选？',
+    answer:
+      '两者的月利率完全相同，不存在哪个“实际利率更高”的说法！等额本金之所以总利息少，纯粹是因为前几年每个月强行多还了本金，导致借用银行本金的平均时间更短。如果您计划在 5~8 年内提前还清大部分房贷，或者手头余钱能取得跑赢房贷利率的投资回报，选择前期月供压力更小的【等额本息】反而资金利用效率更高。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="ai-cost"
+  title="房贷（商贷/公积金/组合贷）与提前还贷划算度决策计算器 · 缩短年限 vs 减少月供"
+  description="支持等额本息与等额本金逐期本息明细；内置提前还贷决策引擎，直观对比【缩短年限 vs 减少月供】省息差额、测算已还利息占比与理财机会成本利差。"
+  alternateZh="/tools/mortgage-prepayment-calculator/"
+  alternateEn="/en/tools/mortgage-prepayment-calculator/"
+  wasmSizeLabel="逐期精算引擎"
+  offers={offers}
+  faqs={faqs}
+>
+  <MortgagePrepaymentTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>房贷底层算账逻辑全解构：看穿等额本息、等额本金与提前还贷的数学真相</h2>
+    <p>
+      按揭房贷往往是普通家庭一生中金额最大、周期最长的金融负债。面对动辄百万的本金与长达 30 年（360 期）的还款契约，许多购房者在面临<strong>“该选等额本息还是等额本金？”</strong>以及<strong>“手头攒了 20 万闲钱，提前还房贷到底选缩短年限还是减少月供？”</strong>时，往往容易被直觉或片面传言误导。本工具通过逐期现金流递推引擎，将每一期本金与利息的消长轨迹透明呈现。
+    </p>
+
+    <h3>一、等额本息 vs 等额本金：核心数学公式对比</h3>
+    <ul>
+      <li>
+        <strong>1. 等额本息 (Equal Principal and Interest)：</strong>
+        每月月供金额恒定不变。前期月供中利息占比极高、本金占比极低，随时间推移本金占比逐月递增。其月供计算公式为：
+        <pre><code>每月月供 M = P × [ r × (1 + r)^n ] / [ (1 + r)^n - 1 ]</code></pre>
+        其中 <code>P</code> 为贷款初始本金，<code>r</code> 为月利率（年利率 ÷ 12），<code>n</code> 为总还款月数。
+      </li>
+      <li>
+        <strong>2. 等额本金 (Equal Principal)：</strong>
+        将贷款总本金平均分摊到每一个月，每月归还固定额度的本金，外加当期剩余本金产生的利息。因此首月月供最高，此后每月月供固定递减 <code>(P / n) × r</code> 元。
+      </li>
+    </ul>
+
+    <h3>二、提前还贷两大路径的省息机制拆解</h3>
+    <p>
+      当您在第 <code>k</code> 期向银行申请部分提前还贷（冲抵本金 <code>ΔP</code>）时，剩余未还本金立即骤降。此时银行提供两种重算方案：
+    </p>
+    <ul>
+      <li>
+        <strong>方案 A（缩短还款年限，月供不变）：</strong>
+        维持原有约 <code>¥M</code> 的月供力度不变，利用减少后的新本金反推剩余还款期数 <code>n_new</code>。由于本金大幅减少且每月还款额不降，剩余本金被加速消灭，彻底砍掉了原合同最后十余年的利息支出，<strong>省息效果最为惊人</strong>。
+      </li>
+      <li>
+        <strong>方案 B（减少每月月供，年限不变）：</strong>
+        保持剩余还款月数不变，将缩水后的新本金重新平摊到剩余的几十或几百个月中。虽然立竿见影地降低了下个月的月供账单，但由于剩余本金依然要在漫长的年限中慢慢归还，<strong>累计节省的利息通常不到方案 A 的一半</strong>。
+      </li>
+    </ul>
+  </div>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoFrameExtractorTool from '@/components/tools/VideoFrameExtractorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 Pro Thumbnail & Collage Suite',
+    highlight: '30-Day Free Pro Trial',
+    title: 'Canva Pro — YouTube Thumbnails & Storyboard Templates',
+    description: 'Turn your extracted 4K video keyframes and movie subtitle strips into high-CTR YouTube thumbnails, Instagram carousels, and pitch decks.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Image Transformations',
+    description: 'Host your high-resolution PNG/WebP keyframes and storyboards on Cloudflare R2 with $0 egress bandwidth fees.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage and image delivery for media portfolios and web applications.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why is extracting frames here sharper than taking a fullscreen OS screenshot?',
+    answer:
+      'OS screenshots capture your display buffer after monitor scaling and often include video player controls, progress bars, or vignette overlays. Our extractor reads the raw decoded video buffer at its native resolution (e.g., `1920×1080` or `3840×2160` 4K) onto an offscreen HTML5 Canvas and exports lossless PNG or high-efficiency WebP images.',
+  },
+  {
+    question: 'How does the Movie Subtitle Strip Stitcher work?',
+    answer:
+      'To create a vertical movie dialogue quote strip without repeating the entire scene background 10 times, the stitcher renders the **first selected frame at 100% full height** and stacks only the bottom `14%–35%` (default `22%`) subtitle band of each subsequent frame directly underneath.',
+  },
+  {
+    question: 'Can I step through a video frame-by-frame to avoid motion blur?',
+    answer:
+      'Yes. Use the `-1 Frame (1/30s)` and `+1 Frame (1/30s)` buttons below the monitor to step in `33.3 ms` increments and capture the exact crisp keyframe before exporting.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="4K Video Frame Extractor, 3×3 Storyboard Contact Sheet & Movie Subtitle Stitcher"
+  description="100% client-side video keyframe extractor and collage maker. Step frame-by-frame (1/30s), batch extract every N seconds, build 3×3/4×4 storyboard contact sheets, and stitch vertical movie subtitle strips."
+  alternateZh="/tools/video-frame-extractor/"
+  alternateEn="/en/tools/video-frame-extractor/"
+  wasmSizeLabel="Pure Local Canvas Pipeline"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoFrameExtractorTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a Client-Side Video Keyframe & Subtitle Collage Workbench?</h2>
+    <p>
+      Whether you are grabbing a crisp 4K frame for a YouTube thumbnail, generating a 3×3 storyboard contact sheet for video archival, or stitching a vertical movie dialogue quote strip for social media, this workbench eliminates the need to launch heavy desktop NLE software.
+    </p>
+    <ul>
+      <li><strong>Frame-Accurate <code>1/30s</code> Stepping & Auto Batching:</strong> Step through high-motion footage millisecond by millisecond, or automatically extract 6, 9, 12, or 16 evenly spaced keyframes across the entire clip.</li>
+      <li><strong>One-Click Storyboard & Subtitle Strip Export:</strong> Combine selected frames into a timestamped 3×3/4×4 contact sheet or stack bottom subtitle bands into a single shareable PNG.</li>
+    </ul>
+  </div>
+</ToolLayout>

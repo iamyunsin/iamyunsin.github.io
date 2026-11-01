@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import GifStudioTool from '@/components/tools/GifStudioTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 表情包与社媒配图神器',
+    highlight: '海量贴纸与动图模板',
+    title: 'Canva 可画 Pro — 微信表情包与公众号动图设计工作台',
+    description: '将拆解出的高清 PNG 序列帧导入 Canva 可画，一键去背景抠图、添加潮流花字与动态贴纸，轻松打造爆款表情包专辑。',
+    ctaText: '免费试用 Canva 可画 Pro',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + 全球边缘 CDN',
+    description: '将制作好的 GIF 表情包与产品演示动图托管在 Cloudflare R2，全球高速加载且彻底免除下行流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2 图床',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级动图与静态站点加载，支持绑定自有备案域名，新老用户专享轻量应用服务器与存储包组合特惠。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '如何把一张搞笑 GIF 动图拆解成单张高清 PNG 图片，或者制作“倒放”效果？',
+    answer:
+      '1. 毫秒级 WebCodecs 逐帧拆解：只需将 `.gif` 文件拖入工作台，浏览器会调用底层 `ImageDecoder` 与二进制 Graphic Control Extension (`0x21 0xF9`) 解析器，将每一帧还原为独立的无损 PNG 缩略图与原始延迟毫秒数（ms），您可点击任意一帧下方的“导出此帧 PNG”单独保存；2. 一键倒放与鬼畜倍速：点击工具栏的 `🔄 一键倒放动图` 或 `0.5x / 1.5x / 2.0x` 倍速按钮，系统会立即重排帧序列并重新编码生成全新的 `.gif` 文件。',
+  },
+  {
+    question: '微信发送表情包提示“文件大于 1MB/2MB 无法添加”时，如何快速无损瘦身？',
+    answer:
+      '本工具提供两套立竿见影的 GIF 瘦身组合拳：第一，点击 `✂️ 隔帧抽帧瘦身（帧数减半）`，系统会自动剔除偶数帧并将保留帧的显示时长翻倍，在保持动画总时长与节奏不变的前提下直接砍掉 45%~50% 体积；第二，在“调色板色彩位数”中切换为 `64色` 或 `32色`，配合 LZW 字典压缩可进一步缩减 30% 以上体积。',
+  },
+  {
+    question: '可以把多张静态 PNG / JPG 照片合并成一张动态 GIF 吗？',
+    answer:
+      '完全可以！在文件选择框中同时框选多张 `PNG`、`JPG` 或 `WebP` 静态图片拖入，工具会自动按文件名顺序将它们对齐合并为动画时间轴，您可以自由调节每一帧的停留毫秒数（`delayMs`）并叠加顶部/底部斗图描边大字。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="GIF 动图拆帧、一键倒放、鬼畜变速、抽帧瘦身与表情包加字工作台"
+  description="100% 浏览器本地运行的 GIF 动图全能编辑与拆帧工具。支持将任意 GIF 逐帧拆解导出高清 PNG、多张静态图合成 GIF、一键倒放、0.5x~2x 倍速调节、隔帧抽取体积减半，以及表情包描边大字幕叠加。"
+  alternateZh="/tools/gif-studio/"
+  alternateEn="/en/tools/gif-studio/"
+  wasmSizeLabel="WebCodecs + GIF89a Studio"
+  offers={offers}
+  faqs={faqs}
+>
+  <GifStudioTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>为什么你需要一款纯前端的 GIF 拆帧、倒放与表情包工坊？</h2>
+    <p>
+      无论是前端工程师分析竞争对手网站的微交互动效帧序列、设计师将多张静态视觉稿合成为轮播 GIF，还是日常在微信群/小红书制作带神评字幕的<strong>倒放鬼畜表情包</strong>，这款全功能 GIF 工坊都能在浏览器本地一气呵成。
+    </p>
+    <ul>
+      <li><strong>精准解析每帧延迟时间（Graphic Control Extension <code>0x21 0xF9</code>）：</strong> 完整保留原动图的快慢节奏，支持针对单帧独立修改停留毫秒数（例如让最后一帧定格 1000ms）。</li>
+      <li><strong>隔帧瘦身 + 调色板降维双引擎：</strong> 一键剔除二分之一冗余帧并自动补偿帧延迟，轻松突破微信自定义表情包的文件体积上限。</li>
+    </ul>
+  </div>
+</ToolLayout>

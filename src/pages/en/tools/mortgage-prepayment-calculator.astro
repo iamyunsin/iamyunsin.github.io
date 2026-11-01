@@ -1,0 +1,96 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import MortgagePrepaymentTool from '@/components/tools/MortgagePrepaymentTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Zero FX Markup',
+    highlight: 'Real Mid-Market Rate',
+    title: 'Wise Multi-Currency Account',
+    description: 'Hold, convert, and send 40+ currencies at the real interbank mid-market exchange rate. Ideal for international mortgage transfers and global asset management.',
+    ctaText: 'Open Wise Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · 25% Exclusive Discount Campaign',
+    description: 'Deploy personal finance dashboards, quantitative portfolios, or web apps with an exclusive 25% discount on ECS and cloud storage.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🌍 Global Payouts',
+    highlight: '$25 Registration Bonus',
+    title: 'Payoneer Cross-Border Business Account',
+    description: 'Receive international contractor income and marketplace payouts with low settlement fees.',
+    ctaText: 'Sign Up for Payoneer',
+    url: AFFILIATE_LINKS.payoneer,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'When making a lump-sum mortgage prepayment, is it better to shorten the loan term or reduce the monthly payment?',
+    answer:
+      'From a pure interest-saving standpoint, shortening the loan term (Plan A) while keeping your monthly payment steady always saves 2x to 2.5x more total interest than reducing your monthly payment (Plan B). Because mortgage interest accrues monthly on the remaining principal balance over time, cutting off years at the end of the amortization schedule eliminates decades of compounding. Choose Plan B only if you need immediate monthly cashflow relief.',
+  },
+  {
+    question: 'Is there a point in the mortgage lifecycle where prepaying is no longer worth it?',
+    answer:
+      'Under standard Equal Principal & Interest (level-payment) amortization, roughly 65%–70% of total scheduled interest is collected during the first half of a 30-year mortgage. However, the true financial rule of thumb is comparing your mortgage interest rate against your risk-free after-tax investment return (such as Treasury bills or high-yield CDs). As long as your mortgage rate exceeds your safe investment yield, prepaying principal delivers a guaranteed risk-free return equal to that spread.',
+  },
+  {
+    question: 'What is the difference between Equal Principal & Interest (Fixed Payment) and Equal Principal (Decreasing Payment)?',
+    answer:
+      'Both methods apply the exact same monthly interest rate to your outstanding principal balance. Equal Principal & Interest keeps your monthly bill identical for 30 years, meaning early payments are mostly interest. Equal Principal divides the principal equally across all months plus current interest, resulting in higher initial monthly bills that decline linearly each month and lower total lifetime interest.',
+  },
+  {
+    question: 'In a combined mortgage (Commercial + Provident Fund), which portion should I prepay first?',
+    answer:
+      'Always direct lump-sum prepayments toward the Commercial Loan portion first. Commercial mortgage rates are significantly higher than subsidized Provident Fund rates (which often sit near 2.60%). Eliminating the higher-rate balance maximizes your net interest savings.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="Mortgage Amortization & Early Prepayment Decision Calculator (Term vs Payment)"
+  description="Calculate monthly mortgage schedules (Equal P&I vs Equal Principal) and simulate early lump-sum prepayments. Compare shortening loan term vs reducing monthly payment."
+  alternateZh="/tools/mortgage-prepayment-calculator/"
+  alternateEn="/en/tools/mortgage-prepayment-calculator/"
+  wasmSizeLabel="Amortization Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <MortgagePrepaymentTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Mastering Mortgage Amortization & Early Prepayment Mathematics</h2>
+    <p>
+      A 30-year mortgage is the largest financial liability most households ever carry. Whether you are choosing between <strong>Equal Principal & Interest (Level Payment)</strong> and <strong>Equal Principal (Linearly Decreasing Payment)</strong>, or deciding how to deploy a lump-sum bonus toward an early prepayment, understanding how interest accrues month by month can save you hundreds of thousands in lifetime interest.
+    </p>
+
+    <h3>1. Level Payment vs. Equal Principal Formulas</h3>
+    <ul>
+      <li>
+        <strong>Equal Principal & Interest (Standard Amortization):</strong>
+        Your monthly payment remains constant throughout the loan term, while the internal split shifts from interest-heavy in early years to principal-heavy in later years:
+        <pre><code>M = P × [ r × (1 + r)^n ] / [ (1 + r)^n - 1 ]</code></pre>
+        where <code>P</code> is initial principal, <code>r</code> is monthly interest rate (Annual Rate / 12), and <code>n</code> is total months.
+      </li>
+      <li>
+        <strong>Equal Principal:</strong>
+        You repay a fixed slice of principal (<code>P / n</code>) every month plus interest on the remaining balance. Your monthly payment starts higher and drops by <code>(P / n) × r</code> each month.
+      </li>
+    </ul>
+
+    <h3>2. Shortening Loan Term (Plan A) vs. Reducing Monthly Payment (Plan B)</h3>
+    <p>
+      When you inject a lump-sum principal reduction at month <code>k</code>, your remaining balance drops immediately. Recalculating the schedule while keeping your monthly payment unchanged (<strong>Plan A</strong>) compresses the remaining timeline and eliminates years of interest accrual. Recalculating over the original remaining term (<strong>Plan B</strong>) lowers your mandatory monthly obligation immediately, providing cashflow flexibility at the cost of higher cumulative interest.
+    </p>
+  </div>
+</ToolLayout>

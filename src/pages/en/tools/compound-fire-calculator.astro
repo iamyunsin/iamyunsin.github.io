@@ -1,0 +1,88 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import CompoundFireTool from '@/components/tools/CompoundFireTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🟢 Global Multi-Currency Account',
+    highlight: 'Real Mid-Market FX Rate',
+    title: 'Wise Account for Global Investors & Digital Nomads',
+    description: 'Hold, convert, and spend 40+ currencies at real interbank rates—ideal for international index investors and geographic arbitrage.',
+    ctaText: 'Open a Wise Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🛡️ Long-Term Cold Storage',
+    highlight: '100% Open-Source Secure Element',
+    title: 'OneKey Hardware Crypto Wallet',
+    description: 'Protect long-term Bitcoin and DeFi yield portfolios offline with verifiable open-source hardware security.',
+    ctaText: 'Explore OneKey Wallets',
+    url: AFFILIATE_LINKS.ledger,
+  },
+  {
+    badge: '🔥 25% Exclusive Rebate',
+    highlight: '25% Off First Cloud Purchase',
+    title: 'Alibaba Cloud · Build Passive Income Micro-SaaS',
+    description: 'Host automated trading bots, quantitative dashboards, and indie SaaS products with a 25% exclusive creator discount.',
+    ctaText: 'Claim 25% Off Voucher',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'What is the 4% Safe Withdrawal Rate (Trinity Study) rule in FIRE?',
+    answer:
+      'The 4% Rule comes from the landmark Trinity Study, which showed that withdrawing 4% of your initial portfolio in year one of retirement—and adjusting that dollar amount for inflation each subsequent year—historically sustained a diversified stock/bond portfolio for 30+ years in over 95% of market periods. Mathematically, a 4% Safe Withdrawal Rate (SWR) means your Standard FIRE Number equals 25x your annual expenses (or 300x your monthly expenses). For longer 40–50 year early retirements, many planners prefer a conservative 3.5% SWR (28.6x annual expenses).',
+  },
+  {
+    question: 'Why does this calculator emphasize "Real Purchasing Power" alongside Nominal Net Worth?',
+    answer:
+      'Inflation silently erodes future nominal currency values. At 2.5% annual inflation, ¥3,000,000 in 25 years only buys what ¥1,618,000 buys today. Our engine discounts future nominal wealth by the cumulative inflation factor (1 + i)^t so that all FIRE milestones (Lean, Standard, Fat, and Coast FIRE) are evaluated strictly in today’s real purchasing power.',
+  },
+  {
+    question: 'What is the difference between Lean FIRE, Standard FIRE, Fat FIRE, and Coast FIRE?',
+    answer:
+      '1. Lean FIRE (70% of target spending): Covers essential living costs for minimalist freedom; 2. Standard FIRE (100%): Fully funds your target retirement lifestyle; 3. Fat FIRE (150%): Provides an abundant buffer for luxury travel and hobbies; 4. Coast FIRE: The exact portfolio amount you need TODAY so that even if you never save another cent (¥0/month contribution), compound real returns alone will grow your existing nest egg to your Standard FIRE goal by age 60.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="ai-cost"
+  title="Compound SIP & FIRE (Financial Independence, Retire Early) Calculator"
+  description="Simulate compound monthly investments, inflation-adjusted real purchasing power, Safe Withdrawal Rate (3.5% / 4.0% Trinity Study), and Lean / Standard / Fat / Coast FIRE milestones."
+  alternateZh="/tools/compound-fire-calculator/"
+  alternateEn="/en/tools/compound-fire-calculator/"
+  wasmSizeLabel="Compound & FIRE Engine"
+  offers={offers}
+  faqs={faqs}
+>
+  <CompoundFireTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Engineering Financial Independence: Compound SIP Meets the Trinity Study</h2>
+    <p>
+      Achieving <strong>FIRE (Financial Independence, Retire Early)</strong> is a deterministic engineering problem governed by four variables: your current investable principal, monthly systematic investment plan (SIP) contribution, inflation-adjusted real rate of return, and Safe Withdrawal Rate (SWR).
+    </p>
+
+    <h3>Core Mathematical Equations Behind the Simulator</h3>
+    <ul>
+      <li>
+        <strong>1. Target FIRE Portfolio Formula:</strong>
+        <code>FIRE Target = Annual Retirement Spending / Safe Withdrawal Rate (SWR)</code>. At a 4.0% SWR, you need 25× annual spending; at 3.5% SWR, you need 28.57× annual spending.
+      </li>
+      <li>
+        <strong>2. Fisher Real Return Equation:</strong>
+        <code>Real Return = (1 + Nominal Return) / (1 + Inflation Rate) - 1</code>. Evaluating your portfolio in today's purchasing power prevents the "inflation illusion" over 20–30 year horizons.
+      </li>
+      <li>
+        <strong>3. Coast FIRE Principal Threshold:</strong>
+        <code>Coast FIRE Today = Standard FIRE Target / (1 + Real Return)^(60 - Current Age)</code>. Once your portfolio crosses this threshold, you only need to earn enough to cover current living expenses while compound interest handles your retirement.
+      </li>
+    </ul>
+  </div>
+</ToolLayout>

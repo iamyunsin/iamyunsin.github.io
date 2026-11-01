@@ -1,0 +1,102 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import DiscountBillSplitterTool from '@/components/tools/DiscountBillSplitterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！爆款云服务器 ECS、OSS 存储与百炼 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '⚡ 开发者高性价比云主机',
+    highlight: '轻量云低至 ¥68/年',
+    title: '腾讯云 · 轻量应用服务器大促特惠',
+    description: '独享高主频 CPU 与极速 BGP 带宽，一键部署个人博客、小程序后端与自动化脚本，年付价格比日常省 70% 以上。',
+    ctaText: '查看腾讯云特惠',
+    url: AFFILIATE_LINKS.tencentCloudLighthouse,
+  },
+  {
+    badge: '🌍 海淘/跨境免货币转换费',
+    highlight: '真实中间市场汇率',
+    title: 'Wise 跨境多币种消费与收款卡',
+    description: '海外黑五海淘、订阅 ChatGPT/Claude 或日美亚马逊直邮，直接按银行间实时汇率扣款，免除传统双币信用卡 1.5%~2.5% 货币转换费。',
+    ctaText: '免费开通 Wise 账户',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '淘宝/天猫/京东 618 与双 11 的“平行满减分摊”到底是怎么计算的？为什么凑单退货能省钱？',
+    answer:
+      '主流电商平台在结算跨店满减（如每满 300 减 50）和平台品类消费券（如 88VIP 满 800 减 60）时，采用的是“按商品原价（或扣减单品券后金额）权重比例分摊”原则。当您的主买商品仅 260 元（差 40 元才够满 300 减 50）或 720 元（差 80 元才够用满 800 减 60 大额消费券）时，加入一件刚好凑够门槛的“凑单品”合并付款，整单即可瞬间激活满减与大额券。由于优惠按比例分摊到了每件商品上，合并付款后单独申请退掉凑单品，主买商品所分摊到的满减折扣依然全额保留！',
+  },
+  {
+    question: '退掉凑单商品时，主买商品实付金额会变回去吗？会不会影响店铺优惠？',
+    answer:
+      '1. 跨店满减与平台消费券：只要合并下单付款成功，每件商品的独立分摊实付金额就已经锁定，付款后秒退不同店铺的凑单品，主买商品的优惠绝对不会被收回；2. 同店满减需注意：如果凑单品和主买品来自“同一家店铺”且享受了“同店满 2 件 8 折”或“店铺内满减券”，部分商家系统在部分退货时会重算店铺内门槛，因此最稳妥的凑单策略是选择【跨店铺】的支持极速退款商品进行凑单。',
+  },
+  {
+    question: '点外卖多个人拼单时，红包和打包配送费怎么算才最公平？',
+    answer:
+      '很多人拼单点外卖时容易犯两个错误：要么把满减红包平分（导致点贵菜的人吃亏），要么忘了算打包费和配送费（导致发起拼单的人自己倒贴运费）。最科学且零争议的公认算法是【按每人点餐原价占总原价的权重比例，等比缩放最终实付总额】——即：每人应付 = 订单最终实付总金额 × (个人点餐原价 ÷ 全体点餐原价总和)。本工具还支持切换“运费按人头平摊 + 红包按比例分摊”模式，并一键生成微信群收款透明公示账单。',
+  },
+  {
+    question: '88VIP 的 95 折是在满减前算还是满减后算？',
+    answer:
+      '在天猫平行优惠规则下，单品立减、跨店每满 300 减 50 以及品类券扣减之后，88VIP 的 95 折通常是基于扣减完跨店满减与店铺券之后的剩余应付小计再打 95 折（部分活动期为平行基准 5% 扣减）。本工具已精准内置该叠加递进关系，可一键还原真实扣款水单。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="ai-cost"
+  title="电商大促凑单满减退货分摊 & 外卖拼单公平 AA 计算器 · 618/双11/群收款神器"
+  description="双模高频生活精算工具：一键计算淘宝/京东跨店每满300减50、88VIP消费券平行分摊及退掉凑单品后的主商品净实付；支持多人外卖拼单按原价权重公平分摊红包与配送费，一键复制微信群收款明细。"
+  alternateZh="/tools/discount-bill-splitter/"
+  alternateEn="/en/tools/discount-bill-splitter/"
+  wasmSizeLabel="平行分摊 & 拼单 AA"
+  offers={offers}
+  faqs={faqs}
+>
+  <DiscountBillSplitterTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>电商大促平行满减与外卖拼单分摊背后的数学公式</h2>
+    <p>
+      无论是每年 618、双 11 面对复杂的<strong>跨店每满 300 减 50、平台大额消费券（满 800 减 60）、店铺立减与 88VIP 95 折</strong>多重叠加，还是办公室日常午休多人拼单点外卖时的<strong>神券膨胀红包与打包配送费分摊</strong>，手算往往耗时费力且极易算错。本工具将两大高频生活精算场景合二为一，帮您在 3 秒内算清每一分钱。
+    </p>
+
+    <h3>核心算法一：电商凑单满减与退货净实付分摊公式</h3>
+    <ul>
+      <li>
+        <strong>1. 单品分摊权重计算：</strong>
+        设购物车内第 <code>i</code> 件商品原价（或扣减单品券后价格）为 <code>P_i</code>，整单合计基准额为 <code>S = ∑ P_i</code>，则该商品的分摊权重为 <code>W_i = P_i / S</code>。
+      </li>
+      <li>
+        <strong>2. 跨店满减与平台券平行扣减：</strong>
+        整单触发的跨店满减总额 <code>D_cross</code> 与平台大额消费券 <code>D_coupon</code> 按权重 <code>W_i</code> 精确映射至每件单品，再叠加 88VIP 95 折与支付红包，得出每件商品的<strong>独立实付分摊额（即申请退货时的精确退款额）</strong>。
+      </li>
+      <li>
+        <strong>3. 凑单净收益验证：</strong>
+        工具会自动对比【不加凑单品直接单买主商品】与【加入凑单品合并付款后再退掉凑单品】两种路径的净扣款差额，直观展示凑单为您额外多省了多少钱。
+      </li>
+    </ul>
+
+    <h3>核心算法二：多人外卖拼单公平 AA 权重公式</h3>
+    <p>
+      当多人拼单点外卖或聚餐团购时，由于存在“满减门槛、神券红包抵扣、打包费、远距离配送费”等多项公共收支，直接按原价加减极易失真。最公平的黄金公式为：
+    </p>
+    <pre><code>个人应付 AA 金额 = 订单最终实付总金额 × (个人点餐菜品原价 ÷ 全员点餐菜品原价总和)</code></pre>
+    <p>
+      计算完成后，点击右侧<strong>“一键复制群收款明细”</strong>按钮，即可将包含整单折扣率、每人原价、已省金额与应付金额的排版文案直接发送至微信群，清晰透明、告别尴尬。
+    </p>
+  </div>
+</ToolLayout>

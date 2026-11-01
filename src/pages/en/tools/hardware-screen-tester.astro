@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import HardwareScreenTesterTool from '@/components/tools/HardwareScreenTesterTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ High-Performance Cloud Workstations',
+    highlight: 'Developer Cloud Credits',
+    title: 'Alibaba Cloud & Tencent Cloud Compute Instances',
+    description: 'Offload heavy Docker builds, CI/CD runners, and 24/7 services to low-latency cloud instances so your local laptop stays cool and silent.',
+    ctaText: 'Explore Cloud Server Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '🛡️ Hardware Security Keys',
+    highlight: 'Open-Source Secure Element',
+    title: 'OneKey Hardware Wallet & FIDO2 Security Key',
+    description: 'Protect your GitHub SSH keys, Google accounts, and Web3 assets with air-gapped hardware verification.',
+    ctaText: 'Discover OneKey Hardware',
+    url: AFFILIATE_LINKS.ledger,
+  },
+  {
+    badge: '⚡ Edge Serverless Platform',
+    highlight: 'Free Tier Included',
+    title: 'Cloudflare Workers & Global Edge Network',
+    description: 'Deploy ultra-fast web apps and APIs across 300+ global cities with sub-10ms cold starts.',
+    ctaText: 'Try Cloudflare Workers',
+    url: AFFILIATE_LINKS.cloudflareWorkers,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'What is the difference between a dead pixel, a stuck subpixel, and backlight bleed?',
+    answer:
+      '1. Dead Pixel: Appears as a tiny black dot on white, red, green, and blue backgrounds because all three RGB subpixels receive no power. 2. Stuck Pixel: Glows red, green, blue, or white on a pure black background because one or more subpixel transistors are stuck open. 3. Backlight Bleed / IPS Glow: Uneven light leaking around the edges or corners of an LCD/IPS monitor when viewing a pure black fullscreen image in a dark room.',
+  },
+  {
+    question: 'Why does the Refresh Rate (Hz) benchmark show 60Hz on my 144Hz or 240Hz gaming monitor?',
+    answer:
+      'By default, Windows and macOS often initialize new external monitors at 60Hz, or browser battery-saver mode caps requestAnimationFrame at 60 FPS. Open your OS Display Settings -> Advanced Display -> Refresh Rate to select 144Hz/240Hz, and plug in AC power if on a laptop.',
+  },
+  {
+    question: 'How does the Mouse Double-Click Fault Detector identify failing micro-switches?',
+    answer:
+      'When mechanical mouse micro-switches oxidize or wear out, a single physical finger press causes metallic contact bounce that fires two electrical clicks within 5ms to 75ms. Our detector measures high-precision performance.now() deltas on Left, Middle, and Right buttons and flags any interval under 80ms as a switch bounce fault.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="dev-network"
+  title="Monitor Dead Pixel, Refresh Rate (Hz), Mouse Double-Click & Keyboard Ghosting Tester"
+  description="All-in-one hardware diagnostic suite: fullscreen dead/stuck pixel & backlight bleed test, real-time display Hz refresh rate benchmark, mouse switch double-click detector, and keyboard NKRO test."
+  alternateZh="/tools/hardware-screen-tester/"
+  alternateEn="/en/tools/hardware-screen-tester/"
+  wasmSizeLabel="Sub-ms Hardware Timer"
+  offers={offers}
+  faqs={faqs}
+>
+  <HardwareScreenTesterTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Complete Browser-Based Monitor, Display Hz, Mouse Switch & Keyboard Diagnostic Workbench</h2>
+    <p>
+      Whether you just unboxed a new 4K OLED/IPS monitor, bought a used MacBook, or suspect your gaming mouse has developed the dreaded accidental double-click bug, this 4-in-1 workbench runs hardware diagnostics directly in your browser without installing any desktop software:
+    </p>
+    <ul>
+      <li><strong>10-Pattern Fullscreen Screen Inspector:</strong> Cycle through pure Black, White, RGB, CMY, 256-step Grayscale Gradient, and Sharpness Grid using your mouse or keyboard arrow keys.</li>
+      <li><strong>Live Display Refresh Rate (Hz) & UFO Motion Track:</strong> Measures real-time VSync frame intervals and compares native high-refresh motion clarity against 30 FPS and 15 FPS tracks.</li>
+      <li><strong>Mouse Micro-Switch Bounce & Keyboard NKRO Rollover:</strong> Logs sub-millisecond click intervals across Left/Middle/Right buttons to catch <code>&lt;80ms</code> switch faults and verifies N-Key Rollover on mechanical keyboards.</li>
+    </ul>
+  </div>
+</ToolLayout>

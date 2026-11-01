@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import KinshipAgeCalculatorTool from '@/components/tools/KinshipAgeCalculatorTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🎨 Family Trees & Life Posters',
+    highlight: 'Free Pro Trial',
+    title: 'Canva Pro — Design Printable Family Trees & Life Calendars',
+    description: 'Create custom genealogy charts, Lunar New Year greeting cards, and milestone birthday posters with drag-and-drop templates.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+  {
+    badge: '☁️ Private Family Photo Cloud',
+    highlight: 'Developer Cloud Deals',
+    title: 'Tencent Cloud & Alibaba Cloud Lighthouse Servers',
+    description: 'Self-host Immich or PhotoPrism to back up decades of family photos and videos on your own private cloud server.',
+    ctaText: 'Claim Cloud Server Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🌍 Global Multi-Currency Account',
+    highlight: 'Mid-Market FX Rate',
+    title: 'Wise — Send International Gifts & Family Remittances',
+    description: 'Transfer money across borders to family members with transparent fees and real mid-market exchange rates.',
+    ctaText: 'Explore Wise Multi-Currency',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does Chinese kinship terminology have so many specific titles compared to English?',
+    answer:
+      'While English groups relatives into broad terms like "Uncle", "Aunt", and "Cousin", traditional Chinese kinship encodes four dimensions into every title: 1. Paternal (堂/叔伯姑) vs Maternal (表/舅姨) lineage; 2. Relative age (older vs younger than parents or speaker); 3. Blood relation vs marriage affinity; and 4. Generation rank.',
+  },
+  {
+    question: 'What is the difference between Chronological Age (周岁) and Traditional East Asian Age (虚岁)?',
+    answer:
+      'Chronological Age (Zhou Sui) starts at 0 at birth and increments on each birthday—identical to Western legal age. Traditional East Asian Age (Xu Sui) counts a newborn as 1 year old at birth (accounting for gestation) and adds 1 year on Lunar New Year rather than on the individual birthday, making it 1 to 2 years higher.',
+  },
+  {
+    question: 'How does the 900-Month Life Grid work?',
+    answer:
+      'Inspired by the viral "Your Life in Weeks/Months" essay, 75 years equals exactly 900 months (a 30 × 30 grid). Coloring each lived month orange and highlighting your current month in red offers a striking visual perspective on how much time has passed and how many golden months remain.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Chinese Kinship Relationship Resolver, Exact Chronological Age & Life-in-Months Grid"
+  description="Resolve complex Chinese family tree titles instantly, calculate exact chronological vs traditional East Asian age down to the day, and visualize your life progress on a 900-month grid."
+  alternateZh="/tools/kinship-age-calculator/"
+  alternateEn="/en/tools/kinship-age-calculator/"
+  wasmSizeLabel="125+ Kinship Graph"
+  offers={offers}
+  faqs={faqs}
+>
+  <KinshipAgeCalculatorTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Master Chinese Family Tree Titles & Visualize Your Life in 900 Months</h2>
+    <p>
+      Navigating a Chinese family gathering or Lunar New Year dinner can be daunting when every uncle, aunt, cousin, and in-law has a distinct title based on paternal/maternal branch and birth order. This dual-purpose utility combines a kinship graph calculator with a life-in-months calendar:
+    </p>
+    <ul>
+      <li><strong>Calculator-Style Kinship Chain Resolver:</strong> Chain steps like <code>Father ➔ Mother ➔ Older Sister ➔ Son</code> to instantly get the exact Mandarin title, regional colloquialisms, English explanation, and reciprocal title ("What they call me").</li>
+      <li><strong>Exact Age, Chinese Zodiac & 900-Month Life Grid:</strong> Compare exact Western chronological age against East Asian traditional age (Sui), discover your Sexagenary Stem-Branch (GanZhi) animal sign, and view your life mapped onto a 30×30 grid of 900 months.</li>
+    </ul>
+  </div>
+</ToolLayout>

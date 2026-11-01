@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import SignatureScannerCleanerTool from '@/components/tools/SignatureScannerCleanerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Document Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 — Private Object Storage for Contracts & Assets',
+    description: 'Store encrypted PDFs, digital signatures, and static web assets with $0 egress bandwidth fees across 300+ global edge locations.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🚀 Self-Hosted Document Suite',
+    highlight: 'Developer Cloud Deals',
+    title: 'Alibaba Cloud & Tencent Cloud Lighthouse Instances',
+    description: 'Host your own private Stirling-PDF, Docuseal e-signature server, or Nextcloud workspace with low-latency Asia-Pacific & global routing.',
+    ctaText: 'Explore Cloud Server Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '🎨 Business Proposals & Certificates',
+    highlight: 'Free Pro Trial',
+    title: 'Canva Pro — Drag & Drop Transparent Signatures into Proposals',
+    description: 'Combine your extracted transparent PNG signatures with professional invoice, contract, and certificate templates.',
+    ctaText: 'Try Canva Pro Free',
+    url: AFFILIATE_LINKS.canvaPro,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'Why does a smartphone photo of my signature have a gray background in Word or PDF?',
+    answer:
+      'When you photograph white paper under indoor lighting, shadows from your phone and uneven ambient light turn the paper pixels into varying shades of gray (#C5C2BB to #E8E6E1). Our tool computes a local Integral Image (Summed-Area Table) to estimate background illumination per pixel, stripping 100% of the paper texture into a pure Alpha=0 transparent background while keeping ink strokes sharp.',
+  },
+  {
+    question: 'Is my handwritten signature or company stamp uploaded to any server?',
+    answer:
+      'No. Handwritten signatures and corporate seals are sensitive legal identifiers that should never be uploaded to third-party cloud background removers. This workbench processes every pixel locally inside your browser RAM using HTML5 Canvas and TypedArrays.',
+  },
+  {
+    question: 'How does Mode 2 (Document Scan Shadow Whitener) fix dark phone photos of contracts?',
+    answer:
+      'Mode 2 divides each pixel by its local neighborhood mean luminance (homomorphic lighting normalization). This completely flattens curved page shadows and camera flash hotspots into pure #FFFFFF white paper while darkening text strokes for crisp laser printing.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Handwritten Transparent Signature Extractor & Mobile Document Scan Shadow Cleaner"
+  description="Turn smartphone photos of handwritten signatures or red stamps into crisp 100% transparent PNGs, or remove gray lighting shadows from photographed contracts for clean black-and-white printing."
+  alternateZh="/tools/signature-scanner-cleaner/"
+  alternateEn="/en/tools/signature-scanner-cleaner/"
+  wasmSizeLabel="100% Local Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <SignatureScannerCleanerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Create 100% Transparent Electronic Signatures & Clean Document Scans Offline</h2>
+    <p>
+      Whether you need to sign a PDF contract, insert an executive signature into Microsoft Word, or print a smartphone photo of a paper receipt without wasting black toner on gray shadows, this dual-mode workbench runs entirely inside your browser:
+    </p>
+    <ul>
+      <li><strong>Mode 1 — Transparent Signature & Stamp Extractor:</strong> Uses adaptive local luminance & chroma thresholding to isolate black, blue, or red ink from uneven paper backgrounds, complete with anti-aliased edge feathering, stroke boldness dilation (<code>+1px</code> / <code>+2px</code>), and a live contract signing preview.</li>
+      <li><strong>Mode 2 — Document Scan Shadow Whitener:</strong> Eliminates phone shadow gradients from photographed documents and contracts while optionally preserving red official seals in full color.</li>
+    </ul>
+  </div>
+</ToolLayout>

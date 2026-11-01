@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import IdPhotoMakerTool from '@/components/tools/IdPhotoMakerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage, image processing, and cloud servers for Asia-Pacific and global web applications.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: 'Up to 35% Partner Rebate',
+    title: 'Alibaba Cloud ECS & OSS Official Store',
+    description: 'Deploy self-hosted photo galleries or full-stack web apps on high-performance cloud instances.',
+    ctaText: 'Explore Alibaba Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Image Transformations',
+    description: 'Host your optimized web assets on Cloudflare R2 with $0 egress bandwidth fees and global edge caching.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How does the Exact KB File Size Controller work for exam and visa portals?',
+    answer:
+      'Many government exam and visa portals reject ID photos that are either above 30 KB or below 15 KB. Our tool runs an 8-step binary search over JPEG quantization quality to get as close to your maximum KB limit as possible, and injects a benign JPEG comment segment if needed to guarantee your file never falls below the minimum KB threshold.',
+  },
+  {
+    question: 'Are my biometric portrait photos uploaded to any cloud server?',
+    answer:
+      'No. Every step—from edge-flood background replacement and formal suit overlay to 6-inch print sheet composition—runs 100% locally in your browser via HTML5 Canvas. Your portrait never leaves your device.',
+  },
+  {
+    question: 'How can I print 8 ID photos for $0.15 using the 6-Inch Print Sheet?',
+    answer:
+      'Instead of paying $5–$15 for "Passport/ID Photo Printing" at a pharmacy or studio, download the generated 4×6 inch (1800×1200px @ 300 DPI) multi-up sheet with crop marks and print it as a single standard 4×6" photo.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private ID & Passport Photo Maker, Background Changer & Exact KB Sizer"
+  description="100% client-side ID and Visa photo workbench: 300 DPI standard presets (1-inch, 2-inch, US/Japan 2x2 Visa), background color replacement, formal suit overlay, exact KB size targeting, and 4x6 inch print sheet generator."
+  alternateZh="/tools/id-photo-maker/"
+  alternateEn="/en/tools/id-photo-maker/"
+  wasmSizeLabel="100% Client-Side Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <IdPhotoMakerTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Local Browser ID Photo Maker & Exact KB Sizer?</h2>
+    <p>
+      Whether you are applying for a <strong>US/Japan Visa (2×2 inch / 600×600px)</strong>, civil service exams, professional certifications, or university admissions, online application portals enforce strict pixel dimensions, background colors, and exact kilobyte (KB) file size windows.
+    </p>
+    <ul>
+      <li><strong>Edge Flood-Fill Chroma Matting:</strong> Replaces light indoor walls with Official Blue, Pure White, Official Red, or Executive Grey gradients without erasing facial highlights or white shirt collars.</li>
+      <li><strong>Exact KB Target Sizer (e.g. 15–30 KB):</strong> Binary-searches JPEG encoding quality and applies lossless byte padding so your photo passes automated portal validators on the first try.</li>
+      <li><strong>4×6" (1800×1200px) Multi-Up Print Sheet:</strong> Automatically tiles your ID photos onto a 300 DPI 6-inch photo canvas complete with precision scissor crop marks.</li>
+    </ul>
+  </div>
+</ToolLayout>

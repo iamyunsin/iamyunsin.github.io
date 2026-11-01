@@ -1,0 +1,76 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import VideoTranscoderTool from '@/components/tools/VideoTranscoderTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Video & Audio CDN',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Global Edge Streaming',
+    description: 'Host your compressed WebM/MP4 videos and podcast WAV/MP3 audio on Cloudflare R2 with $0 egress bandwidth fees.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🌏 Asia-Pacific CDN & Cloud',
+    highlight: 'Developer Bundle',
+    title: 'Tencent Cloud COS, CDN & Lighthouse Deals',
+    description: 'Ultra-low latency object storage and media delivery for web applications and global developer projects.',
+    ctaText: 'Claim Tencent Cloud Deals',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: 'Up to 35% Partner Rebate',
+    title: 'Alibaba Cloud ECS & OSS Official Store',
+    description: 'Deploy self-hosted media hubs, podcast platforms, and full-stack web apps on high-performance cloud instances.',
+    ctaText: 'Explore Alibaba Cloud Deals',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: 'How does the lossless WAV audio extractor work without uploading my video?',
+    answer:
+      'When you drop an MP4, MOV, or WebM file, our workbench uses your browser’s hardware-accelerated `AudioContext.decodeAudioData` API to decode the audio track into raw floating-point PCM channels. It then constructs a standard 44-byte RIFF `WAVE` header and interleaves 16-bit PCM samples directly in memory—complete with visual waveform trimming, volume gain boost, and smooth fade-in/fade-out envelopes.',
+  },
+  {
+    question: 'How can I compress a large smartphone video to fit Discord, email, or form upload limits?',
+    answer:
+      'Switch to **Mode 2: Video Transcode, Rotate & Bitrate Slimming**, select a target bitrate of `1000 kbps (1 Mbps)` or `2000 kbps (2 Mbps)`, and optionally scale resolution to `75%`. Using the hardware-accelerated `VP9` / `MP4` encoder typically shrinks smartphone footage by 70%–85% while keeping visuals crisp.',
+  },
+  {
+    question: 'Can I fix sideways (90°/270°) or mirrored selfie videos in the browser?',
+    answer:
+      'Yes. Choose `90°`, `180°`, or `270°` rotation and toggle **Horizontal Mirror Flip** while watching the live transform canvas monitor, then click Start Local Video Transcode to bake the corrected orientation into the output file.',
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  category="media-doc"
+  title="Private Video Transcoder, Bitrate Compressor, Rotator & Lossless WAV Audio Extractor"
+  description="100% client-side video transcoder and audio extractor. Extract lossless 16-bit PCM WAV audio with visual waveform trimming and fade-in/out, or compress video bitrate, rotate 90°/180°/270°, flip horizontally, and mute tracks locally."
+  alternateZh="/tools/video-transcoder/"
+  alternateEn="/en/tools/video-transcoder/"
+  wasmSizeLabel="WebAudio PCM + MediaRecorder"
+  offers={offers}
+  faqs={faqs}
+>
+  <VideoTranscoderTool client:load lang="en" />
+
+  <div slot="seo-content">
+    <h2>Why Use a 100% Client-Side Video Transcoder & WAV Audio Extractor?</h2>
+    <p>
+      Whether you need to rip the audio track from a recorded lecture or meeting for AI transcription, fix a sideways smartphone video, or shrink a 100 MB screen recording down to a 5 MB WebM/MP4 clip for GitHub issues or email attachments, uploading gigabytes of private footage to third-party cloud converters is slow and risky.
+    </p>
+    <ul>
+      <li><strong>Studio-Grade 16-Bit PCM WAV Ripper:</strong> Extracts raw stereo audio with interactive waveform trimming, volume gain normalization, and smooth fade-in/fade-out ramps in milliseconds.</li>
+      <li><strong>Hardware-Accelerated Bitrate Control & Geometric Transforms:</strong> Rotate `90° / 180° / 270°`, mirror-flip selfie footage, strip audio tracks, and dial in exact target bitrates (`500 kbps` to `8000 kbps`) entirely inside your browser.</li>
+    </ul>
+  </div>
+</ToolLayout>

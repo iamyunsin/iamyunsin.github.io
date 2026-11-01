@@ -2,7 +2,7 @@
 import BaseHead from '@/components/BaseHead.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { SITE, UTILITY_TOOLS, LAB_TOOLS } from '@/consts';
+import { SITE, TOOLS, TOOL_CATEGORIES } from '@/consts';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import ArticleList from '@/components/ArticleList.astro';
 import Author from '@/components/Author.astro';
@@ -21,9 +21,17 @@ import CardTitle from '@/components/CardTitle.astro';
       <aside class="home-sidebar">
         <Author />
         <Card class="stat-card">
-          <CardTitle>⚡ 工具箱 & 原理实验室</CardTitle>
+          <CardTitle>🛠️ 在线工具箱 ({TOOLS.length}款)</CardTitle>
+          <div class="tools-cat-pills">
+            {TOOL_CATEGORIES.map((cat) => (
+              <a href={`/tools/#${cat.id === 'principle-lab' ? 'labs' : cat.id}`} class="cat-mini-pill">
+                <span>{cat.icon}</span>
+                <span>{cat.shortTitle}</span>
+              </a>
+            ))}
+          </div>
           <div class="tools-mini-list">
-            {[...UTILITY_TOOLS.slice(0, 2), ...LAB_TOOLS.slice(0, 2)].map((tool) => (
+            {[TOOLS[0], TOOLS[8], TOOLS[14], TOOLS[28]].filter(Boolean).map((tool) => (
               <a href={tool.pathZh} class="tool-mini-item">
                 <div class="tool-mini-top">
                   <span class="tool-mini-badge">{tool.badge}</span>
@@ -31,7 +39,7 @@ import CardTitle from '@/components/CardTitle.astro';
                 <div class="tool-mini-title">{tool.title}</div>
               </a>
             ))}
-            <a href="/tools/" class="tool-more-link">查看全部工具与实验室 (8 项) →</a>
+            <a href="/tools/" class="tool-more-link">查看全部 6 大分类 ({TOOLS.length} 项) →</a>
           </div>
         </Card>
         <Card class="about-card">
@@ -75,6 +83,34 @@ import CardTitle from '@/components/CardTitle.astro';
   .home-main {
     flex: 1;
     min-width: 0;
+  }
+
+  .tools-cat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 10px;
+  }
+
+  .cat-mini-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      background-color: var(--accent-soft);
+    }
   }
 
   .tools-mini-list {

@@ -1,0 +1,77 @@
+---
+import ToolLayout, { type FaqItem } from '@/layouts/ToolLayout.astro';
+import IdPhotoMakerTool from '@/components/tools/IdPhotoMakerTool.vue';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS } from '@/consts';
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级图片与静态站点加载，支持绑定自有备案域名，新老用户专享轻量应用服务器、存储包与 CDN 流量组合特惠。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '🔥 云小站官方补贴',
+    highlight: '爆款云服务器低至 38元/年',
+    title: '阿里云云小站 — 云服务器 ECS 与对象存储 OSS 特惠',
+    description: '独立开发者自建在线工具与全栈网站首选，汇集阿里云爆款轻量服务器与 OSS 存储资源包官方补贴价。',
+    ctaText: '前往阿里云云小站领专属折扣',
+    url: AFFILIATE_LINKS.aliyun,
+  },
+  {
+    badge: '☁️ 零出口流量费图床',
+    highlight: '10GB/月永久免费',
+    title: 'Cloudflare R2 对象存储 + Workers 边缘计算',
+    description: '托管静态资源与全栈 Web 应用，全球 CDN 边缘直出且彻底免除下行带宽流量费（Egress Fee = $0）。',
+    ctaText: '免费开通 Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+];
+
+const faqs: FaqItem[] = [
+  {
+    question: '为什么公务员、教师资格证、四六级报名系统总是提示“照片体积不符合 15KB~30KB 要求”？',
+    answer:
+      '国内各类人事考试网（如国考、省考、教资、软考、四六级）不仅严格校验像素宽高（如 295×413px），还会同时限制最小字节数与最大字节数（例如必须大于 15KB 且小于 30KB）。本工具内置二分法 JPEG 质量搜索引擎与无损字节填充器，确保导出的照片 100% 落入指定 KB 区间，且不含任何 EXIF 元数据。',
+  },
+  {
+    question: '我的个人证件照会上传到服务器吗？会不会被他人查看？',
+    answer:
+      '绝对不会。市面上许多微信小程序或在线证件照工具需要上传原图到云端并收费 9.9 元解锁下载，存在严重的人脸生物信息泄露隐患。本工具基于 HTML5 Canvas 像素洪泛抠图算法，100% 在您的手机或电脑本地内存中完成换底、换正装与排版，断网也可安全使用。',
+  },
+  {
+    question: '什么是“六寸相纸冲印排版”？如何用 1 元钱洗出 8 张实体证件照？',
+    answer:
+      '线下照相馆打印一版一寸证件照通常收费 20~30 元，而冲印一张普通的“6 寸生活照（4×6 英寸 / 1800×1200 像素）”在线上冲印店或药店自助机仅需 0.5~1 元。本工具自动将 8 张一寸照或 4 张二寸照按 300 DPI 精准排版到一张 6 寸画布上并附带十字裁剪线，帮您立省 95% 冲印费。',
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  category="media-doc"
+  title="一寸/二寸证件照智能换底色、报名照精准控 KB 大小与六寸冲印排版工作台"
+  description="100% 浏览器本地运行的证件照制作工具：支持一寸/小一寸/大一寸/二寸/公务员教资四六级报名照及美签尺寸，一键更换红蓝白渐变底色、正装叠加、精准控制 15~30KB 体积与 6 寸相纸排版。"
+  alternateZh="/tools/id-photo-maker/"
+  alternateEn="/en/tools/id-photo-maker/"
+  wasmSizeLabel="100% Client-Side Canvas"
+  offers={offers}
+  faqs={faqs}
+>
+  <IdPhotoMakerTool client:load lang="zh" />
+
+  <div slot="seo-content">
+    <h2>全本地隐私级证件照换底色、公考/教资报名照精准控 KB 与六寸相纸排版指南</h2>
+    <p>
+      每年在报考<strong>国家公务员、事业单位、教师资格证、全国大学生英语四六级（CET-4/6）、计算机等级考试、会计职称及各国签证</strong>时，成千上万的考生都会被报名系统的照片审核卡住：不是底色不对（要求蓝底或白底），就是文件体积过大（超过 30KB）或过小（低于 15KB）。
+    </p>
+    <ul>
+      <li><strong>智能边缘色度洪泛抠图（Flood-Fill Chroma Matting）：</strong> 自动从照片四周边缘采样背景色，配合可调节的容差与发丝边缘羽化滑块，在更換标准白（<code>#FFFFFF</code>）、政务蓝（<code>#438EDB</code>）、中国红（<code>#D9001B</code>）时不会误伤人物面部高光与白衬衫领口。</li>
+      <li><strong>二分法精准控 KB 引擎：</strong> 针对严苛的政务报名系统，自动通过 8 轮二分搜索匹配最佳 JPEG 量化因子；若纯色背景压缩后体积过小（如仅 9KB），还会自动在 JPEG 尾部注入标准无损填充段，确保严格满足 <code>15KB ~ 30KB</code> 审核门槛。</li>
+      <li><strong>六寸相纸（4×6 英寸 / 1800×1200px）自动拼版：</strong> 一键生成带标准十字裁剪刻度线的 8 连排一寸照或 4 连排二寸照，直接按普通 6 寸生活照冲印即可。</li>
+    </ul>
+  </div>
+</ToolLayout>
