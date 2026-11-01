@@ -824,9 +824,10 @@ function fallbackCopy(text: string) {
   }
 }
 
-// Toast
+// Toast & Reward Modal
 const toastMessage = ref('');
 const showToast = ref(false);
+const showRewardModal = ref(false);
 
 function triggerToast(msg: string) {
   toastMessage.value = msg;
@@ -1084,29 +1085,69 @@ function triggerToast(msg: string) {
           }}
         </p>
         <div class="eco-links">
-          <a
-            :href="isEn ? (AFFILIATE_LINKS.buyMeACoffee || 'https://www.buymeacoffee.com/') : (AFFILIATE_LINKS.afdian || 'https://afdian.com/')"
-            target="_blank"
-            rel="nofollow noopener sponsored"
+          <button
+            type="button"
             class="btn-coffee"
+            style="cursor: pointer; border: none;"
+            @click="showRewardModal = true"
           >
-            ☕ {{ isEn ? 'Buy Me a Coffee ($3)' : '爱发电 / 请喝咖啡 (¥9.9) ↗' }}
-          </a>
+            ☕ {{ isEn ? 'WeChat Tip / Buy a Coffee' : '微信扫码请作者喝杯咖啡' }}
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Minimal Tip Button in Clean Mode -->
     <div v-else class="minimal-clean-footer">
-      <a
-        :href="isEn ? (AFFILIATE_LINKS.buyMeACoffee || 'https://www.buymeacoffee.com/') : (AFFILIATE_LINKS.afdian || 'https://afdian.com/')"
-        target="_blank"
-        rel="nofollow noopener sponsored"
+      <button
+        type="button"
         class="clean-coffee-btn"
+        style="cursor: pointer; background: transparent;"
+        @click="showRewardModal = true"
       >
-        ☕ {{ isEn ? 'Buy author a coffee' : '如果觉得好用，请作者喝杯咖啡' }} ↗
-      </a>
+        ☕ {{ isEn ? 'Buy author a coffee' : '如果觉得好用，请作者喝杯咖啡' }}
+      </button>
     </div>
+
+    <!-- WeChat Reward QR Modal -->
+    <transition name="toast-fade">
+      <div
+        v-if="showRewardModal"
+        style="position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px;"
+        @click.self="showRewardModal = false"
+      >
+        <div
+          style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; max-width: 400px; width: 100%; padding: 20px; box-shadow: var(--shadow-md); text-align: center;"
+        >
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <strong style="font-size: 15px; color: var(--text-primary);">
+              ☕ {{ isEn ? 'Buy the Author a Coffee' : '若帮您省下时间，欢迎请喝杯咖啡' }}
+            </strong>
+            <button
+              type="button"
+              style="background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;"
+              @click="showRewardModal = false"
+            >
+              ✕
+            </button>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 14px; line-height: 1.5;">
+            {{
+              isEn
+                ? 'Scan with WeChat to support 100% client-side, ad-free open tools:'
+                : '打开微信扫一扫（或手机端长按识别）下方赞赏码，感谢您的鼓励：'
+            }}
+          </p>
+          <div style="display: flex; justify-content: center;">
+            <img
+              src="/site-images/wechat-reward.png"
+              alt="原心 的赞赏码"
+              style="width: 100%; max-width: 280px; border-radius: 12px; border: 1px solid var(--border-color);"
+            />
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- Toast Notification -->
     <transition name="toast-fade">

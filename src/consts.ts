@@ -16,6 +16,7 @@ export const AUTHOR = {
   github: 'https://github.com/iamyunsin/',
   email: 'mailto:yunsin@vip.qq.com',
   wechat: '/site-images/wechat-qr.png',
+  wechatReward: '/site-images/wechat-reward.png',
 };
 
 /**

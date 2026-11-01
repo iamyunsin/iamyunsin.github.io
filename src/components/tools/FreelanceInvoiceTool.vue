@@ -1046,14 +1046,14 @@ function handleDigitalCheckout(url: string, ev: MouseEvent) {
         </div>
       </div>
 
-      <!-- Legal Contract Pack Drawer Trigger -->
+      <!-- Free Legal Clause Reference & WeChat Reward Drawer Trigger -->
       <button
         type="button"
         class="contract-pack-trigger"
         @click="showLegalModal = true"
       >
-        <span>⚖️</span>
-        <span>{{ isEn ? 'Get Legal Contracts & Demand Letters ($5.99)' : '获取双语外包服务合同范本与律师函 (¥29)' }}</span>
+        <span>☕</span>
+        <span>{{ isEn ? 'Free Anti-Default Clauses & Buy a Coffee' : '防拖欠核心条款参考 · 请作者喝杯咖啡' }}</span>
       </button>
     </div>
 
@@ -1576,41 +1576,26 @@ function handleDigitalCheckout(url: string, ev: MouseEvent) {
             </div>
           </div>
 
-          <div class="checkout-actions-row">
-            <!-- Mianbaoduo Dual Checkout (CNY) -->
-            <a
-              :href="DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlZh || '#'"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="checkout-btn mianbaoduo-btn"
-              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlZh, $event)"
-            >
-              <span>🥖</span>
-              <span>面包多 微信 / 支付宝 极速购买 (¥29.0)</span>
-            </a>
-
-            <!-- Gumroad Dual Checkout (USD) -->
-            <a
-              :href="DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlEn || '#'"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="checkout-btn gumroad-btn"
-              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.freelanceContractsPack.checkoutUrlEn, $event)"
-            >
-              <span>💳</span>
-              <span>Gumroad Credit Card / PayPal ($5.99)</span>
-            </a>
-          </div>
-
-          <div v-if="checkoutNotice" class="legal-note" style="color: var(--accent); font-weight: 700;">
-            {{ checkoutNotice }}
+          <div class="checkout-actions-row" style="flex-direction: column; align-items: center; gap: 10px; margin-top: 16px;">
+            <div style="font-size: 13.5px; font-weight: 700; color: var(--text-primary); text-align: center;">
+              {{
+                isEn
+                  ? '☕ Found these billing templates & clauses helpful? Feel free to scan with WeChat to buy me a coffee!'
+                  : '☕ 以上 3 大核心防拖欠条款供您免费复制入合同使用。若本工具帮您省下时间，欢迎微信扫码请作者喝杯咖啡！'
+              }}
+            </div>
+            <img
+              src="/site-images/wechat-reward.png"
+              alt="原心 的赞赏码"
+              style="width: 100%; max-width: 240px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);"
+            />
           </div>
 
           <div class="legal-note">
             {{
               isEn
-                ? 'Includes Markdown, Word (.docx) & PDF formats • Bilateral Chinese & English clauses • Instant digital delivery'
-                : '包含 Word / Markdown / PDF 格式 · 双语对齐条款 · 即买即用即时下载 · 附赠 3 封渐进式催款邮件模板'
+                ? '100% Pure Local Invoicing • Zero Server Uploads • Thank you for supporting indie open tools!'
+                : '100% 浏览器本地制单 · 零服务器上传 · 感谢您的每一份鼓励与支持！'
             }}
           </div>
         </div>

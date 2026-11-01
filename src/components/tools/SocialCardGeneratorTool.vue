@@ -1105,14 +1105,14 @@ const PREMIUM_PRESETS = [
       </div>
 
       <div class="intro-actions">
-        <!-- Tier 2 Template Pack Trigger Button -->
+        <!-- WeChat Reward / Tip Trigger Button -->
         <button
           type="button"
           class="template-pack-btn"
           @click="showTemplateModal = true"
         >
-          <span class="icon">✨</span>
-          <span>{{ isEn ? 'Get 100+ Pro Templates ($4.99)' : '获取 100+ 自媒体爆款模板包 (¥19.9)' }}</span>
+          <span class="icon">☕</span>
+          <span>{{ isEn ? 'Buy Author a Coffee' : '觉得好用？请喝杯咖啡' }}</span>
         </button>
 
         <!-- Canva Pro Affiliate -->
@@ -1685,75 +1685,41 @@ const PREMIUM_PRESETS = [
       </div>
     </div>
 
-    <!-- Tier 2 Template Pack Drawer / Modal -->
+    <!-- WeChat Reward / Tip Modal -->
     <div v-if="showTemplateModal" class="template-modal-overlay" @click.self="showTemplateModal = false">
-      <div class="template-modal-card">
+      <div class="template-modal-card" style="max-width: 420px;">
         <div class="modal-header">
           <div class="modal-title-wrap">
-            <span class="modal-title-icon">✨</span>
+            <span class="modal-title-icon">☕</span>
             <h3 class="modal-title">
-              {{ isEn ? '100+ Pro Social Card Presets & JSON Pack' : '100+ 自媒体爆款排版预设与主题 JSON 配置文件包' }}
+              {{ isEn ? 'Support Pure Local Free Tools' : '支持原心持续打磨纯净免费工具' }}
             </h3>
           </div>
           <button type="button" class="close-modal-btn" @click="showTemplateModal = false">✕</button>
         </div>
 
-        <div class="modal-body">
-          <p class="modal-desc">
+        <div class="modal-body" style="text-align: center;">
+          <p class="modal-desc" style="margin-bottom: 14px;">
             {{
               isEn
-                ? 'Designed for creators, solopreneurs, and tech writers. Import directly into this studio with one click to get 100+ hand-crafted layout configurations.'
-                : '专为独立创作者、出海独立黑客与技术写作者打磨。支持一键导入本工坊直接复用，内含 6 大行业核心视觉资产与自媒体爆款排版参数。'
+                ? '100% in-browser rendering with zero server uploads. If this studio saved you time, feel free to scan with WeChat to buy me a coffee!'
+                : '本工坊坚持 100% 浏览器本地离线渲染、零隐私上传。若帮您省下排版时间，欢迎微信扫码请作者喝杯咖啡 ☕'
             }}
           </p>
 
-          <!-- 6 Sample Presets Interactive Previews -->
-          <div class="sample-presets-grid">
-            <button
-              v-for="(p, pIdx) in PREMIUM_PRESETS"
-              :key="pIdx"
-              type="button"
-              class="preset-sample-card"
-              :class="{ active: activeSamplePreset === pIdx }"
-              @click="activeSamplePreset = pIdx"
-            >
-              <div class="sample-ratio-tag">{{ p.ratio }}</div>
-              <div class="sample-title">{{ p.title }}</div>
-              <div class="sample-desc">{{ p.description }}</div>
-            </button>
-          </div>
-
-          <div class="checkout-actions-row">
-            <!-- Mianbaoduo Dual Checkout (CNY) -->
-            <a
-              :href="DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlZh || '#'"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="checkout-btn mianbaoduo-btn"
-              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlZh, $event)"
-            >
-              <span>🥖</span>
-              <span>微信 / 支付宝 极速购买 (¥19.9)</span>
-            </a>
-
-            <!-- Gumroad Dual Checkout (USD) -->
-            <a
-              :href="DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlEn || '#'"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="checkout-btn gumroad-btn"
-              @click="handleDigitalCheckout(DIGITAL_PRODUCTS.socialCardPresets.checkoutUrlEn, $event)"
-            >
-              <span>💳</span>
-              <span>Credit Card / Apple Pay ($4.99)</span>
-            </a>
+          <div style="display: flex; justify-content: center; margin: 12px 0;">
+            <img
+              src="/site-images/wechat-reward.png"
+              alt="原心 的赞赏码"
+              style="width: 100%; max-width: 280px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);"
+            />
           </div>
 
           <div class="legal-note">
             {{
               isEn
-                ? 'Instant digital download • Commercial use permitted • Lifetime updates • 100% money-back satisfaction'
-                : '即时数字资产下载 · 包含完整商业授权 · 永久免费更新 · 提供 100% 格式导入保障'
+                ? 'Open WeChat Scan or long-press the QR code on mobile • Thank you for your support!'
+                : '打开微信扫一扫或手机端长按识别赞赏码 · 感谢您的每一份鼓励与支持！'
             }}
           </div>
         </div>

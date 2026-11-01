@@ -816,79 +816,52 @@ function handleDigitalCheckout(url: string, ev: MouseEvent) {
         </div>
       </div>
 
-      <!-- Tier 2 Tripwire Box -->
+      <!-- WeChat Reward / Tip Box -->
       <div class="tripwire-box">
-        <div class="tripwire-tag">🚀 {{ isEn ? 'Due Diligence Pack' : '极客收并购首选' }}</div>
+        <div class="tripwire-tag">☕ {{ isEn ? 'Support Free Tools' : '支持纯净免费工具' }}</div>
         <h4 class="tripwire-title">
-          {{ isEn ? 'Micro-SaaS Due Diligence Financial Model & BP (Notion + Excel)' : '《Micro-SaaS 商业计划书与项目并购尽调财务底稿》' }}
+          {{ isEn ? 'Buy the Author a Coffee' : '若帮您省下时间，欢迎请作者喝杯咖啡 ☕' }}
         </h4>
         <p class="tripwire-desc">
           {{
             isEn
-              ? 'Acquire.com standard MRR waterfall, user cohort retention analysis, buyer due diligence question checklist, and data room structure.'
-              : '符合 Acquire.com 标准的 MRR 瀑布流、同态用户留存率看板、买家尽调问卷 Checklist 与数据室整理规范。'
+              ? '100% in-browser SaaS unit economics & valuation sandbox with zero data uploads. Your support keeps this tool free and updated.'
+              : '本沙盘坚持 100% 浏览器本地推演、零商业数据上传。如果帮您理清了 SaaS 单元经济模型与估值区间，欢迎赞赏支持持续迭代！'
           }}
         </p>
         <div class="tripwire-actions">
-          <button type="button" class="btn-tripwire-outline" @click="showBpModal = true">
-            {{ isEn ? 'View Sample Structure' : '在线预览底稿结构' }}
+          <button type="button" class="btn-tripwire-solid" @click="showBpModal = true">
+            ☕ {{ isEn ? 'WeChat Tip / Buy a Coffee' : '微信扫码请喝咖啡' }}
           </button>
-          <a
-            :href="(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh) || '#'"
-            target="_blank"
-            rel="nofollow noopener sponsored"
-            class="btn-tripwire-solid"
-            @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh, $event)"
-          >
-            {{ isEn ? 'Get Full Pack ($5.99)' : '立即获取 (¥29.0)' }}
-          </a>
         </div>
       </div>
     </div>
 
-    <!-- BP Sample Preview Modal -->
+    <!-- WeChat Reward Modal -->
     <transition name="fade">
       <div v-if="showBpModal" class="modal-backdrop" @click.self="showBpModal = false">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width: 420px;">
           <div class="modal-header">
             <h4 class="modal-title">
-              {{ isEn ? 'Micro-SaaS Due Diligence Kit Sample Preview' : 'Micro-SaaS 并购尽调财务底稿与 BP 样本预览' }}
+              ☕ {{ isEn ? 'Buy the Author a Coffee' : '若帮您省下时间，欢迎请喝杯咖啡' }}
             </h4>
             <button type="button" class="btn-close-modal" @click="showBpModal = false">✕</button>
           </div>
-          <div class="modal-body">
-            <div class="preview-card-list">
-              <div class="preview-card-item">
-                <div class="card-item-title">📑 1. Acquire.com 标准财务损益模型 (P&amp;L Waterfall)</div>
-                <p class="card-item-desc">
-                  {{ isEn ? 'Automated monthly breakdowns of New MRR, Expansion MRR, Churn MRR, and Net Revenue Retention (NRR).' : '自动核算 New MRR、Expansion MRR、Contraction 与 Churn MRR，实时输出 NRR 净收入留存率指标。' }}
-                </p>
-              </div>
-              <div class="preview-card-item">
-                <div class="card-item-title">👥 2. 用户留存同态群组分析 (Cohort Retention Heatmap)</div>
-                <p class="card-item-desc">
-                  {{ isEn ? 'Track 12-month cohort survival percentages, proving long-term user stickiness to prospective buyers.' : '12 个月月度 Cohort 留存热力矩阵，直观向买家证明老用户的真实复购黏性与生命周期价值。' }}
-                </p>
-              </div>
-              <div class="preview-card-item">
-                <div class="card-item-title">📋 3. 买家意向调查 35 问与数据室规范 (Data Room Checklist)</div>
-                <p class="card-item-desc">
-                  {{ isEn ? 'Covering intellectual property assignments, third-party API dependencies, support transfer SOPs, and escrow closing procedures.' : '涵盖代码 IP 归属承诺、第三方依赖解耦、售后客服移交 SOP 及托管结款流程指南。' }}
-                </p>
-              </div>
+          <div class="modal-body" style="text-align: center; padding: 20px;">
+            <p class="card-item-desc" style="margin-top: 0; margin-bottom: 14px;">
+              {{
+                isEn
+                  ? 'Scan the WeChat Tip Code below to support continuous maintenance:'
+                  : '打开微信扫一扫（或手机端长按识别）下方赞赏码，感谢您的鼓励：'
+              }}
+            </p>
+            <div style="display: flex; justify-content: center;">
+              <img
+                src="/site-images/wechat-reward.png"
+                alt="原心 的赞赏码"
+                style="width: 100%; max-width: 280px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);"
+              />
             </div>
-          </div>
-          <div class="modal-footer">
-            <span class="pricing-badge">{{ isEn ? 'Limited Offer: $5.99 / ¥29.0' : '限时买断价: ¥29.0 / $5.99' }}</span>
-            <a
-              :href="(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh) || '#'"
-              target="_blank"
-              rel="nofollow noopener sponsored"
-              class="btn-modal-checkout"
-              @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlEn : DIGITAL_PRODUCTS.saasBpDueDiligence.checkoutUrlZh, $event)"
-            >
-              {{ isEn ? 'Get Full Toolkit ↗' : '立即扫码获取完整底稿 ↗' }}
-            </a>
           </div>
         </div>
       </div>

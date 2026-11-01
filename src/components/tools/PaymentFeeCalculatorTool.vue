@@ -929,184 +929,62 @@ function handleDigitalCheckout(url: string, ev: MouseEvent) {
       </div>
     </div>
 
-    <!-- Tier 2 Monetization: Digital Asset Excel Model Tripwire -->
+    <!-- WeChat Reward / Tip Banner -->
     <div class="tripwire-banner">
       <div class="tripwire-content">
-        <div class="tripwire-badge">🔥 {{ isEn ? 'Fintech Digital Model' : '出海财务提效神器' }}</div>
+        <div class="tripwire-badge">☕ {{ isEn ? 'Support Pure Free Tools' : '支持纯净免费工具' }}</div>
         <h4 class="tripwire-title">
           {{
             isEn
-              ? '2026 Global Payment & FX Hidden Cost Dynamic Audit Model (Excel)'
-              : '《2026 全球跨境收款与电汇隐性汇损 Excel 动态穿透核算底表》'
+              ? 'Saved on Cross-Border Fees? Buy the Author a Coffee!'
+              : '若本精算器帮您穿透了隐性汇损、省下时间与手续费，欢迎请作者喝杯咖啡 ☕'
           }}
         </h4>
         <p class="tripwire-desc">
           {{
             isEn
-              ? 'Built-in tiered formula macros for 12 payment channels. Multi-currency batch reconciliation and foreign exchange net profit sensitivity radar.'
-              : '内嵌 12 大跨境收付款通道阶梯费率公式与动态宏，支持多币种批量发票对账与外币结汇净利敏感度雷达图。'
+              ? '100% browser-side calculation with zero data uploads or paywalls. Your support keeps our fee benchmarks continuously updated.'
+              : '本工具坚持 100% 浏览器本地离线计算、完全免费开源且零隐私上传。您的每一份赞赏都将转化为持续更新通道费率与打磨新工具的动力！'
           }}
         </p>
       </div>
       <div class="tripwire-action">
         <button
           type="button"
-          class="btn-tripwire-preview"
+          class="btn-tripwire-buy"
           @click="showExcelModal = true"
         >
-          {{ isEn ? 'View Sample Preview' : '在线预览样本结构' }}
+          ☕ {{ isEn ? 'WeChat Tip / Buy a Coffee' : '微信赞赏支持作者' }}
         </button>
-        <a
-          :href="(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh) || '#'"
-          target="_blank"
-          rel="nofollow noopener sponsored"
-          class="btn-tripwire-buy"
-          @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh, $event)"
-        >
-          {{ isEn ? 'Instant Get ($5.99)' : '立即获取 (¥29.0)' }}
-        </a>
       </div>
     </div>
 
-    <!-- Sample Preview Modal Drawer -->
+    <!-- WeChat Reward Modal -->
     <transition name="fade">
       <div v-if="showExcelModal" class="modal-backdrop" @click.self="showExcelModal = false">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width: 420px;">
           <div class="modal-header">
             <h4 class="modal-title">
-              {{ isEn ? 'Excel Financial Model Sample Preview' : 'Excel 财务核算模型结构与样本预览' }}
+              ☕ {{ isEn ? 'Buy the Author a Coffee' : '若帮您省下时间，欢迎请喝杯咖啡' }}
             </h4>
             <button type="button" class="btn-close-modal" @click="showExcelModal = false">✕</button>
           </div>
 
-          <div class="modal-sheet-tabs">
-            <button
-              type="button"
-              class="sheet-tab"
-              :class="{ active: activeExcelSheetTab === 'sheet1' }"
-              @click="activeExcelSheetTab = 'sheet1'"
-            >
-              Sheet 1: {{ isEn ? 'Tiered Fee Matrix' : '多通道阶梯费率对照底表' }}
-            </button>
-            <button
-              type="button"
-              class="sheet-tab"
-              :class="{ active: activeExcelSheetTab === 'sheet2' }"
-              @click="activeExcelSheetTab = 'sheet2'"
-            >
-              Sheet 2: {{ isEn ? 'Batch Invoice Reconciliation' : '批量跨境发票对账表' }}
-            </button>
-            <button
-              type="button"
-              class="sheet-tab"
-              :class="{ active: activeExcelSheetTab === 'sheet3' }"
-              @click="activeExcelSheetTab = 'sheet3'"
-            >
-              Sheet 3: {{ isEn ? 'FX Sensitivity Radar' : '结汇净利敏感度分析' }}
-            </button>
-          </div>
-
-          <div class="modal-body">
-            <div v-if="activeExcelSheetTab === 'sheet1'" class="sheet-preview-pane">
-              <div class="table-mockup">
-                <div class="mockup-header-row">
-                  <span>Channel ID</span>
-                  <span>Base Rate %</span>
-                  <span>Fixed Fee ($)</span>
-                  <span>FX Spread %</span>
-                  <span>Break-Even Volume</span>
-                </div>
-                <div class="mockup-row">
-                  <span>PayPal Commercial</span>
-                  <span>4.40%</span>
-                  <span>$0.30</span>
-                  <span>3.50%</span>
-                  <span>&lt; $300 (Micro)</span>
-                </div>
-                <div class="mockup-row highlight-row">
-                  <span>Wise Business</span>
-                  <span>0.43%</span>
-                  <span>$0.00</span>
-                  <span>0.00%</span>
-                  <span>$300 ~ $20,000</span>
-                </div>
-                <div class="mockup-row">
-                  <span>SWIFT Wire</span>
-                  <span>0.00%</span>
-                  <span>$45.00</span>
-                  <span>2.00%</span>
-                  <span>&gt; $15,000 (Bulk)</span>
-                </div>
-              </div>
-              <p class="sheet-note">
-                {{ isEn ? 'Includes pre-programmed Excel formulas for automatic threshold evaluation.' : '包含内嵌 Excel 公式与条件格式，录入交易流水自动高亮费率最优路径。' }}
-              </p>
+          <div class="modal-body" style="text-align: center; padding: 20px;">
+            <p class="sheet-note" style="margin-top: 0; margin-bottom: 14px;">
+              {{
+                isEn
+                  ? 'Scan the WeChat Tip Code below to support continuous maintenance:'
+                  : '打开微信扫一扫（或手机端长按识别）下方赞赏码，感谢您的支持：'
+              }}
+            </p>
+            <div style="display: flex; justify-content: center;">
+              <img
+                src="/site-images/wechat-reward.png"
+                alt="原心 的赞赏码"
+                style="width: 100%; max-width: 280px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);"
+              />
             </div>
-
-            <div v-if="activeExcelSheetTab === 'sheet2'" class="sheet-preview-pane">
-              <div class="table-mockup">
-                <div class="mockup-header-row">
-                  <span>Invoice #</span>
-                  <span>Client / Region</span>
-                  <span>Billed (USD)</span>
-                  <span>Gateway Fee</span>
-                  <span>Net Bank Realized</span>
-                </div>
-                <div class="mockup-row">
-                  <span>INV-2026-081</span>
-                  <span>Acme Corp (US)</span>
-                  <span>$4,500.00</span>
-                  <span>-$19.35 (Wise)</span>
-                  <span>$4,480.65</span>
-                </div>
-                <div class="mockup-row">
-                  <span>INV-2026-082</span>
-                  <span>Nordic Studio (EU)</span>
-                  <span>$1,200.00</span>
-                  <span>-$71.10 (PayPal)</span>
-                  <span>$1,128.90</span>
-                </div>
-              </div>
-              <p class="sheet-note">
-                {{ isEn ? 'Pre-built VAT/GST columns and automated client currency conversion reconciler.' : '预置国际增值税/GST 扣除列与月末自动化结汇凭单对账统计逻辑。' }}
-              </p>
-            </div>
-
-            <div v-if="activeExcelSheetTab === 'sheet3'" class="sheet-preview-pane">
-              <div class="sensitivity-mockup">
-                <div class="radar-box">
-                  <div class="radar-title">{{ isEn ? 'Simulated Monthly Savings (Annual $50k Flow)' : '年交易额 $50,000 场景下多通道年度省钱模拟' }}</div>
-                  <div class="bar-chart-row">
-                    <span class="bar-label">PayPal</span>
-                    <div class="bar-track"><div class="bar-fill" style="width: 25%"></div></div>
-                    <span class="bar-val">$46,050 实收</span>
-                  </div>
-                  <div class="bar-chart-row">
-                    <span class="bar-label">SWIFT</span>
-                    <div class="bar-track"><div class="bar-fill" style="width: 45%"></div></div>
-                    <span class="bar-val">$48,250 实收</span>
-                  </div>
-                  <div class="bar-chart-row highlight-bar">
-                    <span class="bar-label">Wise / 连连</span>
-                    <div class="bar-track"><div class="bar-fill best-fill" style="width: 95%"></div></div>
-                    <span class="bar-val">$49,785 实收 (+¥26,000)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <span class="pricing-badge">{{ isEn ? 'Limited Time: $5.99 / ¥29.0' : '限时买断价: ¥29.0 / $5.99' }}</span>
-            <a
-              :href="(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh) || '#'"
-              target="_blank"
-              rel="nofollow noopener sponsored"
-              class="btn-modal-checkout"
-              @click="handleDigitalCheckout(isEn ? DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlEn : DIGITAL_PRODUCTS.crossBorderFxModel.checkoutUrlZh, $event)"
-            >
-              {{ isEn ? 'Get Full Excel Model ↗' : '立即扫码获取完整模型 ↗' }}
-            </a>
           </div>
         </div>
       </div>
