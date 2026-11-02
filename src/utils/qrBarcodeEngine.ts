@@ -9,10 +9,10 @@ export interface QrMatrixResult {
   isFunction: boolean[][];
   size: number;
   version: number;
-  eccLevel: 'Q' | 'M';
+  eccLevel: 'Q' | 'M' | 'L';
 }
 
-export function generateQrMatrix(rawText: string): QrMatrixResult {
+export function generateQrMatrix(rawText: string, preferLowDensity = false): QrMatrixResult {
   const text = rawText.trim() || 'https://yunsin.top';
   const EXP = new Uint8Array(512);
   const LOG = new Uint8Array(256);
@@ -47,7 +47,7 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     return poly;
   }
 
-  // Error Correction Level Q (25% recovery, preferred for high camera scannability with dots/logos)
+  // Error Correction Level Q (25% recovery, preferred for short payloads with center badge)
   const VERSION_SPECS_Q = [
     null,
     { version: 1, totalData: 13, ecBytes: 13, g1Blocks: 1, g1Data: 13, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[], eccLevel: 'Q' as const },
@@ -58,7 +58,7 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     { version: 6, totalData: 76, ecBytes: 24, g1Blocks: 4, g1Data: 19, g2Blocks: 0, g2Data: 0, size: 41, align: [6, 34], eccLevel: 'Q' as const },
   ];
 
-  // Error Correction Level M (15% recovery, fallback for longer payloads up to 180 bytes)
+  // Error Correction Level M (15% recovery)
   const VERSION_SPECS_M = [
     null,
     { version: 1, totalData: 16, ecBytes: 10, g1Blocks: 1, g1Data: 16, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[], eccLevel: 'M' as const },
@@ -72,31 +72,70 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     { version: 9, totalData: 182, ecBytes: 22, g1Blocks: 3, g1Data: 36, g2Blocks: 2, g2Data: 37, size: 53, align: [6, 26, 46], eccLevel: 'M' as const },
   ];
 
+  // Error Correction Level L (7% recovery, keeps long vCard payloads sparse and camera-friendly in Versions 3..6)
+  const VERSION_SPECS_L = [
+    null,
+    { version: 1, totalData: 19, ecBytes: 7, g1Blocks: 1, g1Data: 19, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[], eccLevel: 'L' as const },
+    { version: 2, totalData: 34, ecBytes: 10, g1Blocks: 1, g1Data: 34, g2Blocks: 0, g2Data: 0, size: 25, align: [6, 18], eccLevel: 'L' as const },
+    { version: 3, totalData: 55, ecBytes: 15, g1Blocks: 1, g1Data: 55, g2Blocks: 0, g2Data: 0, size: 29, align: [6, 22], eccLevel: 'L' as const },
+    { version: 4, totalData: 80, ecBytes: 20, g1Blocks: 1, g1Data: 80, g2Blocks: 0, g2Data: 0, size: 33, align: [6, 26], eccLevel: 'L' as const },
+    { version: 5, totalData: 108, ecBytes: 26, g1Blocks: 1, g1Data: 108, g2Blocks: 0, g2Data: 0, size: 37, align: [6, 30], eccLevel: 'L' as const },
+    { version: 6, totalData: 136, ecBytes: 18, g1Blocks: 2, g1Data: 68, g2Blocks: 0, g2Data: 0, size: 41, align: [6, 34], eccLevel: 'L' as const },
+    { version: 7, totalData: 156, ecBytes: 20, g1Blocks: 2, g1Data: 78, g2Blocks: 0, g2Data: 0, size: 45, align: [6, 22, 38], eccLevel: 'L' as const },
+    { version: 8, totalData: 194, ecBytes: 24, g1Blocks: 2, g1Data: 97, g2Blocks: 0, g2Data: 0, size: 49, align: [6, 24, 42], eccLevel: 'L' as const },
+    { version: 9, totalData: 232, ecBytes: 30, g1Blocks: 2, g1Data: 116, g2Blocks: 0, g2Data: 0, size: 53, align: [6, 26, 46], eccLevel: 'L' as const },
+  ];
+
   const encoder = new TextEncoder();
   let utf8Bytes = encoder.encode(text);
-  if (utf8Bytes.length > 180) {
-    utf8Bytes = utf8Bytes.subarray(0, 180);
+  if (utf8Bytes.length > 220) {
+    utf8Bytes = utf8Bytes.subarray(0, 220);
   }
 
   const requiredBits = 4 + 8 + utf8Bytes.length * 8;
-  let chosenSpec: NonNullable<(typeof VERSION_SPECS_Q)[number]> | NonNullable<(typeof VERSION_SPECS_M)[number]> =
-    VERSION_SPECS_M[9]!;
+  type AnyVersionSpec =
+    | NonNullable<(typeof VERSION_SPECS_Q)[number]>
+    | NonNullable<(typeof VERSION_SPECS_M)[number]>
+    | NonNullable<(typeof VERSION_SPECS_L)[number]>;
+  let chosenSpec: AnyVersionSpec = VERSION_SPECS_L[9]!;
 
-  let matchedQ = false;
-  for (let v = 1; v <= 6; v++) {
-    const spec = VERSION_SPECS_Q[v]!;
-    if (requiredBits <= spec.totalData * 8) {
-      chosenSpec = spec;
-      matchedQ = true;
-      break;
-    }
-  }
-  if (!matchedQ) {
-    for (let v = 1; v <= 9; v++) {
+  if (preferLowDensity || utf8Bytes.length > 58) {
+    // Use ECC Level L or M so long payloads like vCard stay in a sparse, low-version grid (<= 41x41)
+    let matched = false;
+    for (let v = 1; v <= 6; v++) {
       const spec = VERSION_SPECS_M[v]!;
+      if (requiredBits <= spec.totalData * 8 && v <= 4) {
+        chosenSpec = spec;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      for (let v = 1; v <= 9; v++) {
+        const spec = VERSION_SPECS_L[v]!;
+        if (requiredBits <= spec.totalData * 8) {
+          chosenSpec = spec;
+          break;
+        }
+      }
+    }
+  } else {
+    let matchedQ = false;
+    for (let v = 1; v <= 5; v++) {
+      const spec = VERSION_SPECS_Q[v]!;
       if (requiredBits <= spec.totalData * 8) {
         chosenSpec = spec;
+        matchedQ = true;
         break;
+      }
+    }
+    if (!matchedQ) {
+      for (let v = 1; v <= 9; v++) {
+        const spec = VERSION_SPECS_M[v]!;
+        if (requiredBits <= spec.totalData * 8) {
+          chosenSpec = spec;
+          break;
+        }
       }
     }
   }
@@ -209,14 +248,10 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
   drawFinder(0, size - 7);
   drawFinder(size - 7, 0);
 
-  for (let i = 8; i < size - 8; i++) {
-    if (!isFunction[6][i]) setFunction(6, i, i % 2 === 0);
-    if (!isFunction[i][6]) setFunction(i, 6, i % 2 === 0);
-  }
-
+  // Draw Alignment Patterns BEFORE Timing Patterns so Version 7..9 edge alignments (6, mid) & (mid, 6) are not skipped!
   for (const ar of chosenSpec.align) {
     for (const ac of chosenSpec.align) {
-      if (isFunction[ar][ac]) continue;
+      if (isFinder[ar][ac]) continue;
       for (let r = -2; r <= 2; r++) {
         for (let c = -2; c <= 2; c++) {
           const isEdge = Math.abs(r) === 2 || Math.abs(c) === 2;
@@ -225,6 +260,11 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
         }
       }
     }
+  }
+
+  for (let i = 8; i < size - 8; i++) {
+    if (!isFunction[6][i]) setFunction(6, i, i % 2 === 0);
+    if (!isFunction[i][6]) setFunction(i, 6, i % 2 === 0);
   }
 
   setFunction(size - 8, 8, true);
@@ -285,7 +325,13 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     col -= 2;
   }
 
-  const formatBits = chosenSpec.eccLevel === 'Q' ? 0x355f : 0x5412; // Mask 0: ECC Q (0x355f) or ECC M (0x5412)
+  // Mask 0 Format Bits: ECC Q (0x355f), ECC M (0x5412), ECC L (0x77c4)
+  const formatBits =
+    chosenSpec.eccLevel === 'Q'
+      ? 0x355f
+      : chosenSpec.eccLevel === 'L'
+        ? 0x77c4
+        : 0x5412;
   for (let i = 0; i < 15; i++) {
     const bit = ((formatBits >> (14 - i)) & 1) === 1;
     if (i <= 5) matrix[8][i] = bit;
