@@ -39,6 +39,7 @@ const wifiCardTitle = ref('欢迎连接无线网络 · Scan for WiFi');
 // Scene 3: Parking Sign
 const parkingPlate = ref('粤B·88888');
 const parkingPhone = ref('13800138000');
+const parkingShowPhone = ref(false);
 const parkingNote = ref('临时停靠，请多关照 · 请用【手机系统相机】扫码一键拨号');
 
 // Scene 4: vCard Business Card
@@ -486,11 +487,11 @@ function renderPosterCanvas() {
 
   if (activeScene.value === 'parking') {
     canvas.width = 680;
-    canvas.height = 860;
+    canvas.height = 810;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // High-contrast warning card
-    drawRoundRect(ctx, 12, 12, 656, 836, 28);
+    drawRoundRect(ctx, 12, 12, 656, 786, 28);
     ctx.fillStyle = '#0f172a';
     ctx.fill();
 
@@ -513,27 +514,25 @@ function renderPosterCanvas() {
     ctx.fill();
     renderQrCoreOnContext(ctx, 125, 191, 430);
 
-    // Bottom call-to-action
+    // Bottom call-to-action (optionally show or hide plaintext phone number for privacy)
     ctx.fillStyle = '#facc15';
     ctx.font = '800 30px system-ui, sans-serif';
-    ctx.fillText(`📞 车主电话: ${parkingPhone.value || '13800138000'}`, 340, 700);
+    if (parkingShowPhone.value) {
+      ctx.fillText(`📞 车主电话: ${parkingPhone.value || '13800138000'}`, 340, 704);
+    } else {
+      ctx.fillText(
+        isEn.value ? '📱 Scan QR to Call Car Owner' : '📱 临时停靠 · 扫码一键呼叫车主',
+        340,
+        704
+      );
+    }
 
     ctx.fillStyle = '#e2e8f0';
     ctx.font = '600 19px system-ui, sans-serif';
     ctx.fillText(
       parkingNote.value || '临时停靠，请多关照 · 请用【手机系统相机】扫码一键拨号',
       340,
-      748
-    );
-
-    ctx.fillStyle = '#93c5fd';
-    ctx.font = '600 15px system-ui, sans-serif';
-    ctx.fillText(
-      isEn.value
-        ? '📱 Please scan with iPhone / Android Native Camera to call directly'
-        : '📱 提示：请使用 iPhone / 安卓【手机系统相机】扫码直接拨号',
-      340,
-      792
+      756
     );
     return;
   }
@@ -603,6 +602,8 @@ watch(
     centerBadgeText,
     wifiCardTitle,
     parkingPlate,
+    parkingPhone,
+    parkingShowPhone,
     parkingNote,
     vcardName,
     vcardTitle,
@@ -649,7 +650,76 @@ async function copyPayloadText() {
 }
 
 function printScenePoster() {
-  window.print();
+  renderPosterCanvas();
+  const canvas = qrCanvasRef.value;
+  if (!canvas) return;
+  const dataUrl = canvas.toDataURL('image/png');
+
+  let printFrame = document.getElementById('qr-isolated-print-frame') as HTMLIFrameElement | null;
+  if (!printFrame) {
+    printFrame = document.createElement('iframe');
+    printFrame.id = 'qr-isolated-print-frame';
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '0';
+    printFrame.style.height = '0';
+    printFrame.style.border = '0';
+    document.body.appendChild(printFrame);
+  }
+
+  const doc = printFrame.contentWindow?.document;
+  if (!doc) {
+    window.print();
+    return;
+  }
+
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Print QR Card</title>
+  <style>
+    @page {
+      margin: 12mm;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    img {
+      max-width: 125mm;
+      max-height: 185mm;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <img id="qr-print-img" src="${dataUrl}" alt="QR Poster" />
+  <script>
+    const img = document.getElementById('qr-print-img');
+    img.onload = function () {
+      setTimeout(function () {
+        window.focus();
+        window.print();
+      }, 80);
+    };
+  <\/script>
+</body>
+</html>`);
+  doc.close();
 }
 
 // ==========================================
@@ -999,6 +1069,16 @@ onUnmounted(() => {
               <label class="field-label">{{ isEn ? 'Bottom Slogan' : '挪车牌底部提示语' }}</label>
               <input v-model="parkingNote" type="text" class="text-input" />
             </div>
+            <label class="checkbox-line">
+              <input v-model="parkingShowPhone" type="checkbox" />
+              <span>
+                {{
+                  isEn
+                    ? 'Show plain-text phone number on card (Uncheck to hide number for privacy & only allow scan-to-call)'
+                    : '在挪车牌上直接显示明文手机号（默认不勾选：隐藏号码防抄录骚扰，仅扫码可呼叫）'
+                }}
+              </span>
+            </label>
           </div>
 
           <!-- Scene 4: vCard -->
