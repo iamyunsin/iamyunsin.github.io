@@ -22,29 +22,9 @@ const isEn = computed(() => props.lang === 'en');
 type WorkMode = 'generator' | 'scanner';
 type SceneType = 'url' | 'wifi' | 'parking' | 'vcard';
 type DotStyle = 'square' | 'rounded' | 'dots';
-type ScanCompatMode = 'vcard-call' | 'native' | 'wechat-h5';
 
 const activeMode = ref<WorkMode>('generator');
 const activeScene = ref<SceneType>('url');
-const scanCompatMode = ref<ScanCompatMode>('native');
-
-// Mobile H5 Landing Card State (triggered when someone scans a wechat-h5 QR code or clicks Preview)
-interface MobileLandingCard {
-  scene: 'wifi' | 'parking' | 'vcard';
-  ssid?: string;
-  pass?: string;
-  enc?: string;
-  plate?: string;
-  phone?: string;
-  note?: string;
-  name?: string;
-  title?: string;
-  org?: string;
-  email?: string;
-  url?: string;
-}
-const mobileLanding = ref<MobileLandingCard | null>(null);
-const mobileCopied = ref(false);
 
 // Scene 1: URL / Text
 const urlInput = ref('https://yunsin.top/tools/qrcode-studio/');
@@ -59,7 +39,7 @@ const wifiCardTitle = ref('欢迎连接无线网络 · Scan for WiFi');
 // Scene 3: Parking Sign
 const parkingPlate = ref('粤B·88888');
 const parkingPhone = ref('13800138000');
-const parkingNote = ref('临时停靠，请多关照 · 微信/相机扫码一键拨号');
+const parkingNote = ref('临时停靠，请多关照 · 请用【手机系统相机】扫码一键拨号');
 
 // Scene 4: vCard Business Card
 const vcardName = ref('原心 (Yunsin)');
@@ -100,7 +80,7 @@ const stylePresets: StylePreset[] = [
     labelZh: '极光蓝紫',
     labelEn: 'Aurora Indigo',
     fg: '#0f172a',
-    grad: '#4f46e5',
+    grad: '#4338ca',
     bg: '#ffffff',
     useGrad: true,
     dot: 'rounded',
@@ -122,8 +102,8 @@ const stylePresets: StylePreset[] = [
     labelZh: '翡翠森林',
     labelEn: 'Emerald Forest',
     fg: '#064e3b',
-    grad: '#10b981',
-    bg: '#f0fdf4',
+    grad: '#047857',
+    bg: '#ffffff',
     useGrad: true,
     dot: 'dots',
     badge: '🌿',
@@ -133,8 +113,8 @@ const stylePresets: StylePreset[] = [
     labelZh: '暖阳琥珀',
     labelEn: 'Amber Sunset',
     fg: '#7c2d12',
-    grad: '#ea580c',
-    bg: '#fffbeb',
+    grad: '#c2410c',
+    bg: '#ffffff',
     useGrad: true,
     dot: 'rounded',
     badge: '🔥',
@@ -143,9 +123,9 @@ const stylePresets: StylePreset[] = [
     id: 'cyber',
     labelZh: '赛博紫电',
     labelEn: 'Cyber Neon',
-    fg: '#581c87',
-    grad: '#db2777',
-    bg: '#fdf4ff',
+    fg: '#4c1d95',
+    grad: '#be185d',
+    bg: '#ffffff',
     useGrad: true,
     dot: 'dots',
     badge: '⚡',
@@ -165,12 +145,6 @@ function applyStylePreset(p: StylePreset) {
 
 function selectScene(scene: SceneType) {
   activeScene.value = scene;
-  // For parking call signs, default to vcard-call so WeChat Scan works 100% offline immediately!
-  if (scene === 'parking') {
-    scanCompatMode.value = 'vcard-call';
-  } else {
-    scanCompatMode.value = 'native';
-  }
   if (!customLogoDataUrl.value) {
     if (scene === 'url') centerBadgeText.value = '🚀';
     else if (scene === 'wifi') centerBadgeText.value = '📶';
@@ -183,24 +157,8 @@ function escapeWifiField(val: string): string {
   return val.replace(/([\\;,:])/g, '\\$1');
 }
 
-function getH5BaseUrl(): string {
-  if (typeof window !== 'undefined' && window.location.origin && !window.location.hostname.includes('localhost')) {
-    return `${window.location.origin}${window.location.pathname}`;
-  }
-  return isEn.value ? 'https://yunsin.top/en/tools/qrcode-studio/' : 'https://yunsin.top/tools/qrcode-studio/';
-}
-
 const rawPayload = computed<string>(() => {
   if (activeScene.value === 'wifi') {
-    if (scanCompatMode.value === 'wechat-h5') {
-      const params = new URLSearchParams({
-        s: 'w',
-        ss: wifiSsid.value.trim() || 'MyWiFi',
-        pw: wifiEncryption.value === 'nopass' ? '' : wifiPassword.value,
-        en: wifiEncryption.value,
-      });
-      return `${getH5BaseUrl()}#${params.toString()}`;
-    }
     const t = wifiEncryption.value;
     const s = escapeWifiField(wifiSsid.value.trim() || 'MyWiFi');
     const p = t === 'nopass' ? '' : escapeWifiField(wifiPassword.value);
@@ -209,40 +167,9 @@ const rawPayload = computed<string>(() => {
   }
   if (activeScene.value === 'parking') {
     const phone = parkingPhone.value.replace(/[^\d+]/g, '') || '13800138000';
-    const plate = parkingPlate.value.trim() || '粤B·88888';
-    if (scanCompatMode.value === 'vcard-call') {
-      // WeChat Scan natively recognizes VCARD and opens a Contact Card UI with a 1-tap dial phone row!
-      return [
-        'BEGIN:VCARD',
-        'VERSION:3.0',
-        `FN:${plate} 临时挪车`,
-        `TEL;CELL:${phone}`,
-        `NOTE:${parkingNote.value.trim() || '点击上方电话号码即可一键呼叫车主挪车'}`,
-        'END:VCARD',
-      ].join('\n');
-    }
-    if (scanCompatMode.value === 'wechat-h5') {
-      const params = new URLSearchParams({
-        s: 'p',
-        pl: plate,
-        ph: phone,
-      });
-      return `${getH5BaseUrl()}#${params.toString()}`;
-    }
     return `tel:${phone}`;
   }
   if (activeScene.value === 'vcard') {
-    if (scanCompatMode.value === 'wechat-h5') {
-      const params = new URLSearchParams({
-        s: 'v',
-        n: vcardName.value.trim(),
-        t: vcardTitle.value.trim(),
-        o: vcardCompany.value.trim(),
-        p: vcardPhone.value.trim(),
-        e: vcardEmail.value.trim(),
-      });
-      return `${getH5BaseUrl()}#${params.toString()}`;
-    }
     const lines = [
       'BEGIN:VCARD',
       'VERSION:3.0',
@@ -258,109 +185,6 @@ const rawPayload = computed<string>(() => {
   }
   return urlInput.value.trim() || 'https://yunsin.top';
 });
-
-function previewMobileLandingCard() {
-  if (activeScene.value === 'wifi') {
-    mobileLanding.value = {
-      scene: 'wifi',
-      ssid: wifiSsid.value.trim() || 'MyWiFi',
-      pass: wifiEncryption.value === 'nopass' ? '' : wifiPassword.value,
-      enc: wifiEncryption.value,
-    };
-  } else if (activeScene.value === 'parking') {
-    mobileLanding.value = {
-      scene: 'parking',
-      plate: parkingPlate.value.trim() || '粤B·88888',
-      phone: parkingPhone.value.replace(/[^\d+]/g, '') || '13800138000',
-      note: parkingNote.value,
-    };
-  } else if (activeScene.value === 'vcard') {
-    mobileLanding.value = {
-      scene: 'vcard',
-      name: vcardName.value.trim(),
-      title: vcardTitle.value.trim(),
-      org: vcardCompany.value.trim(),
-      phone: vcardPhone.value.trim(),
-      email: vcardEmail.value.trim(),
-      url: vcardWebsite.value.trim(),
-    };
-  }
-}
-
-async function copyMobileText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    mobileCopied.value = true;
-    setTimeout(() => {
-      mobileCopied.value = false;
-    }, 2000);
-  } catch {
-    // ignore
-  }
-}
-
-function downloadMobileVcf() {
-  if (!mobileLanding.value) return;
-  const m = mobileLanding.value;
-  const vcf = [
-    'BEGIN:VCARD',
-    'VERSION:3.0',
-    `FN:${m.name || ''}`,
-    m.title ? `TITLE:${m.title}` : '',
-    m.org ? `ORG:${m.org}` : '',
-    m.phone ? `TEL;TYPE=CELL:${m.phone}` : '',
-    m.email ? `EMAIL:${m.email}` : '',
-    m.url ? `URL:${m.url}` : '',
-    'END:VCARD',
-  ]
-    .filter(Boolean)
-    .join('\r\n');
-  const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${m.name || 'contact'}.vcf`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-}
-
-function parseHashLanding() {
-  if (typeof window === 'undefined') return;
-  const rawHash = window.location.hash.replace(/^#/, '');
-  if (!rawHash || !rawHash.includes('s=')) return;
-  const params = new URLSearchParams(rawHash);
-  const s = params.get('s');
-  if (s === 'w') {
-    mobileLanding.value = {
-      scene: 'wifi',
-      ssid: params.get('ss') || 'WiFi',
-      pass: params.get('pw') || '',
-      enc: params.get('en') || 'WPA',
-    };
-  } else if (s === 'p') {
-    const phone = params.get('ph') || '';
-    mobileLanding.value = {
-      scene: 'parking',
-      plate: params.get('pl') || '临时停靠',
-      phone,
-    };
-    // Automatically trigger the phone dialer when scanned via H5 mode!
-    if (phone && typeof window !== 'undefined') {
-      setTimeout(() => {
-        window.location.href = `tel:${phone}`;
-      }, 180);
-    }
-  } else if (s === 'v') {
-    mobileLanding.value = {
-      scene: 'vcard',
-      name: params.get('n') || '',
-      title: params.get('t') || '',
-      org: params.get('o') || '',
-      phone: params.get('p') || '',
-      email: params.get('e') || '',
-    };
-  }
-}
 
 const qrResult = computed(() => generateQrMatrix(rawPayload.value));
 
@@ -397,53 +221,57 @@ function clearCustomLogo() {
 }
 
 const qrSvgString = computed<string>(() => {
-  const { matrix, isFinder, size } = qrResult.value;
+  const { matrix, isFinder, isFunction, size } = qrResult.value;
   const margin = marginModules.value;
   const cell = 12;
   const totalCells = size + margin * 2;
   const dim = totalCells * cell;
 
   let shapes = '';
-  const centerStart = Math.floor(size * 0.38);
-  const centerEnd = Math.ceil(size * 0.62);
+  const holeRadius = size <= 37 ? 2 : 3;
+  const mid = Math.floor(size / 2);
+  const centerStart = mid - holeRadius;
+  const centerEnd = mid + holeRadius + 1;
   const hasCenterBadge = Boolean(customLogoDataUrl.value || centerBadgeText.value.trim());
+
+  function isSkippedByBadge(r: number, c: number): boolean {
+    if (!hasCenterBadge || isFunction[r][c]) return false;
+    return r >= centerStart && r < centerEnd && c >= centerStart && c < centerEnd;
+  }
 
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
-      if (!matrix[r][c]) continue;
-      if (
-        hasCenterBadge &&
-        !isFinder[r][c] &&
-        r >= centerStart &&
-        r < centerEnd &&
-        c >= centerStart &&
-        c < centerEnd
-      ) {
-        continue;
-      }
+      if (!matrix[r][c] || isSkippedByBadge(r, c)) continue;
       const x = (c + margin) * cell;
       const y = (r + margin) * cell;
 
-      if (dotStyle.value === 'dots' && !isFinder[r][c]) {
+      if (dotStyle.value === 'dots' && !isFunction[r][c]) {
         const cx = x + cell / 2;
         const cy = y + cell / 2;
-        const rad = cell * 0.44;
+        const rad = cell * 0.48;
         shapes += `<circle cx="${cx}" cy="${cy}" r="${rad}" fill="url(#qrGrad)" />`;
-      } else if (dotStyle.value === 'rounded') {
-        const rx = isFinder[r][c] ? cell * 0.22 : cell * 0.36;
-        shapes += `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="${rx}" fill="url(#qrGrad)" />`;
+        // Subtle orthogonal scanline connectors so iPhone / Android cameras lock onto continuous runs
+        if (c + 1 < size && matrix[r][c + 1] && !isSkippedByBadge(r, c + 1)) {
+          shapes += `<rect x="${cx}" y="${y + cell * 0.24}" width="${cell * 0.5}" height="${cell * 0.52}" fill="url(#qrGrad)" />`;
+        }
+        if (r + 1 < size && matrix[r + 1][c] && !isSkippedByBadge(r + 1, c)) {
+          shapes += `<rect x="${x + cell * 0.24}" y="${cy}" width="${cell * 0.52}" height="${cell * 0.5}" fill="url(#qrGrad)" />`;
+        }
+      } else if (dotStyle.value === 'rounded' || (dotStyle.value === 'dots' && isFunction[r][c])) {
+        const rx = isFinder[r][c] ? cell * 0.18 : cell * 0.34;
+        shapes += `<rect x="${x}" y="${y}" width="${cell + 0.3}" height="${cell + 0.3}" rx="${rx}" fill="url(#qrGrad)" />`;
       } else {
-        shapes += `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="url(#qrGrad)" />`;
+        shapes += `<rect x="${x}" y="${y}" width="${cell + 0.3}" height="${cell + 0.3}" fill="url(#qrGrad)" />`;
       }
     }
   }
 
   let badgeSvg = '';
   if (hasCenterBadge) {
-    const boxSize = Math.round((centerEnd - centerStart) * cell);
+    const boxSize = Math.round(((centerEnd - centerStart) - 0.35) * cell);
     const boxX = Math.round((dim - boxSize) / 2);
     const boxY = Math.round((dim - boxSize) / 2);
-    badgeSvg = `<rect x="${boxX}" y="${boxY}" width="${boxSize}" height="${boxSize}" rx="12" fill="${bgColor.value}" stroke="${fgColor.value}" stroke-width="2" />`;
+    badgeSvg = `<rect x="${boxX}" y="${boxY}" width="${boxSize}" height="${boxSize}" rx="10" fill="${bgColor.value}" stroke="#cbd5e1" stroke-width="1.5" />`;
     if (centerBadgeText.value.trim() && !customLogoDataUrl.value) {
       badgeSvg += `<text x="${dim / 2}" y="${dim / 2 + boxSize * 0.22}" text-anchor="middle" font-size="${Math.round(boxSize * 0.58)}" font-family="system-ui, sans-serif">${centerBadgeText.value.trim().slice(0, 2)}</text>`;
     }
@@ -487,7 +315,7 @@ function renderQrCoreOnContext(
   offsetY: number,
   targetSize: number
 ) {
-  const { matrix, isFinder, size } = qrResult.value;
+  const { matrix, isFinder, isFunction, size } = qrResult.value;
   const margin = marginModules.value;
   const totalCells = size + margin * 2;
   const cell = targetSize / totalCells;
@@ -508,66 +336,71 @@ function renderQrCoreOnContext(
   grad.addColorStop(1, useGradient.value ? fgGradientColor.value : fgColor.value);
   ctx.fillStyle = grad;
 
-  const centerStart = Math.floor(size * 0.38);
-  const centerEnd = Math.ceil(size * 0.62);
+  const holeRadius = size <= 37 ? 2 : 3;
+  const mid = Math.floor(size / 2);
+  const centerStart = mid - holeRadius;
+  const centerEnd = mid + holeRadius + 1;
   const hasCenterBadge = Boolean(customLogoDataUrl.value || centerBadgeText.value.trim());
+
+  function isSkippedByBadge(r: number, c: number): boolean {
+    if (!hasCenterBadge || isFunction[r][c]) return false;
+    return r >= centerStart && r < centerEnd && c >= centerStart && c < centerEnd;
+  }
 
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
-      if (!matrix[r][c]) continue;
-      if (
-        hasCenterBadge &&
-        !isFinder[r][c] &&
-        r >= centerStart &&
-        r < centerEnd &&
-        c >= centerStart &&
-        c < centerEnd
-      ) {
-        continue;
-      }
+      if (!matrix[r][c] || isSkippedByBadge(r, c)) continue;
       const x = offsetX + (c + margin) * cell;
       const y = offsetY + (r + margin) * cell;
 
-      if (dotStyle.value === 'dots' && !isFinder[r][c]) {
+      if (dotStyle.value === 'dots' && !isFunction[r][c]) {
+        const cx = x + cell / 2;
+        const cy = y + cell / 2;
         ctx.beginPath();
-        ctx.arc(x + cell / 2, y + cell / 2, cell * 0.44, 0, Math.PI * 2);
+        ctx.arc(cx, cy, cell * 0.48, 0, Math.PI * 2);
         ctx.fill();
-      } else if (dotStyle.value === 'rounded') {
-        const rad = isFinder[r][c] ? cell * 0.22 : cell * 0.36;
-        drawRoundRect(ctx, x, y, cell + 0.35, cell + 0.35, rad);
+        if (c + 1 < size && matrix[r][c + 1] && !isSkippedByBadge(r, c + 1)) {
+          ctx.fillRect(cx, y + cell * 0.24, cell * 0.5, cell * 0.52);
+        }
+        if (r + 1 < size && matrix[r + 1][c] && !isSkippedByBadge(r + 1, c)) {
+          ctx.fillRect(x + cell * 0.24, cy, cell * 0.52, cell * 0.5);
+        }
+      } else if (dotStyle.value === 'rounded' || (dotStyle.value === 'dots' && isFunction[r][c])) {
+        const rad = isFinder[r][c] ? cell * 0.18 : cell * 0.34;
+        drawRoundRect(ctx, x, y, cell + 0.4, cell + 0.4, rad);
         ctx.fill();
       } else {
-        ctx.fillRect(x, y, cell + 0.4, cell + 0.4);
+        ctx.fillRect(x, y, cell + 0.45, cell + 0.45);
       }
     }
   }
 
   if (hasCenterBadge) {
-    const boxSize = (centerEnd - centerStart) * cell;
+    const boxSize = ((centerEnd - centerStart) - 0.35) * cell;
     const boxX = offsetX + (targetSize - boxSize) / 2;
     const boxY = offsetY + (targetSize - boxSize) / 2;
-    drawRoundRect(ctx, boxX, boxY, boxSize, boxSize, 14);
+    drawRoundRect(ctx, boxX, boxY, boxSize, boxSize, 10);
     ctx.fillStyle = bgColor.value;
     ctx.fill();
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = fgColor.value;
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#cbd5e1';
     ctx.stroke();
 
     if (customLogoImg.value) {
       ctx.save();
-      drawRoundRect(ctx, boxX + 4, boxY + 4, boxSize - 8, boxSize - 8, 10);
+      drawRoundRect(ctx, boxX + 3, boxY + 3, boxSize - 6, boxSize - 6, 8);
       ctx.clip();
-      ctx.drawImage(customLogoImg.value, boxX + 4, boxY + 4, boxSize - 8, boxSize - 8);
+      ctx.drawImage(customLogoImg.value, boxX + 3, boxY + 3, boxSize - 6, boxSize - 6);
       ctx.restore();
     } else if (centerBadgeText.value.trim()) {
       ctx.fillStyle = fgColor.value;
-      ctx.font = `700 ${Math.round(boxSize * 0.56)}px system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
+      ctx.font = `700 ${Math.round(boxSize * 0.58)}px system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(
         centerBadgeText.value.trim().slice(0, 2),
         offsetX + targetSize / 2,
-        offsetY + targetSize / 2 + 2
+        offsetY + targetSize / 2 + 1
       );
     }
   }
@@ -641,17 +474,12 @@ function renderPosterCanvas() {
     ctx.fillText(pwdDisplay, 92, 740);
 
     // Scan Tip Footer on Poster
-    ctx.fillStyle = '#6366f1';
+    ctx.fillStyle = '#4f46e5';
     ctx.font = '700 15px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    const wifiTip =
-      scanCompatMode.value === 'native'
-        ? isEn.value
-          ? '📱 Scan with Phone Native Camera or Wi-Fi Settings (Not WeChat)'
-          : '📱 请用【手机系统相机】或【设置-WLAN】扫码自动连网（微信不支持直接改WiFi）'
-        : isEn.value
-          ? '💬 Scan with WeChat or Phone Camera to Copy Password & Connect'
-          : '💬 支持【微信扫一扫 / 手机相机】扫码一键复制密码连网';
+    const wifiTip = isEn.value
+      ? '📱 Scan with Phone Native Camera or Wi-Fi Settings to Auto-Connect'
+      : '📱 请使用【手机系统相机】或【设置-WLAN】扫码自动连网';
     ctx.fillText(wifiTip, 340, 804);
     return;
   }
@@ -688,14 +516,24 @@ function renderPosterCanvas() {
     // Bottom call-to-action
     ctx.fillStyle = '#facc15';
     ctx.font = '800 30px system-ui, sans-serif';
-    ctx.fillText(`📞 车主电话: ${parkingPhone.value || '13800138000'}`, 340, 704);
+    ctx.fillText(`📞 车主电话: ${parkingPhone.value || '13800138000'}`, 340, 700);
 
-    ctx.fillStyle = '#cbd5e1';
-    ctx.font = '600 20px system-ui, sans-serif';
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '600 19px system-ui, sans-serif';
     ctx.fillText(
-      parkingNote.value || '临时停靠，请多关照 · 手机扫码一键呼叫车主',
+      parkingNote.value || '临时停靠，请多关照 · 请用【手机系统相机】扫码一键拨号',
       340,
-      760
+      748
+    );
+
+    ctx.fillStyle = '#93c5fd';
+    ctx.font = '600 15px system-ui, sans-serif';
+    ctx.fillText(
+      isEn.value
+        ? '📱 Please scan with iPhone / Android Native Camera to call directly'
+        : '📱 提示：请使用 iPhone / 安卓【手机系统相机】扫码直接拨号',
+      340,
+      792
     );
     return;
   }
@@ -737,10 +575,12 @@ function renderPosterCanvas() {
     ctx.fillText(`✉️ ${vcardEmail.value || '-'}`, 60, 282);
     ctx.fillText(`🌐 ${vcardWebsite.value || '-'}`, 60, 324);
 
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 14px system-ui, sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.font = '600 14px system-ui, sans-serif';
     ctx.fillText(
-      isEn.value ? 'Scan QR to save contact to Address Book' : '手机相机扫码一键存入通讯录名片',
+      isEn.value
+        ? '📱 Scan with Phone Native Camera to save contact'
+        : '📱 请使用【手机系统相机】扫码一键存入手机通讯录',
       60,
       392
     );
@@ -956,94 +796,17 @@ function handleGlobalPaste(e: ClipboardEvent) {
 }
 
 onMounted(() => {
-  parseHashLanding();
   renderPosterCanvas();
   window.addEventListener('paste', handleGlobalPaste);
-  window.addEventListener('hashchange', parseHashLanding);
 });
 
 onUnmounted(() => {
   window.removeEventListener('paste', handleGlobalPaste);
-  window.removeEventListener('hashchange', parseHashLanding);
 });
 </script>
 
 <template>
   <div class="qr-studio-root">
-    <!-- Mobile H5 Scan Wake-Up Card (Displayed when scanned via WeChat H5 Mode or when Preview is clicked) -->
-    <div v-if="mobileLanding" class="mobile-landing-card no-print">
-      <div class="ml-header">
-        <span class="ml-badge">
-          {{
-            mobileLanding.scene === 'parking'
-              ? '🚗 微信扫码挪车呼叫台'
-              : mobileLanding.scene === 'wifi'
-                ? '📶 无线网络 (WiFi) 连接卡片'
-                : '🪪 数字商务名片 (vCard)'
-          }}
-        </span>
-        <button type="button" class="ml-close-btn" @click="mobileLanding = null">
-          ✕ {{ isEn ? 'Close Preview' : '关闭唤醒卡片' }}
-        </button>
-      </div>
-
-      <!-- Parking Wake-up Card -->
-      <div v-if="mobileLanding.scene === 'parking'" class="ml-body">
-        <div class="ml-plate">{{ mobileLanding.plate }}</div>
-        <p class="ml-desc">临时停靠，给您带来不便敬请谅解！点击下方按钮可直接拉起手机拨号盘联系车主：</p>
-        <div class="ml-actions">
-          <a :href="`tel:${mobileLanding.phone}`" class="ml-primary-cta">
-            📞 立即拨打车主电话 ({{ mobileLanding.phone }})
-          </a>
-          <a
-            :href="`sms:${mobileLanding.phone}?body=${encodeURIComponent(`您好，您的爱车【${mobileLanding.plate}】临时挡道了，麻烦尽快过来挪一下车，谢谢！`)}`"
-            class="ml-secondary-cta"
-          >
-            💬 一键发送挪车提醒短信
-          </a>
-        </div>
-      </div>
-
-      <!-- WiFi Wake-up Card -->
-      <div v-else-if="mobileLanding.scene === 'wifi'" class="ml-body">
-        <div class="ml-wifi-row">
-          <span>WiFi 名称 (SSID)：</span>
-          <strong>{{ mobileLanding.ssid }}</strong>
-        </div>
-        <div class="ml-wifi-row">
-          <span>连接密码 (Password)：</span>
-          <code>{{ mobileLanding.pass || '免密码直接连接' }}</code>
-        </div>
-        <div class="ml-actions">
-          <button
-            v-if="mobileLanding.pass"
-            type="button"
-            class="ml-primary-cta"
-            @click="copyMobileText(mobileLanding.pass)"
-          >
-            {{ mobileCopied ? '✅ 已复制 WiFi 密码！请前往系统设置-WLAN连接' : '📋 一键复制 WiFi 密码' }}
-          </button>
-        </div>
-        <p class="ml-tip">
-          💡 <strong>免密直连提示</strong>：因为微信限制网页直接修改手机系统 WiFi，若想<strong>无需输入密码一键自动连上</strong>，请打开手机自带的<strong>「系统相机」</strong>或<strong>「设置 → WLAN 右上角扫码图标」</strong>扫描二维码。
-        </p>
-      </div>
-
-      <!-- vCard Wake-up Card -->
-      <div v-else-if="mobileLanding.scene === 'vcard'" class="ml-body">
-        <h4 class="ml-vcard-name">{{ mobileLanding.name }}</h4>
-        <p class="ml-vcard-role">{{ mobileLanding.title }} · {{ mobileLanding.org }}</p>
-        <div class="ml-actions">
-          <a v-if="mobileLanding.phone" :href="`tel:${mobileLanding.phone}`" class="ml-primary-cta">
-            📞 一键拨打电话 ({{ mobileLanding.phone }})
-          </a>
-          <button type="button" class="ml-secondary-cta" @click="downloadMobileVcf">
-            📥 下载名片文件 (.vcf) 存入手机通讯录
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Top Mode Switcher -->
     <div class="mode-tabs-bar no-print">
       <button
@@ -1120,52 +883,34 @@ onUnmounted(() => {
             </button>
           </div>
 
-          <!-- Scan Compatibility Guide & Mode Toggle (Solves WeChat Raw String Issue!) -->
+          <!-- Phone Native Camera Scan Guide -->
           <div v-if="activeScene !== 'url'" class="compat-mode-box">
             <div class="compat-head">
               <span class="compat-title">
-                💡 {{ isEn ? 'Scanner Compatibility Mode (Important!)' : '扫码方式与微信兼容模式选择（必看！）' }}
+                📱 {{ isEn ? 'Scanner Guide: Use Phone Native Camera' : '扫码方式提示：请使用【手机系统自带相机】扫码' }}
               </span>
-              <button type="button" class="preview-card-btn" @click="previewMobileLandingCard">
-                👀 {{ isEn ? 'Preview Mobile Wake-up Card' : '预览手机扫码唤醒卡片' }}
-              </button>
             </div>
-            <div class="compat-switch-row">
-              <button
-                v-if="activeScene === 'parking'"
-                type="button"
-                class="compat-opt"
-                :class="{ active: scanCompatMode === 'vcard-call' }"
-                @click="scanCompatMode = 'vcard-call'"
-              >
-                <div class="opt-top">🟢 微信扫一扫原生电话卡模式（强烈推荐 · 免部署即刻可用）</div>
-                <div class="opt-sub">
-                  将车牌与手机号封装为微信原生识别的呼叫卡协议。<strong>现在直接用手机【微信扫一扫】或【系统相机】扫右侧二维码，即可直接进入电话界面，点击号码立即拉起拨号盘！</strong>
-                </div>
-              </button>
-              <button
-                type="button"
-                class="compat-opt"
-                :class="{ active: scanCompatMode === 'native' }"
-                @click="scanCompatMode = 'native'"
-              >
-                <div class="opt-top">📱 手机系统相机原生直连模式</div>
-                <div class="opt-sub">
-                  生成纯 <code>WIFI:</code> / <code>tel:</code> / <code>VCARD</code> 协议。用 <strong>iPhone 原生相机、安卓系统相机或 WLAN 设置</strong>扫码可直接弹窗免密连网/拨号（注：微信扫一扫不支持直接调起 <code>WIFI:</code> 和 <code>tel:</code>，会显示为字符串）。
-                </div>
-              </button>
-              <button
-                type="button"
-                class="compat-opt"
-                :class="{ active: scanCompatMode === 'wechat-h5' }"
-                @click="scanCompatMode = 'wechat-h5'"
-              >
-                <div class="opt-top">🟣 微信 H5 网页自动拉起拨号盘模式（网站上线后可用）</div>
-                <div class="opt-sub">
-                  编码为线上 H5 页面链接，微信扫码打开网页瞬间自动执行 <code>tel:</code> 拉起拨号盘，并提供一键发挪车短信与复制 WiFi 密码按钮。
-                </div>
-              </button>
-            </div>
+            <p v-if="activeScene === 'wifi'" class="compat-desc">
+              {{
+                isEn
+                  ? 'Please scan with your iPhone Camera, Android System Camera, or Wi-Fi Settings scanner to pop up the "Join Wi-Fi Network" prompt automatically (WeChat Scanner does not support changing system Wi-Fi).'
+                  : '请打开 iPhone 原生相机、安卓系统相机，或手机「设置 → WLAN 右上角扫码图标」直接扫描右侧二维码，即可自动弹出“加入无线局域网”免密连接（注：微信扫一扫不支持直接修改手机系统 WiFi）。'
+              }}
+            </p>
+            <p v-else-if="activeScene === 'parking'" class="compat-desc">
+              {{
+                isEn
+                  ? 'Please scan with your iPhone or Android native Camera app to trigger the one-tap phone dialer directly (WeChat Scanner blocks direct tel: dialing).'
+                  : '请使用 iPhone 原生相机或安卓系统自带相机扫描右侧挪车码，即可直接弹出呼叫按钮一键拨打车主电话（注：微信扫一扫不支持直接调起系统拨号盘）。'
+              }}
+            </p>
+            <p v-else class="compat-desc">
+              {{
+                isEn
+                  ? 'Please scan with your iPhone or Android native Camera app to import the vCard contact directly into your phone Address Book.'
+                  : '请使用 iPhone 原生相机或安卓系统自带相机扫描右侧名片码，即可直接弹出“新建联系人”将名片一键存入手机通讯录。'
+              }}
+            </p>
           </div>
 
           <!-- Scene 1: URL / Text -->
@@ -1413,7 +1158,7 @@ onUnmounted(() => {
           <div class="preview-header no-print">
             <div>
               <span class="spec-pill">
-                ISO/IEC 18004 · Version {{ qrResult.version }} ({{ qrResult.size }}×{{ qrResult.size }}) · ECC Level M
+                ISO/IEC 18004 · Version {{ qrResult.version }} ({{ qrResult.size }}×{{ qrResult.size }}) · ECC Level {{ qrResult.eccLevel }}
               </span>
             </div>
             <button type="button" class="verify-btn" @click="testCurrentGeneratedQr">
@@ -2135,14 +1880,14 @@ onUnmounted(() => {
 }
 
 .compat-mode-box {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   padding: 12px 14px;
   border-radius: 12px;
   background-color: var(--accent-soft);
   border: 1px solid var(--accent-border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .compat-head {
@@ -2159,205 +1904,11 @@ onUnmounted(() => {
   color: var(--accent);
 }
 
-.preview-card-btn {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--accent-border);
-  background-color: var(--bg-surface);
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--accent);
-    color: #fff;
-  }
-}
-
-.compat-switch-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.compat-opt {
-  text-align: left;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border-color);
-  background-color: var(--bg-surface);
-  cursor: pointer;
-  transition: all 0.18s ease;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-
-  &.active {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-soft);
-  }
-}
-
-.opt-top {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-}
-
-.opt-sub {
-  font-size: 11.5px;
-  line-height: 1.5;
+.compat-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
   color: var(--text-secondary);
-
-  code {
-    font-size: 11px;
-    padding: 1px 4px;
-    border-radius: 4px;
-    background-color: var(--bg-muted);
-    color: var(--accent);
-  }
-}
-
-.mobile-landing-card {
-  padding: 20px 22px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-  color: #ffffff;
-  border: 2px solid #6366f1;
-  box-shadow: var(--shadow-md);
-}
-
-.ml-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.ml-badge {
-  padding: 4px 12px;
-  border-radius: 999px;
-  background-color: rgba(255, 255, 255, 0.16);
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
-.ml-close-btn {
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.ml-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.ml-plate {
-  display: inline-block;
-  align-self: flex-start;
-  padding: 8px 20px;
-  border-radius: 12px;
-  background-color: #2563eb;
-  border: 2px solid #93c5fd;
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: 2px;
-}
-
-.ml-desc {
-  margin: 0;
-  font-size: 14px;
-  color: #e0e7ff;
-}
-
-.ml-wifi-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  font-size: 14px;
-
-  code {
-    font-family: 'JetBrains Mono', Consolas, monospace;
-    font-size: 15px;
-    font-weight: 800;
-    color: #fde047;
-  }
-}
-
-.ml-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.ml-primary-cta {
-  flex: 1;
-  min-width: 220px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 20px;
-  border-radius: 12px;
-  background-color: #facc15;
-  color: #0f172a !important;
-  font-size: 15px;
-  font-weight: 900;
-  text-decoration: none !important;
-  border: none;
-  cursor: pointer;
-}
-
-.ml-secondary-cta {
-  flex: 1;
-  min-width: 200px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.16);
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none !important;
-  cursor: pointer;
-}
-
-.ml-tip {
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  color: #cbd5e1;
-  line-height: 1.6;
-}
-
-.ml-vcard-name {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.ml-vcard-role {
-  margin: 0;
-  font-size: 14px;
-  color: #c7d2fe;
 }
 
 @media print {

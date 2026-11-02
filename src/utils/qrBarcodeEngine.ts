@@ -6,8 +6,10 @@
 export interface QrMatrixResult {
   matrix: boolean[][];
   isFinder: boolean[][];
+  isFunction: boolean[][];
   size: number;
   version: number;
+  eccLevel: 'Q' | 'M';
 }
 
 export function generateQrMatrix(rawText: string): QrMatrixResult {
@@ -45,18 +47,29 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     return poly;
   }
 
-  // Error Correction Level M specs for Versions 1..9 (Byte mode char count = 8 bits for V1..9)
-  const VERSION_SPECS = [
+  // Error Correction Level Q (25% recovery, preferred for high camera scannability with dots/logos)
+  const VERSION_SPECS_Q = [
     null,
-    { version: 1, totalData: 16, ecBytes: 10, g1Blocks: 1, g1Data: 16, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[] },
-    { version: 2, totalData: 28, ecBytes: 16, g1Blocks: 1, g1Data: 28, g2Blocks: 0, g2Data: 0, size: 25, align: [6, 18] },
-    { version: 3, totalData: 44, ecBytes: 26, g1Blocks: 1, g1Data: 44, g2Blocks: 0, g2Data: 0, size: 29, align: [6, 22] },
-    { version: 4, totalData: 64, ecBytes: 18, g1Blocks: 2, g1Data: 32, g2Blocks: 0, g2Data: 0, size: 33, align: [6, 26] },
-    { version: 5, totalData: 86, ecBytes: 24, g1Blocks: 2, g1Data: 43, g2Blocks: 0, g2Data: 0, size: 37, align: [6, 30] },
-    { version: 6, totalData: 108, ecBytes: 16, g1Blocks: 4, g1Data: 27, g2Blocks: 0, g2Data: 0, size: 41, align: [6, 34] },
-    { version: 7, totalData: 124, ecBytes: 18, g1Blocks: 4, g1Data: 31, g2Blocks: 0, g2Data: 0, size: 45, align: [6, 22, 38] },
-    { version: 8, totalData: 154, ecBytes: 22, g1Blocks: 2, g1Data: 38, g2Blocks: 2, g2Data: 39, size: 49, align: [6, 24, 42] },
-    { version: 9, totalData: 182, ecBytes: 22, g1Blocks: 3, g1Data: 36, g2Blocks: 2, g2Data: 37, size: 53, align: [6, 26, 46] },
+    { version: 1, totalData: 13, ecBytes: 13, g1Blocks: 1, g1Data: 13, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[], eccLevel: 'Q' as const },
+    { version: 2, totalData: 22, ecBytes: 22, g1Blocks: 1, g1Data: 22, g2Blocks: 0, g2Data: 0, size: 25, align: [6, 18], eccLevel: 'Q' as const },
+    { version: 3, totalData: 34, ecBytes: 18, g1Blocks: 2, g1Data: 17, g2Blocks: 0, g2Data: 0, size: 29, align: [6, 22], eccLevel: 'Q' as const },
+    { version: 4, totalData: 48, ecBytes: 26, g1Blocks: 2, g1Data: 24, g2Blocks: 0, g2Data: 0, size: 33, align: [6, 26], eccLevel: 'Q' as const },
+    { version: 5, totalData: 62, ecBytes: 18, g1Blocks: 2, g1Data: 15, g2Blocks: 2, g2Data: 16, size: 37, align: [6, 30], eccLevel: 'Q' as const },
+    { version: 6, totalData: 76, ecBytes: 24, g1Blocks: 4, g1Data: 19, g2Blocks: 0, g2Data: 0, size: 41, align: [6, 34], eccLevel: 'Q' as const },
+  ];
+
+  // Error Correction Level M (15% recovery, fallback for longer payloads up to 180 bytes)
+  const VERSION_SPECS_M = [
+    null,
+    { version: 1, totalData: 16, ecBytes: 10, g1Blocks: 1, g1Data: 16, g2Blocks: 0, g2Data: 0, size: 21, align: [] as number[], eccLevel: 'M' as const },
+    { version: 2, totalData: 28, ecBytes: 16, g1Blocks: 1, g1Data: 28, g2Blocks: 0, g2Data: 0, size: 25, align: [6, 18], eccLevel: 'M' as const },
+    { version: 3, totalData: 44, ecBytes: 26, g1Blocks: 1, g1Data: 44, g2Blocks: 0, g2Data: 0, size: 29, align: [6, 22], eccLevel: 'M' as const },
+    { version: 4, totalData: 64, ecBytes: 18, g1Blocks: 2, g1Data: 32, g2Blocks: 0, g2Data: 0, size: 33, align: [6, 26], eccLevel: 'M' as const },
+    { version: 5, totalData: 86, ecBytes: 24, g1Blocks: 2, g1Data: 43, g2Blocks: 0, g2Data: 0, size: 37, align: [6, 30], eccLevel: 'M' as const },
+    { version: 6, totalData: 108, ecBytes: 16, g1Blocks: 4, g1Data: 27, g2Blocks: 0, g2Data: 0, size: 41, align: [6, 34], eccLevel: 'M' as const },
+    { version: 7, totalData: 124, ecBytes: 18, g1Blocks: 4, g1Data: 31, g2Blocks: 0, g2Data: 0, size: 45, align: [6, 22, 38], eccLevel: 'M' as const },
+    { version: 8, totalData: 154, ecBytes: 22, g1Blocks: 2, g1Data: 38, g2Blocks: 2, g2Data: 39, size: 49, align: [6, 24, 42], eccLevel: 'M' as const },
+    { version: 9, totalData: 182, ecBytes: 22, g1Blocks: 3, g1Data: 36, g2Blocks: 2, g2Data: 37, size: 53, align: [6, 26, 46], eccLevel: 'M' as const },
   ];
 
   const encoder = new TextEncoder();
@@ -65,13 +78,26 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     utf8Bytes = utf8Bytes.subarray(0, 180);
   }
 
-  let chosenSpec = VERSION_SPECS[9]!;
-  for (let v = 1; v <= 9; v++) {
-    const spec = VERSION_SPECS[v]!;
-    const requiredBits = 4 + 8 + utf8Bytes.length * 8;
+  const requiredBits = 4 + 8 + utf8Bytes.length * 8;
+  let chosenSpec: NonNullable<(typeof VERSION_SPECS_Q)[number]> | NonNullable<(typeof VERSION_SPECS_M)[number]> =
+    VERSION_SPECS_M[9]!;
+
+  let matchedQ = false;
+  for (let v = 1; v <= 6; v++) {
+    const spec = VERSION_SPECS_Q[v]!;
     if (requiredBits <= spec.totalData * 8) {
       chosenSpec = spec;
+      matchedQ = true;
       break;
+    }
+  }
+  if (!matchedQ) {
+    for (let v = 1; v <= 9; v++) {
+      const spec = VERSION_SPECS_M[v]!;
+      if (requiredBits <= spec.totalData * 8) {
+        chosenSpec = spec;
+        break;
+      }
     }
   }
 
@@ -259,7 +285,7 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     col -= 2;
   }
 
-  const formatBits = 0x5412; // ECC M, Mask 0
+  const formatBits = chosenSpec.eccLevel === 'Q' ? 0x355f : 0x5412; // Mask 0: ECC Q (0x355f) or ECC M (0x5412)
   for (let i = 0; i < 15; i++) {
     const bit = ((formatBits >> (14 - i)) & 1) === 1;
     if (i <= 5) matrix[8][i] = bit;
@@ -272,7 +298,14 @@ export function generateQrMatrix(rawText: string): QrMatrixResult {
     else matrix[8][size - 15 + i] = bit;
   }
 
-  return { matrix, isFinder, size, version: chosenSpec.version };
+  return {
+    matrix,
+    isFinder,
+    isFunction,
+    size,
+    version: chosenSpec.version,
+    eccLevel: chosenSpec.eccLevel,
+  };
 }
 
 // ==========================================
