@@ -22,9 +22,29 @@ const isEn = computed(() => props.lang === 'en');
 type WorkMode = 'generator' | 'scanner';
 type SceneType = 'url' | 'wifi' | 'parking' | 'vcard';
 type DotStyle = 'square' | 'rounded' | 'dots';
+type ScanCompatMode = 'vcard-call' | 'native' | 'wechat-h5';
 
 const activeMode = ref<WorkMode>('generator');
 const activeScene = ref<SceneType>('url');
+const scanCompatMode = ref<ScanCompatMode>('native');
+
+// Mobile H5 Landing Card State (triggered when someone scans a wechat-h5 QR code or clicks Preview)
+interface MobileLandingCard {
+  scene: 'wifi' | 'parking' | 'vcard';
+  ssid?: string;
+  pass?: string;
+  enc?: string;
+  plate?: string;
+  phone?: string;
+  note?: string;
+  name?: string;
+  title?: string;
+  org?: string;
+  email?: string;
+  url?: string;
+}
+const mobileLanding = ref<MobileLandingCard | null>(null);
+const mobileCopied = ref(false);
 
 // Scene 1: URL / Text
 const urlInput = ref('https://yunsin.top/tools/qrcode-studio/');
@@ -145,6 +165,12 @@ function applyStylePreset(p: StylePreset) {
 
 function selectScene(scene: SceneType) {
   activeScene.value = scene;
+  // For parking call signs, default to vcard-call so WeChat Scan works 100% offline immediately!
+  if (scene === 'parking') {
+    scanCompatMode.value = 'vcard-call';
+  } else {
+    scanCompatMode.value = 'native';
+  }
   if (!customLogoDataUrl.value) {
     if (scene === 'url') centerBadgeText.value = '🚀';
     else if (scene === 'wifi') centerBadgeText.value = '📶';
@@ -157,8 +183,24 @@ function escapeWifiField(val: string): string {
   return val.replace(/([\\;,:])/g, '\\$1');
 }
 
+function getH5BaseUrl(): string {
+  if (typeof window !== 'undefined' && window.location.origin && !window.location.hostname.includes('localhost')) {
+    return `${window.location.origin}${window.location.pathname}`;
+  }
+  return isEn.value ? 'https://yunsin.top/en/tools/qrcode-studio/' : 'https://yunsin.top/tools/qrcode-studio/';
+}
+
 const rawPayload = computed<string>(() => {
   if (activeScene.value === 'wifi') {
+    if (scanCompatMode.value === 'wechat-h5') {
+      const params = new URLSearchParams({
+        s: 'w',
+        ss: wifiSsid.value.trim() || 'MyWiFi',
+        pw: wifiEncryption.value === 'nopass' ? '' : wifiPassword.value,
+        en: wifiEncryption.value,
+      });
+      return `${getH5BaseUrl()}#${params.toString()}`;
+    }
     const t = wifiEncryption.value;
     const s = escapeWifiField(wifiSsid.value.trim() || 'MyWiFi');
     const p = t === 'nopass' ? '' : escapeWifiField(wifiPassword.value);
@@ -167,9 +209,40 @@ const rawPayload = computed<string>(() => {
   }
   if (activeScene.value === 'parking') {
     const phone = parkingPhone.value.replace(/[^\d+]/g, '') || '13800138000';
+    const plate = parkingPlate.value.trim() || '粤B·88888';
+    if (scanCompatMode.value === 'vcard-call') {
+      // WeChat Scan natively recognizes VCARD and opens a Contact Card UI with a 1-tap dial phone row!
+      return [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${plate} 临时挪车`,
+        `TEL;CELL:${phone}`,
+        `NOTE:${parkingNote.value.trim() || '点击上方电话号码即可一键呼叫车主挪车'}`,
+        'END:VCARD',
+      ].join('\n');
+    }
+    if (scanCompatMode.value === 'wechat-h5') {
+      const params = new URLSearchParams({
+        s: 'p',
+        pl: plate,
+        ph: phone,
+      });
+      return `${getH5BaseUrl()}#${params.toString()}`;
+    }
     return `tel:${phone}`;
   }
   if (activeScene.value === 'vcard') {
+    if (scanCompatMode.value === 'wechat-h5') {
+      const params = new URLSearchParams({
+        s: 'v',
+        n: vcardName.value.trim(),
+        t: vcardTitle.value.trim(),
+        o: vcardCompany.value.trim(),
+        p: vcardPhone.value.trim(),
+        e: vcardEmail.value.trim(),
+      });
+      return `${getH5BaseUrl()}#${params.toString()}`;
+    }
     const lines = [
       'BEGIN:VCARD',
       'VERSION:3.0',
@@ -181,10 +254,113 @@ const rawPayload = computed<string>(() => {
       vcardWebsite.value.trim() ? `URL:${vcardWebsite.value.trim()}` : '',
       'END:VCARD',
     ].filter(Boolean);
-    return lines.join('\n');
+    return lines.join('\r\n');
   }
   return urlInput.value.trim() || 'https://yunsin.top';
 });
+
+function previewMobileLandingCard() {
+  if (activeScene.value === 'wifi') {
+    mobileLanding.value = {
+      scene: 'wifi',
+      ssid: wifiSsid.value.trim() || 'MyWiFi',
+      pass: wifiEncryption.value === 'nopass' ? '' : wifiPassword.value,
+      enc: wifiEncryption.value,
+    };
+  } else if (activeScene.value === 'parking') {
+    mobileLanding.value = {
+      scene: 'parking',
+      plate: parkingPlate.value.trim() || '粤B·88888',
+      phone: parkingPhone.value.replace(/[^\d+]/g, '') || '13800138000',
+      note: parkingNote.value,
+    };
+  } else if (activeScene.value === 'vcard') {
+    mobileLanding.value = {
+      scene: 'vcard',
+      name: vcardName.value.trim(),
+      title: vcardTitle.value.trim(),
+      org: vcardCompany.value.trim(),
+      phone: vcardPhone.value.trim(),
+      email: vcardEmail.value.trim(),
+      url: vcardWebsite.value.trim(),
+    };
+  }
+}
+
+async function copyMobileText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    mobileCopied.value = true;
+    setTimeout(() => {
+      mobileCopied.value = false;
+    }, 2000);
+  } catch {
+    // ignore
+  }
+}
+
+function downloadMobileVcf() {
+  if (!mobileLanding.value) return;
+  const m = mobileLanding.value;
+  const vcf = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    `FN:${m.name || ''}`,
+    m.title ? `TITLE:${m.title}` : '',
+    m.org ? `ORG:${m.org}` : '',
+    m.phone ? `TEL;TYPE=CELL:${m.phone}` : '',
+    m.email ? `EMAIL:${m.email}` : '',
+    m.url ? `URL:${m.url}` : '',
+    'END:VCARD',
+  ]
+    .filter(Boolean)
+    .join('\r\n');
+  const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${m.name || 'contact'}.vcf`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function parseHashLanding() {
+  if (typeof window === 'undefined') return;
+  const rawHash = window.location.hash.replace(/^#/, '');
+  if (!rawHash || !rawHash.includes('s=')) return;
+  const params = new URLSearchParams(rawHash);
+  const s = params.get('s');
+  if (s === 'w') {
+    mobileLanding.value = {
+      scene: 'wifi',
+      ssid: params.get('ss') || 'WiFi',
+      pass: params.get('pw') || '',
+      enc: params.get('en') || 'WPA',
+    };
+  } else if (s === 'p') {
+    const phone = params.get('ph') || '';
+    mobileLanding.value = {
+      scene: 'parking',
+      plate: params.get('pl') || '临时停靠',
+      phone,
+    };
+    // Automatically trigger the phone dialer when scanned via H5 mode!
+    if (phone && typeof window !== 'undefined') {
+      setTimeout(() => {
+        window.location.href = `tel:${phone}`;
+      }, 180);
+    }
+  } else if (s === 'v') {
+    mobileLanding.value = {
+      scene: 'vcard',
+      name: params.get('n') || '',
+      title: params.get('t') || '',
+      org: params.get('o') || '',
+      phone: params.get('p') || '',
+      email: params.get('e') || '',
+    };
+  }
+}
 
 const qrResult = computed(() => generateQrMatrix(rawPayload.value));
 
@@ -462,7 +638,21 @@ function renderPosterCanvas() {
           ? 'Open Network (No Password)'
           : '免密开放网络'
         : `密码 PASS:  ${wifiPassword.value || '—'}`;
-    ctx.fillText(pwdDisplay, 92, 748);
+    ctx.fillText(pwdDisplay, 92, 740);
+
+    // Scan Tip Footer on Poster
+    ctx.fillStyle = '#6366f1';
+    ctx.font = '700 15px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    const wifiTip =
+      scanCompatMode.value === 'native'
+        ? isEn.value
+          ? '📱 Scan with Phone Native Camera or Wi-Fi Settings (Not WeChat)'
+          : '📱 请用【手机系统相机】或【设置-WLAN】扫码自动连网（微信不支持直接改WiFi）'
+        : isEn.value
+          ? '💬 Scan with WeChat or Phone Camera to Copy Password & Connect'
+          : '💬 支持【微信扫一扫 / 手机相机】扫码一键复制密码连网';
+    ctx.fillText(wifiTip, 340, 804);
     return;
   }
 
@@ -766,17 +956,94 @@ function handleGlobalPaste(e: ClipboardEvent) {
 }
 
 onMounted(() => {
+  parseHashLanding();
   renderPosterCanvas();
   window.addEventListener('paste', handleGlobalPaste);
+  window.addEventListener('hashchange', parseHashLanding);
 });
 
 onUnmounted(() => {
   window.removeEventListener('paste', handleGlobalPaste);
+  window.removeEventListener('hashchange', parseHashLanding);
 });
 </script>
 
 <template>
   <div class="qr-studio-root">
+    <!-- Mobile H5 Scan Wake-Up Card (Displayed when scanned via WeChat H5 Mode or when Preview is clicked) -->
+    <div v-if="mobileLanding" class="mobile-landing-card no-print">
+      <div class="ml-header">
+        <span class="ml-badge">
+          {{
+            mobileLanding.scene === 'parking'
+              ? '🚗 微信扫码挪车呼叫台'
+              : mobileLanding.scene === 'wifi'
+                ? '📶 无线网络 (WiFi) 连接卡片'
+                : '🪪 数字商务名片 (vCard)'
+          }}
+        </span>
+        <button type="button" class="ml-close-btn" @click="mobileLanding = null">
+          ✕ {{ isEn ? 'Close Preview' : '关闭唤醒卡片' }}
+        </button>
+      </div>
+
+      <!-- Parking Wake-up Card -->
+      <div v-if="mobileLanding.scene === 'parking'" class="ml-body">
+        <div class="ml-plate">{{ mobileLanding.plate }}</div>
+        <p class="ml-desc">临时停靠，给您带来不便敬请谅解！点击下方按钮可直接拉起手机拨号盘联系车主：</p>
+        <div class="ml-actions">
+          <a :href="`tel:${mobileLanding.phone}`" class="ml-primary-cta">
+            📞 立即拨打车主电话 ({{ mobileLanding.phone }})
+          </a>
+          <a
+            :href="`sms:${mobileLanding.phone}?body=${encodeURIComponent(`您好，您的爱车【${mobileLanding.plate}】临时挡道了，麻烦尽快过来挪一下车，谢谢！`)}`"
+            class="ml-secondary-cta"
+          >
+            💬 一键发送挪车提醒短信
+          </a>
+        </div>
+      </div>
+
+      <!-- WiFi Wake-up Card -->
+      <div v-else-if="mobileLanding.scene === 'wifi'" class="ml-body">
+        <div class="ml-wifi-row">
+          <span>WiFi 名称 (SSID)：</span>
+          <strong>{{ mobileLanding.ssid }}</strong>
+        </div>
+        <div class="ml-wifi-row">
+          <span>连接密码 (Password)：</span>
+          <code>{{ mobileLanding.pass || '免密码直接连接' }}</code>
+        </div>
+        <div class="ml-actions">
+          <button
+            v-if="mobileLanding.pass"
+            type="button"
+            class="ml-primary-cta"
+            @click="copyMobileText(mobileLanding.pass)"
+          >
+            {{ mobileCopied ? '✅ 已复制 WiFi 密码！请前往系统设置-WLAN连接' : '📋 一键复制 WiFi 密码' }}
+          </button>
+        </div>
+        <p class="ml-tip">
+          💡 <strong>免密直连提示</strong>：因为微信限制网页直接修改手机系统 WiFi，若想<strong>无需输入密码一键自动连上</strong>，请打开手机自带的<strong>「系统相机」</strong>或<strong>「设置 → WLAN 右上角扫码图标」</strong>扫描二维码。
+        </p>
+      </div>
+
+      <!-- vCard Wake-up Card -->
+      <div v-else-if="mobileLanding.scene === 'vcard'" class="ml-body">
+        <h4 class="ml-vcard-name">{{ mobileLanding.name }}</h4>
+        <p class="ml-vcard-role">{{ mobileLanding.title }} · {{ mobileLanding.org }}</p>
+        <div class="ml-actions">
+          <a v-if="mobileLanding.phone" :href="`tel:${mobileLanding.phone}`" class="ml-primary-cta">
+            📞 一键拨打电话 ({{ mobileLanding.phone }})
+          </a>
+          <button type="button" class="ml-secondary-cta" @click="downloadMobileVcf">
+            📥 下载名片文件 (.vcf) 存入手机通讯录
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Top Mode Switcher -->
     <div class="mode-tabs-bar no-print">
       <button
@@ -851,6 +1118,54 @@ onUnmounted(() => {
             >
               🪪 {{ isEn ? 'vCard Business Card' : 'vCard 电子商务名片码' }}
             </button>
+          </div>
+
+          <!-- Scan Compatibility Guide & Mode Toggle (Solves WeChat Raw String Issue!) -->
+          <div v-if="activeScene !== 'url'" class="compat-mode-box">
+            <div class="compat-head">
+              <span class="compat-title">
+                💡 {{ isEn ? 'Scanner Compatibility Mode (Important!)' : '扫码方式与微信兼容模式选择（必看！）' }}
+              </span>
+              <button type="button" class="preview-card-btn" @click="previewMobileLandingCard">
+                👀 {{ isEn ? 'Preview Mobile Wake-up Card' : '预览手机扫码唤醒卡片' }}
+              </button>
+            </div>
+            <div class="compat-switch-row">
+              <button
+                v-if="activeScene === 'parking'"
+                type="button"
+                class="compat-opt"
+                :class="{ active: scanCompatMode === 'vcard-call' }"
+                @click="scanCompatMode = 'vcard-call'"
+              >
+                <div class="opt-top">🟢 微信扫一扫原生电话卡模式（强烈推荐 · 免部署即刻可用）</div>
+                <div class="opt-sub">
+                  将车牌与手机号封装为微信原生识别的呼叫卡协议。<strong>现在直接用手机【微信扫一扫】或【系统相机】扫右侧二维码，即可直接进入电话界面，点击号码立即拉起拨号盘！</strong>
+                </div>
+              </button>
+              <button
+                type="button"
+                class="compat-opt"
+                :class="{ active: scanCompatMode === 'native' }"
+                @click="scanCompatMode = 'native'"
+              >
+                <div class="opt-top">📱 手机系统相机原生直连模式</div>
+                <div class="opt-sub">
+                  生成纯 <code>WIFI:</code> / <code>tel:</code> / <code>VCARD</code> 协议。用 <strong>iPhone 原生相机、安卓系统相机或 WLAN 设置</strong>扫码可直接弹窗免密连网/拨号（注：微信扫一扫不支持直接调起 <code>WIFI:</code> 和 <code>tel:</code>，会显示为字符串）。
+                </div>
+              </button>
+              <button
+                type="button"
+                class="compat-opt"
+                :class="{ active: scanCompatMode === 'wechat-h5' }"
+                @click="scanCompatMode = 'wechat-h5'"
+              >
+                <div class="opt-top">🟣 微信 H5 网页自动拉起拨号盘模式（网站上线后可用）</div>
+                <div class="opt-sub">
+                  编码为线上 H5 页面链接，微信扫码打开网页瞬间自动执行 <code>tel:</code> 拉起拨号盘，并提供一键发挪车短信与复制 WiFi 密码按钮。
+                </div>
+              </button>
+            </div>
           </div>
 
           <!-- Scene 1: URL / Text -->
@@ -1817,6 +2132,232 @@ onUnmounted(() => {
 .empty-decode-msg {
   font-size: 12.5px;
   color: #d97706;
+}
+
+.compat-mode-box {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background-color: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.compat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.compat-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.preview-card-btn {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background-color: var(--bg-surface);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--accent);
+    color: #fff;
+  }
+}
+
+.compat-switch-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compat-opt {
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-color);
+  background-color: var(--bg-surface);
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+
+  &.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+  }
+}
+
+.opt-top {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.opt-sub {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+
+  code {
+    font-size: 11px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background-color: var(--bg-muted);
+    color: var(--accent);
+  }
+}
+
+.mobile-landing-card {
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  border: 2px solid #6366f1;
+  box-shadow: var(--shadow-md);
+}
+
+.ml-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.ml-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.ml-close-btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ml-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ml-plate {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 8px 20px;
+  border-radius: 12px;
+  background-color: #2563eb;
+  border: 2px solid #93c5fd;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.ml-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #e0e7ff;
+}
+
+.ml-wifi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+
+  code {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fde047;
+  }
+}
+
+.ml-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.ml-primary-cta {
+  flex: 1;
+  min-width: 220px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  border-radius: 12px;
+  background-color: #facc15;
+  color: #0f172a !important;
+  font-size: 15px;
+  font-weight: 900;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+}
+
+.ml-secondary-cta {
+  flex: 1;
+  min-width: 200px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.16);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.ml-tip {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.ml-vcard-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.ml-vcard-role {
+  margin: 0;
+  font-size: 14px;
+  color: #c7d2fe;
 }
 
 @media print {
