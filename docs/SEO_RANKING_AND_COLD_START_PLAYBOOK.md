@@ -10,23 +10,21 @@
 
 站内代码推送到 GitHub `main` 分支部署完成后，只需在浏览器后台完成以下两件云端配置，即可彻底打通「境内外极速抓取 + 三大搜索引擎主动收录」。
 
-### 第 1 步：腾讯云 DNSPod「境内外智能分流 + www 301 权重归一」（约 3 分钟）
+### 第 1 步：腾讯云 DNSPod「境内外双栈智能分流」（✅ 已在控制台配置并拨测生效）
 
-目前你的域名已在腾讯云 DNSPod 解析，但全球均直连成都 COS。按以下表格修改/新增记录，即可实现**国内百度爬虫走成都 COS（<30ms 合规极速），海外 Googlebot / Bingbot 走 GitHub Pages 全球 Fastly CDN（HTTP/2 + Brotli 极速），且 `www` 权重 100% 集中到主域名 `yunsin.top`**：
+已在腾讯云 DNSPod 免费版配额上限内完成全部 **7 条境内外双栈分流解析**，实网拨测确认生效：
 
-登录 [DNSPod 控制台](https://console.dnspod.cn/) -> 点进 `yunsin.top`，将 `@` 与 `www` 配置调整为：
-
-| 主机记录 | 记录类型 | 线路类型 | 记录值 | TTL | 作用说明 |
+| 主机记录 | 记录类型 | 线路类型 | 记录值 | TTL | 生效核验与架构作用 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `@` | `CNAME` | **境内**（或默认） | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com` | 600 | 国内访客与**百度蜘蛛**直连成都 COS，备案合规且毫秒级响应 |
-| `@` | `A` | **境外** | `185.199.108.153` | 600 | 海外访客与 **Googlebot / Bingbot** 走 GitHub 全球边缘 CDN (节点 1) |
-| `@` | `A` | **境外** | `185.199.109.153` | 600 | GitHub Pages 全球任播节点 2 |
-| `@` | `A` | **境外** | `185.199.110.153` | 600 | GitHub Pages 全球任播节点 3 |
-| `@` | `A` | **境外** | `185.199.111.153` | 600 | GitHub Pages 全球任播节点 4 |
-| `www` | `显性URL` | **境内**（或默认） | `https://yunsin.top`（状态码选 `301`） | 600 | 避免国内双域名 `200 OK` 分散百度权重（若提示显性URL审核，也可在 COS 静态网站设置重定向规则） |
-| `www` | `CNAME` | **境外** | `iamyunsin.github.io.` | 600 | 海外访问 `www.yunsin.top` 时，GitHub Pages 会自动 `301` 跳回 `https://yunsin.top` |
+| `@` | `CNAME` | **默认** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 国内访客、**百度蜘蛛**与腾讯云备案核查直连成都 COS（<30ms 合规极速） |
+| `www` | `CNAME` | **默认** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 保障国内 `https://www.yunsin.top` 443 证书正常与腾讯云 ICP 备案接入核查合规，由全站 `<link rel="canonical">` 归集权重（切勿改成不支持 HTTPS 的 DNSPod 显性URL） |
+| `www` | `CNAME` | **境外** | `iamyunsin.github.io.` | 600 | 海外访问 `https://www.yunsin.top/*` 时，GitHub Pages 原生返回 `301 Moved Permanently` 跳回主域名对应路径 |
+| `@` | `A` | **境外** | `185.199.108.153` | 600 | 海外访客与 **Googlebot / Bingbot (IPv4)** 走 GitHub Pages 全球 Fastly CDN 节点 1 |
+| `@` | `A` | **境外** | `185.199.109.153` | 600 | GitHub Pages 全球 IPv4 任播节点 2（跑满免费版单线路 2 条负载均衡上限） |
+| `@` | `AAAA` | **境外** | `2606:50c0:8000::153` | 600 | 海外 **Googlebot (IPv6)** 走 GitHub Pages 全球 IPv6 任播节点 1 |
+| `@` | `AAAA` | **境外** | `2606:50c0:8001::153` | 600 | GitHub Pages 全球 IPv6 任播节点 2（跑满免费版 IPv6 双节点高可用） |
 
-> **核验小贴士**：配置完境外 A 记录后，去 GitHub 仓库 `Settings -> Pages -> Custom domain` 确认填入了 `yunsin.top` 并勾选 **Enforce HTTPS**（GitHub 的 Let's Encrypt 验证服务器位于美国，会命中你的「境外」线路自动签发免费 HTTPS 证书）。
+> **核验状态**：GitHub 仓库 `Settings -> Pages` 已绑定 `yunsin.top` 并勾选 **Enforce HTTPS**；通过 Google DoH 模拟美国 Googlebot 网段（`66.249.66.0/24`）与中国电信网段（`110.185.0.0/24`）双端拨测，境内外已 100% 精准命中各自边缘节点。
 
 ---
 

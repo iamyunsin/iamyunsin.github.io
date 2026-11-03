@@ -21,7 +21,10 @@ function extractUrlsFromSitemap(xmlPath) {
 }
 
 async function pushIndexNow(urls) {
-  const endpoint = 'https://api.indexnow.org/indexnow';
+  const endpoints = [
+    'https://www.bing.com/indexnow',
+    'https://api.indexnow.org/indexnow',
+  ];
   const payload = {
     host: SITE_HOST,
     key: INDEXNOW_KEY,
@@ -30,17 +33,27 @@ async function pushIndexNow(urls) {
   };
 
   console.log(`🚀 [IndexNow] Submitting ${urls.length} URLs to Bing / Yandex / Naver / AI Search...`);
-  const res = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
-    body: JSON.stringify(payload),
-  });
+  let lastError = null;
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(payload),
+      });
 
-  if (res.status === 200 || res.status === 202) {
-    console.log(`✅ [IndexNow] Accepted (HTTP ${res.status}) — ${urls.length} URLs queued for instant crawl!`);
-  } else {
-    const body = await res.text().catch(() => '');
-    console.warn(`⚠️ [IndexNow] Returned HTTP ${res.status}: ${body.slice(0, 300)}`);
+      if (res.status === 200 || res.status === 202) {
+        console.log(`✅ [IndexNow] Accepted via ${endpoint} (HTTP ${res.status}) — ${urls.length} URLs queued for instant crawl!`);
+        return;
+      }
+      const body = await res.text().catch(() => '');
+      console.warn(`⚠️ [IndexNow] ${endpoint} returned HTTP ${res.status}: ${body.slice(0, 300)}`);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  if (lastError) {
+    console.warn(`⚠️ [IndexNow] Network error across endpoints: ${lastError?.message || lastError}`);
   }
 }
 
