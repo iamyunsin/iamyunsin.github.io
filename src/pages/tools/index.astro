@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
 import { SITE, TOOLS, TOOL_CATEGORIES, getToolsByGroup } from '@/consts';
+import { SEO_PRESET_SCENARIOS } from '@/data/seoPresets';
 
 const hotKeywords = [
   { label: '🔥 视频转GIF', q: '视频转GIF', group: 'media' },
@@ -17,16 +18,57 @@ const hotKeywords = [
   { label: '🏷️ 条形码批量A4打印', q: '条形码', group: 'daily-qr' },
   { label: '📄 纯本地PDF转长图', q: 'PDF', group: 'daily-qr' },
 ];
+
+const directoryJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `全能免费无水印在线工具箱 (${TOOLS.length}款) · ${SITE.title}`,
+    description:
+      '100% 浏览器本地运行的免费无水印在线工具箱：涵盖 MP4视频转GIF、报名证件照20KB、提前还房贷与个税计算器、二维码/条形码排印、本地PDF转长图及源码实验室。',
+    url: `${SITE.domain}/tools/`,
+    inLanguage: 'zh-CN',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: TOOLS.length + SEO_PRESET_SCENARIOS.length,
+      itemListElement: [
+        ...TOOLS.map((t, idx) => ({
+          '@type': 'ListItem',
+          position: idx + 1,
+          name: t.title,
+          url: `${SITE.domain}${t.pathZh}`,
+        })),
+        ...SEO_PRESET_SCENARIOS.map((sc, idx) => ({
+          '@type': 'ListItem',
+          position: TOOLS.length + idx + 1,
+          name: sc.titleZh,
+          url: `${SITE.domain}/tools/${sc.slug}/`,
+        })),
+      ],
+    },
+  },
+];
 ---
 
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <BaseHead
-      title={`全能在线工具箱 (${TOOLS.length}款)：视频转GIF / 房贷车贷计算器 / 二维码条码 / 极客实验室 · ${SITE.title}`}
-      description="100% 浏览器本地运行的免费无水印在线工具箱：涵盖视频转GIF、视频高清抽帧、证件照控KB、房贷提前还贷与车贷真实年化计算器、二维码/条形码批量打印、本地PDF及底层原理实验室。"
+      title={`免费无水印在线工具箱 (${TOOLS.length}款)：视频转GIF / 证件照20KB / 提前还房贷 / 二维码PDF | ${SITE.title}`}
+      description="100% 浏览器本地运行的免费无水印在线工具箱：涵盖 MP4视频转GIF、视频逐帧截图、报名证件照精准压至20KB、提前还房贷与车贷真实年化计算器、WiFi/挪车二维码、条形码批量打印及本地PDF转长图。"
+      image={SITE.toolsOgImageZh}
+      keywords={[
+        '免费在线工具箱',
+        '视频转gif在线无水印',
+        '照片压缩到20kb',
+        '提前还房贷计算器2026',
+        '二维码生成器免费',
+        'pdf转长图不上传',
+        'webp转png批量',
+      ]}
       alternateZh="/tools/"
       alternateEn="/en/tools/"
+      jsonLd={directoryJsonLd}
     />
   </head>
   <body>
@@ -65,6 +107,15 @@ const hotKeywords = [
               <button type="button" class="hot-tag-btn" data-query={hk.q}>
                 {hk.label}
               </button>
+            ))}
+          </div>
+
+          <div class="hot-tags-bar">
+            <span class="hot-label">🎯 热门专版：</span>
+            {SEO_PRESET_SCENARIOS.map((sc) => (
+              <a href={`/tools/${sc.slug}/`} class="hot-tag-btn" style="text-decoration: none;">
+                ⚡ {sc.shortLabelZh}
+              </a>
             ))}
           </div>
 

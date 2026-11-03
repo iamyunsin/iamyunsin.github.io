@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS, TOOLS } from '@/consts';
+import { SEO_PRESET_SCENARIOS, type SeoPresetScenario } from '@/data/seoPresets';
+
+import IdPhotoMakerTool from '@/components/tools/IdPhotoMakerTool.vue';
+import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
+import VideoToGifTool from '@/components/tools/VideoToGifTool.vue';
+import QrcodeStudioTool from '@/components/tools/QrcodeStudioTool.vue';
+import PdfToolkitTool from '@/components/tools/PdfToolkitTool.vue';
+import MortgagePrepaymentTool from '@/components/tools/MortgagePrepaymentTool.vue';
+import IrrLoanCalculatorTool from '@/components/tools/IrrLoanCalculatorTool.vue';
+import PolyglotConverterTool from '@/components/tools/PolyglotConverterTool.vue';
+
+export function getStaticPaths() {
+  return SEO_PRESET_SCENARIOS.map((scenario) => ({
+    params: { preset: scenario.slug },
+    props: { scenario },
+  }));
+}
+
+interface Props {
+  scenario: SeoPresetScenario;
+}
+
+const { scenario } = Astro.props;
+const parentTool = TOOLS.find((t) => t.slug === scenario.parentToolSlug);
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '☁️ Zero-Egress Object Storage',
+    highlight: '10 GB/mo Free Tier',
+    title: 'Cloudflare R2 + Global Edge Workers',
+    description: 'Host static media, assets, and web apps globally on Cloudflare R2 with $0 egress bandwidth fees.',
+    ctaText: 'Start Free on Cloudflare R2',
+    url: AFFILIATE_LINKS.cloudflareR2,
+  },
+  {
+    badge: '🟢 Multi-Currency Business Account',
+    highlight: 'Mid-Market FX Rate',
+    title: 'Wise Business — Global USD / EUR / GBP Accounts',
+    description: 'Receive international freelance & SaaS payouts with zero hidden FX markups across 40+ currencies.',
+    ctaText: 'Open Wise Business Account',
+    url: AFFILIATE_LINKS.wiseBusiness,
+  },
+  {
+    badge: '🚀 Cloud Compute & Storage',
+    highlight: '25% Partner Rebate',
+    title: 'Alibaba Cloud Global Instances & OSS Deals',
+    description: 'High-performance cloud servers and object storage for indie developers and Micro-SaaS founders.',
+    ctaText: 'Claim Developer Cloud Discount',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+];
+---
+
+<ToolLayout
+  lang="en"
+  parentToolSlug={scenario.parentToolSlug}
+  category={parentTool?.category || 'media-doc'}
+  title={scenario.titleEn}
+  seoTitle={scenario.seoTitleEn}
+  description={scenario.descriptionEn}
+  keywords={scenario.keywordsEn}
+  alternateZh={`/tools/${scenario.slug}/`}
+  alternateEn={`/en/tools/${scenario.slug}/`}
+  wasmSizeLabel={scenario.badgeEn}
+  offers={offers}
+  faqs={scenario.faqsEn}
+>
+  {scenario.componentKey === 'id-photo' && (
+    <IdPhotoMakerTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'image-converter' && (
+    <ImageConverterTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'video-to-gif' && (
+    <VideoToGifTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'qrcode-studio' && (
+    <QrcodeStudioTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'pdf-toolkit' && (
+    <PdfToolkitTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'mortgage' && (
+    <MortgagePrepaymentTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'irr-loan' && (
+    <IrrLoanCalculatorTool client:load lang="en" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'polyglot' && (
+    <PolyglotConverterTool client:load lang="en" {...scenario.componentProps} />
+  )}
+
+  <div slot="seo-content" set:html={scenario.guideHtmlEn} />
+</ToolLayout>

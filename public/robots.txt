@@ -1,0 +1,46 @@
+# robots.txt for https://yunsin.top
+# 100% Client-Side Tech Blog, Privacy Utilities & Interactive Engineering Labs
+
+User-agent: *
+Allow: /
+Disallow: /pagefind/
+
+# Major Global & Chinese Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Sogou web spider
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+# AI Search & Generative Engine Optimization (GEO / LLMO)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+Sitemap: https://yunsin.top/sitemap-index.xml

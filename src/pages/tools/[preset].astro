@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import type { AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
+import { AFFILIATE_LINKS, TOOLS } from '@/consts';
+import { SEO_PRESET_SCENARIOS, type SeoPresetScenario } from '@/data/seoPresets';
+
+import IdPhotoMakerTool from '@/components/tools/IdPhotoMakerTool.vue';
+import ImageConverterTool from '@/components/tools/ImageConverterTool.vue';
+import VideoToGifTool from '@/components/tools/VideoToGifTool.vue';
+import QrcodeStudioTool from '@/components/tools/QrcodeStudioTool.vue';
+import PdfToolkitTool from '@/components/tools/PdfToolkitTool.vue';
+import MortgagePrepaymentTool from '@/components/tools/MortgagePrepaymentTool.vue';
+import IrrLoanCalculatorTool from '@/components/tools/IrrLoanCalculatorTool.vue';
+import PolyglotConverterTool from '@/components/tools/PolyglotConverterTool.vue';
+
+export function getStaticPaths() {
+  return SEO_PRESET_SCENARIOS.map((scenario) => ({
+    params: { preset: scenario.slug },
+    props: { scenario },
+  }));
+}
+
+interface Props {
+  scenario: SeoPresetScenario;
+}
+
+const { scenario } = Astro.props;
+const parentTool = TOOLS.find((t) => t.slug === scenario.parentToolSlug);
+
+const offers: AffiliateOffer[] = [
+  {
+    badge: '博主补贴 20% + 平台 5%',
+    highlight: '首购立享 7.5 折',
+    title: '阿里云 · 折扣补贴推广 (立享 7.5 折)',
+    description: '博主主动补贴 20% 佣金 + 平台额外补贴 5% = 新用户首购享 25% 专属补贴优惠！个人建站、图床存储与 AI 算力通用。',
+    ctaText: '立即领券 (折上 7.5 折)',
+    url: AFFILIATE_LINKS.aliyunDiscount,
+  },
+  {
+    badge: '🇨🇳 国内备案加速首选',
+    highlight: '存储 + CDN + 轻量云特惠',
+    title: '腾讯云对象存储 COS 与轻量服务器专场',
+    description: '国内毫秒级网页与静态资源分发，新老用户专享轻量应用服务器与 COS 存储流量特惠礼包。',
+    ctaText: '领取腾讯云官方特惠礼包',
+    url: AFFILIATE_LINKS.tencentCloud,
+  },
+  {
+    badge: '⚡ 开发者高性价比算力',
+    highlight: '注册即送 ¥16 算力额度',
+    title: '硅基流动 SiliconFlow — DeepSeek / Qwen 极速 API',
+    description: '一站式调用满血版 DeepSeek-V3/R1 与通义千问模型，高速稳定免折腾部署。',
+    ctaText: '免费领 ¥16 体验额度',
+    url: AFFILIATE_LINKS.siliconflow,
+  },
+];
+---
+
+<ToolLayout
+  lang="zh"
+  parentToolSlug={scenario.parentToolSlug}
+  category={parentTool?.category || 'media-doc'}
+  title={scenario.titleZh}
+  seoTitle={scenario.seoTitleZh}
+  description={scenario.descriptionZh}
+  keywords={scenario.keywordsZh}
+  alternateZh={`/tools/${scenario.slug}/`}
+  alternateEn={`/en/tools/${scenario.slug}/`}
+  wasmSizeLabel={scenario.badgeZh}
+  offers={offers}
+  faqs={scenario.faqsZh}
+>
+  {scenario.componentKey === 'id-photo' && (
+    <IdPhotoMakerTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'image-converter' && (
+    <ImageConverterTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'video-to-gif' && (
+    <VideoToGifTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'qrcode-studio' && (
+    <QrcodeStudioTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'pdf-toolkit' && (
+    <PdfToolkitTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'mortgage' && (
+    <MortgagePrepaymentTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'irr-loan' && (
+    <IrrLoanCalculatorTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+  {scenario.componentKey === 'polyglot' && (
+    <PolyglotConverterTool client:load lang="zh" {...scenario.componentProps} />
+  )}
+
+  <div slot="seo-content" set:html={scenario.guideHtmlZh} />
+</ToolLayout>

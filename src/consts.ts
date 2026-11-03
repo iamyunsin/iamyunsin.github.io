@@ -1,10 +1,37 @@
 export const SITE = {
-  title: '原心的个人主页',
-  titleEn: "Yunsin's Tech & Indie Tools",
-  description: '原心的个人博客与全能在线工具箱，提供100%浏览器本地运行的视频转GIF、视频抽帧、房贷车贷计算器、二维码条形码生成识别及极客原理实验室',
-  descriptionEn: '100% client-side online tools, multimedia converters, financial calculators, QR/barcode studio, and interactive engineering labs powered by Astro, Vue 3, and Rust WebAssembly.',
+  title: '原心工具箱 & 技术博客',
+  homeSeoTitle: '原心工具箱 & 技术博客 — 免费无水印视频转GIF、证件照20KB、房贷个税计算器与前端源码实验室',
+  titleEn: "Yunsin's Privacy Tools & Tech Blog",
+  description: '100% 浏览器本地运行的免费无水印在线工具箱与前端架构技术博客：涵盖 MP4 视频转 GIF、报名证件照精准压至 20KB、提前还房贷与年终奖个税计算器、二维码条码排印、本地 PDF 转长图及 Vue 3 / Rust Wasm 交互实验室。',
+  descriptionEn: '100% client-side privacy-first online tools, video/GIF/image converters, financial APR & FIRE calculators, QR/barcode A4 studio, local PDF workbench, and interactive engineering labs.',
+  keywords: [
+    '在线工具箱',
+    '免费无水印工具',
+    '视频转gif在线',
+    '证件照压缩20kb',
+    '提前还房贷计算器',
+    '二维码生成器',
+    'pdf转长图不上传',
+    '原心博客',
+    'Vue3源码解析',
+  ],
   logo: '/site-images/avatar.jpeg',
+  defaultOgImage: '/site-images/og-default.png',
+  toolsOgImageZh: '/site-images/og-tools-zh.png',
+  toolsOgImageEn: '/site-images/og-tools-en.png',
   domain: 'https://yunsin.top',
+};
+
+/**
+ * 搜索引擎站长平台验证与主动推送配置中心
+ * - 可通过环境变量注入，也可直接在取得验证码后填入下方字符串
+ * - indexNowKey 对应 public/8f4b2e91c6d347a5b0e2f19483c7a6d1.txt（部署后自动向 Bing / Yandex / Naver / AI 搜索秒级推送）
+ */
+export const SEO_CONFIG = {
+  googleSiteVerification: import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  bingSiteVerification: import.meta.env.PUBLIC_BING_SITE_VERIFICATION || '',
+  baiduSiteVerification: import.meta.env.PUBLIC_BAIDU_SITE_VERIFICATION || '',
+  indexNowKey: '8f4b2e91c6d347a5b0e2f19483c7a6d1',
 };
 
 export const AUTHOR = {

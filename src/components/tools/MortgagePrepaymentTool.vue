@@ -3,16 +3,22 @@ import { ref, computed } from 'vue';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialLoanType?: 'commercial' | 'provident' | 'combined';
+  initialScheduleMode?: 'original' | 'shorten' | 'reduce';
+  initialPrepayWan?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   lang: 'zh',
+  initialLoanType: 'commercial',
+  initialScheduleMode: 'shorten',
+  initialPrepayWan: 30,
 });
 
 const isEn = computed(() => props.lang === 'en');
 
 // Loan Category: 'commercial' | 'provident' | 'combined'
-const loanType = ref<'commercial' | 'provident' | 'combined'>('commercial');
+const loanType = ref<'commercial' | 'provident' | 'combined'>(props.initialLoanType);
 
 // Repayment Method: 'epi' (Equal Principal & Interest 等额本息) | 'ep' (Equal Principal 等额本金)
 const repaymentMethod = ref<'epi' | 'ep'>('epi');
@@ -26,12 +32,12 @@ const loanYears = ref<number>(30);
 
 // Prepayment Engine Inputs
 const monthsPaid = ref<number>(36); // 3 years already paid
-const prepayAmountWan = ref<number>(30); // Lump sum prepayment in 万元
+const prepayAmountWan = ref<number>(props.initialPrepayWan); // Lump sum prepayment in 万元
 const penaltyRatePct = ref<number>(0); // Prepayment penalty %
 const investReturnRate = ref<number>(2.25); // Safe investment return % (e.g., treasury/deposit)
 
 // Schedule table controls
-const scheduleMode = ref<'original' | 'shorten' | 'reduce'>('shorten');
+const scheduleMode = ref<'original' | 'shorten' | 'reduce'>(props.initialScheduleMode);
 const showAllMonths = ref<boolean>(false);
 
 const ratePresets = [

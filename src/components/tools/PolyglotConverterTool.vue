@@ -4,10 +4,20 @@ import { AFFILIATE_LINKS } from '@/consts';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialSource?: 'json' | 'yaml' | 'sql-ddl' | 'curl';
+  initialTarget?:
+    | 'typescript-both'
+    | 'typescript-interface'
+    | 'typescript-zod'
+    | 'go-struct'
+    | 'rust-struct'
+    | 'python-pydantic';
 }
 
 const props = withDefaults(defineProps<Props>(), {
   lang: 'zh',
+  initialSource: 'json',
+  initialTarget: 'typescript-both',
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -22,8 +32,8 @@ export type TargetLanguageType =
   | 'rust-struct'
   | 'python-pydantic';
 
-const sourceType = ref<SourceInputType>('json');
-const targetLang = ref<TargetLanguageType>('typescript-both');
+const sourceType = ref<SourceInputType>(props.initialSource);
+const targetLang = ref<TargetLanguageType>(props.initialTarget);
 
 // Converter Options
 const rootTypeName = ref<string>('UserProfile');

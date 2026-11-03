@@ -63,6 +63,10 @@ const hasAdsense = Boolean(ADS_CONFIG.adsenseClient && ADS_CONFIG.adsenseSlotHor
 </aside>
 
 <style lang="less">
+  :global(html[data-clean-mode='1']) .ad-slot-wrapper {
+    display: none !important;
+  }
+
   .ad-slot-wrapper {
     position: relative;
     margin: 20px 0;

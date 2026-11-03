@@ -3,10 +3,12 @@ import { ref, computed } from 'vue';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialPresetId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   lang: 'zh',
+  initialPresetId: 'cc-installment',
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -120,6 +122,13 @@ function applyPreset(p: ScenarioPreset) {
   depositYuan.value = p.deposit;
   balloonFinalPayment.value = p.balloon;
   customPeriodPayment.value = p.customPayment;
+}
+
+if (props.initialPresetId) {
+  const initialMatched = presets.find((p) => p.id === props.initialPresetId);
+  if (initialMatched) {
+    applyPreset(initialMatched);
+  }
 }
 
 const periodsPerYear = computed(() => {

@@ -8,10 +8,14 @@ import {
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialMode?: 'generator' | 'scanner';
+  initialScene?: 'url' | 'wifi' | 'parking' | 'vcard';
 }
 
 const props = withDefaults(defineProps<Readonly<Props>>(), {
   lang: 'zh',
+  initialMode: 'generator',
+  initialScene: 'url',
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -23,8 +27,8 @@ type WorkMode = 'generator' | 'scanner';
 type SceneType = 'url' | 'wifi' | 'parking' | 'vcard';
 type DotStyle = 'square' | 'rounded' | 'dots';
 
-const activeMode = ref<WorkMode>('generator');
-const activeScene = ref<SceneType>('url');
+const activeMode = ref<WorkMode>(props.initialMode);
+const activeScene = ref<SceneType>(props.initialScene);
 
 // Scene 1: URL / Text
 const urlInput = ref('https://yunsin.top/tools/qrcode-studio/');

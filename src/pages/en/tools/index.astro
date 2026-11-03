@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
 import { SITE, TOOLS, TOOL_CATEGORIES, getToolsByGroup } from '@/consts';
+import { SEO_PRESET_SCENARIOS } from '@/data/seoPresets';
 
 const hotKeywordsEn = [
   { label: '🔥 Video to GIF', q: 'gif' },
@@ -17,16 +18,56 @@ const hotKeywordsEn = [
   { label: '🏷️ Bulk Barcode A4', q: 'barcode' },
   { label: '📄 Local PDF Toolkit', q: 'pdf' },
 ];
+
+const directoryJsonLdEn = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Free Privacy-First Online Tools (${TOOLS.length} Local Utilities) · ${SITE.titleEn}`,
+    description: SITE.descriptionEn,
+    url: `${SITE.domain}/en/tools/`,
+    inLanguage: 'en',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: TOOLS.length + SEO_PRESET_SCENARIOS.length,
+      itemListElement: [
+        ...TOOLS.map((t, idx) => ({
+          '@type': 'ListItem',
+          position: idx + 1,
+          name: t.titleEn,
+          url: `${SITE.domain}${t.pathEn}`,
+        })),
+        ...SEO_PRESET_SCENARIOS.map((sc, idx) => ({
+          '@type': 'ListItem',
+          position: TOOLS.length + idx + 1,
+          name: sc.titleEn,
+          url: `${SITE.domain}/en/tools/${sc.slug}/`,
+        })),
+      ],
+    },
+  },
+];
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead
-      title={`Privacy-First Online Tools (${TOOLS.length} Utilities): Video to GIF, Financial Calculators, QR/Barcode & Labs · ${SITE.titleEn}`}
+      lang="en"
+      image={SITE.toolsOgImageEn}
+      title={`Free Privacy-First Online Tools (${TOOLS.length} Browser Utilities): Video to GIF, WebP/AVIF, Loan APR & QR | ${SITE.titleEn}`}
       description={SITE.descriptionEn}
+      keywords={[
+        'free online tools no upload',
+        'local video to gif no watermark',
+        'bulk webp to png offline',
+        'compress id photo to 20kb',
+        'early mortgage payoff calculator',
+        'free static wifi qr generator',
+      ]}
       alternateZh="/tools/"
       alternateEn="/en/tools/"
+      jsonLd={directoryJsonLdEn}
     />
   </head>
   <body>
@@ -64,6 +105,15 @@ const hotKeywordsEn = [
               <button type="button" class="hot-tag-btn" data-query={hk.q}>
                 {hk.label}
               </button>
+            ))}
+          </div>
+
+          <div class="hot-tags-bar">
+            <span class="hot-label">🎯 Quick Presets:</span>
+            {SEO_PRESET_SCENARIOS.map((sc) => (
+              <a href={`/en/tools/${sc.slug}/`} class="hot-tag-btn" style="text-decoration: none;">
+                ⚡ {sc.shortLabelEn}
+              </a>
             ))}
           </div>
 

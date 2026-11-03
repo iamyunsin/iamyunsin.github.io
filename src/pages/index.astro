@@ -2,18 +2,55 @@
 import BaseHead from '@/components/BaseHead.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { SITE, TOOLS, TOOL_CATEGORIES } from '@/consts';
+import { AUTHOR, SITE, TOOLS, TOOL_CATEGORIES } from '@/consts';
+import { SEO_PRESET_SCENARIOS } from '@/data/seoPresets';
 import BodyWrapper from '@/components/BodyWrapper.astro';
 import ArticleList from '@/components/ArticleList.astro';
 import Author from '@/components/Author.astro';
 import Card from '@/components/Card.astro';
 import CardTitle from '@/components/CardTitle.astro';
+
+const homeJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.title,
+    alternateName: ['原心的个人主页', SITE.titleEn, 'yunsin.top'],
+    url: SITE.domain,
+    description: SITE.description,
+    inLanguage: ['zh-CN', 'en'],
+    author: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: SITE.domain,
+      description: AUTHOR.description,
+      sameAs: [AUTHOR.github, AUTHOR.juejin],
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '原心全能隐私在线工具精选',
+    itemListElement: TOOLS.slice(0, 12).map((t, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: t.title,
+      url: `${SITE.domain}${t.pathZh}`,
+    })),
+  },
+];
 ---
 
 <!doctype html>
 <html lang="zh-CN">
 	<head>
-		<BaseHead title={SITE.title} image={SITE.logo} description={SITE.description} />
+		<BaseHead
+      title={SITE.homeSeoTitle}
+      image={SITE.defaultOgImage}
+      description={SITE.description}
+      keywords={SITE.keywords}
+      jsonLd={homeJsonLd}
+    />
 	</head>
 	<body>
 		<Header />
@@ -40,6 +77,14 @@ import CardTitle from '@/components/CardTitle.astro';
               </a>
             ))}
             <a href="/tools/" class="tool-more-link">查看全部 6 大分类 ({TOOLS.length} 项) →</a>
+          </div>
+          <div class="tools-cat-pills" style="margin-top: 8px; border-top: 1px dashed var(--border-subtle); padding-top: 10px;">
+            {SEO_PRESET_SCENARIOS.slice(0, 6).map((sc) => (
+              <a href={`/tools/${sc.slug}/`} class="cat-mini-pill">
+                <span>⚡</span>
+                <span>{sc.shortLabelZh}</span>
+              </a>
+            ))}
           </div>
         </Card>
         <Card class="about-card">

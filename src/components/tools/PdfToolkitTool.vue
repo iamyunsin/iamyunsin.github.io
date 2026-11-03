@@ -3,10 +3,12 @@ import { ref, computed, watch, onMounted, nextTick } from 'vue';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialMode?: 'pdf-builder' | 'long-stitch';
 }
 
 const props = withDefaults(defineProps<Readonly<Props>>(), {
   lang: 'zh',
+  initialMode: 'pdf-builder',
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -15,7 +17,7 @@ type ToolkitMode = 'pdf-builder' | 'long-stitch';
 type PageOrientation = 'a4-portrait' | 'a4-landscape' | 'original-fit';
 type PageMargin = 'none' | 'standard' | 'wide';
 
-const activeMode = ref<ToolkitMode>('pdf-builder');
+const activeMode = ref<ToolkitMode>(props.initialMode);
 
 interface DocPageItem {
   id: string;

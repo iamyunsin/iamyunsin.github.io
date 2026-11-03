@@ -13,6 +13,9 @@ const FIXED_ROOT_FILES = new Set([
   'rss.xml',
   'robots.txt',
   'site.webmanifest',
+  'site-images/og-default.png',
+  'site-images/og-tools-zh.png',
+  'site-images/og-tools-en.png',
 ]);
 
 function isFixedFile(relPath) {

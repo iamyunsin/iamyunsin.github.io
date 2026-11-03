@@ -4,10 +4,16 @@ import { encodeGif89a, type GifFrameInput } from '@/utils/gifCodec';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialWidth?: 240 | 320 | 480 | 640;
+  initialFps?: 5 | 8 | 10 | 15 | 20 | 25;
+  initialMaxColors?: 256 | 128 | 64 | 32;
 }
 
 const props = withDefaults(defineProps<Readonly<Props>>(), {
   lang: 'zh',
+  initialWidth: 320,
+  initialFps: 10,
+  initialMaxColors: 128,
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -40,9 +46,9 @@ const sourceHeight = ref(360);
 // Interactive parameters
 const startTime = ref(0);
 const endTime = ref(3.0);
-const fps = ref<5 | 8 | 10 | 15 | 20 | 25>(10);
-const targetWidth = ref<240 | 320 | 480 | 640>(320);
-const maxColors = ref<256 | 128 | 64 | 32>(128);
+const fps = ref<5 | 8 | 10 | 15 | 20 | 25>(props.initialFps);
+const targetWidth = ref<240 | 320 | 480 | 640>(props.initialWidth);
+const maxColors = ref<256 | 128 | 64 | 32>(props.initialMaxColors);
 const enableDither = ref(true);
 const topCaption = ref('');
 const bottomCaption = ref('');

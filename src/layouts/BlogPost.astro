@@ -8,7 +8,7 @@ import FormattedDate from '@/components/FormattedDate.astro';
 import ArticleContent from '@/components/ArticleContent.astro';
 import { Icon } from 'astro-icon/components';
 import Iconfont from '@/components/Iconfont.astro';
-import { TOOLS, findCompanionToolForPost } from '@/consts';
+import { AUTHOR, SITE, TOOLS, findCompanionToolForPost } from '@/consts';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   minutes?: number;
@@ -16,13 +16,80 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 const { title, description, pubDate, updatedDate, minutes, words } = Astro.props;
+const baseSite = Astro.site || SITE.domain;
+const canonicalUrl = new URL(Astro.url.pathname, baseSite).toString();
 const companionTool = findCompanionToolForPost(Astro.url.pathname, title);
+const postSeoTitle = title.includes('原心') ? title : `${title} — 源码原理与工程实践 | ${SITE.title}`;
+const postKeywords = [
+  title,
+  ...(companionTool?.keywords || []),
+  '前端架构',
+  '源码解析',
+  AUTHOR.name,
+];
+
+const blogJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description,
+    url: canonicalUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+    image: new URL(SITE.defaultOgImage, baseSite).toString(),
+    datePublished: pubDate.toISOString(),
+    dateModified: (updatedDate || pubDate).toISOString(),
+    inLanguage: 'zh-CN',
+    ...(words ? { wordCount: words } : {}),
+    author: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: SITE.domain,
+      sameAs: [AUTHOR.github, AUTHOR.juejin],
+    },
+    publisher: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: SITE.domain,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: '首页',
+        item: new URL('/', baseSite).toString(),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: title,
+        item: canonicalUrl,
+      },
+    ],
+  },
+];
 ---
 
 <!doctype html>
 <html lang="zh-CN">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead
+      title={postSeoTitle}
+      description={description}
+      image={SITE.defaultOgImage}
+      keywords={postKeywords}
+      ogType="article"
+      publishedTime={pubDate}
+      modifiedTime={updatedDate || pubDate}
+      jsonLd={blogJsonLd}
+    />
 	</head>
 	<body>
     <Header />

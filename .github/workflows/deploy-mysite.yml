@@ -22,6 +22,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
+        env:
+          PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ secrets.PUBLIC_GOOGLE_SITE_VERIFICATION }}
+          PUBLIC_BING_SITE_VERIFICATION: ${{ secrets.PUBLIC_BING_SITE_VERIFICATION }}
+          PUBLIC_BAIDU_SITE_VERIFICATION: ${{ secrets.PUBLIC_BAIDU_SITE_VERIFICATION }}
         run: pnpm run build:mysite
       - name: Deploy to Tencent Cloud COS
         env:
@@ -30,4 +34,9 @@ jobs:
         run: |
           pip install cos-python-sdk-v5
           python3 scripts/deploy-cos.py
+      - name: Push Sitemap URLs to Search Engines (IndexNow & Baidu API)
+        continue-on-error: true
+        env:
+          BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
+        run: pnpm run seo:push
 

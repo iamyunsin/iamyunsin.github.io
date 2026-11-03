@@ -11,10 +11,14 @@ import {
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialTargetMime?: 'image/webp' | 'image/jpeg' | 'image/png' | 'image/avif';
+  initialQuality?: number;
 }
 
 const props = withDefaults(defineProps<Readonly<Props>>(), {
   lang: 'zh',
+  initialTargetMime: 'image/webp',
+  initialQuality: 82,
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -22,8 +26,8 @@ const isEn = computed(() => props.lang === 'en');
 const wasmExports = ref<Awaited<ReturnType<typeof initImageCodecWasm>> | null>(null);
 const wasmReady = ref(false);
 
-const targetMime = ref<'image/webp' | 'image/jpeg' | 'image/png' | 'image/avif'>('image/webp');
-const quality = ref<number>(82);
+const targetMime = ref<'image/webp' | 'image/jpeg' | 'image/png' | 'image/avif'>(props.initialTargetMime);
+const quality = ref<number>(props.initialQuality);
 const scalePercent = ref<number>(100);
 const quantizeLevel = ref<number>(1);
 const isDragging = ref(false);

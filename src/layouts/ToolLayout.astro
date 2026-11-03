@@ -6,6 +6,11 @@ import BodyWrapper from '@/components/BodyWrapper.astro';
 import AdSlot from '@/components/tools/AdSlot.astro';
 import AffiliateCard, { type AffiliateOffer } from '@/components/tools/AffiliateCard.astro';
 import { SITE, TOOLS, getCategoryMeta, getToolsByGroup } from '@/consts';
+import {
+  TOOL_SEO_OVERRIDES,
+  getPresetsForParentTool,
+  getSchemaApplicationCategory,
+} from '@/data/seoPresets';
 
 export interface FaqItem {
   question: string;
@@ -14,7 +19,10 @@ export interface FaqItem {
 
 interface Props {
   title: string;
+  seoTitle?: string;
   description: string;
+  keywords?: string[];
+  parentToolSlug?: string;
   lang: 'zh' | 'en';
   category: 'ai-cost' | 'media-doc' | 'dev-network' | 'web3';
   alternateZh: string;
@@ -26,7 +34,10 @@ interface Props {
 
 const {
   title,
+  seoTitle,
   description,
+  keywords = [],
+  parentToolSlug,
   lang = 'zh',
   category,
   alternateZh,
@@ -36,31 +47,99 @@ const {
   faqs = [],
 } = Astro.props;
 
+const baseSite = Astro.site || SITE.domain;
 const switchLangUrl = lang === 'en' ? alternateZh : alternateEn;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site || SITE.domain).toString();
-const matchedTool = TOOLS.find((t) => t.pathZh === alternateZh || t.pathEn === alternateEn);
+const canonicalUrl = new URL(Astro.url.pathname, baseSite).toString();
+const matchedTool = parentToolSlug
+  ? TOOLS.find((t) => t.slug === parentToolSlug)
+  : TOOLS.find((t) => t.pathZh === alternateZh || t.pathEn === alternateEn);
 const relatedPosts = matchedTool?.relatedPosts || [];
 const currentGroup = matchedTool?.group || 'media';
 const categoryMeta = getCategoryMeta(currentGroup);
 const siblingTools = getToolsByGroup(currentGroup);
 const otherSiblingTools = siblingTools.filter((t) => t.slug !== matchedTool?.slug);
 
-// Automatic WebApplication + FAQPage JSON-LD Schema for Google Rich Snippets
+// 匹配存量工具 SEO 意图词增强表与子场景专页内链矩阵
+const seoOverride = !parentToolSlug && matchedTool ? TOOL_SEO_OVERRIDES[matchedTool.slug] : undefined;
+const effectiveMetaTitle =
+  seoTitle ||
+  (lang === 'en' ? seoOverride?.seoTitleEn : seoOverride?.seoTitleZh) ||
+  `${title} | ${lang === 'en' ? SITE.titleEn : SITE.title}`;
+const effectiveMetaDesc =
+  (lang === 'en' ? seoOverride?.seoDescEn : seoOverride?.seoDescZh) || description;
+const effectiveOgImage = lang === 'en' ? SITE.toolsOgImageEn : SITE.toolsOgImageZh;
+
+const effectiveKeywords = [
+  ...keywords,
+  ...(matchedTool?.keywords || []),
+  ...((lang === 'en' ? seoOverride?.extraKeywordsEn : seoOverride?.extraKeywordsZh) || []),
+];
+
+const relatedPresets = matchedTool ? getPresetsForParentTool(matchedTool.slug) : [];
+const schemaAppCategory = getSchemaApplicationCategory(currentGroup);
+
+// BreadcrumbList Schema (3-level for standard tool, 4-level for pSEO preset page)
+const breadcrumbItems: Record<string, any>[] = [
+  {
+    '@type': 'ListItem',
+    position: 1,
+    name: lang === 'en' ? 'Home' : '首页',
+    item: new URL('/', baseSite).toString(),
+  },
+  {
+    '@type': 'ListItem',
+    position: 2,
+    name: lang === 'en' ? 'Online Tools' : '在线工具箱',
+    item: new URL(lang === 'en' ? '/en/tools/' : '/tools/', baseSite).toString(),
+  },
+];
+
+if (parentToolSlug && matchedTool) {
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: 3,
+    name: lang === 'en' ? matchedTool.titleEn : matchedTool.title,
+    item: new URL(lang === 'en' ? matchedTool.pathEn : matchedTool.pathZh, baseSite).toString(),
+  });
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: 4,
+    name: title,
+    item: canonicalUrl,
+  });
+} else {
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    position: 3,
+    name: title,
+    item: canonicalUrl,
+  });
+}
+
+// Automatic WebApplication + BreadcrumbList + FAQPage JSON-LD Schema for Rich Snippets
 const jsonLdSchemas: Record<string, any>[] = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: title,
-    description,
+    description: effectiveMetaDesc,
     url: canonicalUrl,
-    applicationCategory: 'DeveloperApplication',
+    image: new URL(effectiveOgImage, baseSite).toString(),
+    applicationCategory: schemaAppCategory,
     operatingSystem: 'All',
+    browserRequirements: 'Requires HTML5 / JavaScript',
+    isAccessibleForFree: true,
     inLanguage: lang === 'en' ? 'en' : 'zh-CN',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
     },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems,
   },
 ];
 
@@ -200,8 +279,11 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
 <html lang={lang === 'en' ? 'en' : 'zh-CN'}>
   <head>
     <BaseHead
-      title={title}
-      description={description}
+      title={effectiveMetaTitle}
+      description={effectiveMetaDesc}
+      image={effectiveOgImage}
+      keywords={effectiveKeywords}
+      lang={lang}
       alternateZh={alternateZh}
       alternateEn={alternateEn}
       jsonLd={jsonLdSchemas}
@@ -224,6 +306,16 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
               </a>
             </>
           )}
+          {parentToolSlug && matchedTool && (
+            <>
+              <span class="crumb-sep">/</span>
+              <a href={lang === 'en' ? matchedTool.pathEn : matchedTool.pathZh}>
+                {lang === 'en'
+                  ? matchedTool.titleEn.split('(')[0].trim()
+                  : matchedTool.title.split('（')[0].split('(')[0].trim()}
+              </a>
+            </>
+          )}
           <span class="crumb-sep">/</span>
           <span class="crumb-current">{title}</span>
         </div>
@@ -242,6 +334,36 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
       <header class="tool-hero">
         <h1 class="tool-h1">{title}</h1>
         <p class="tool-lead">{description}</p>
+        {relatedPresets.length > 0 && (
+          <div class="hero-related-posts">
+            <span class="hero-related-label">
+              {lang === 'en' ? '🎯 Pre-Configured Quick Scenarios:' : '🎯 高频细分场景直达（点开自动预设参数）：'}
+            </span>
+            <div class="hero-related-links">
+              {parentToolSlug && matchedTool && (
+                <a
+                  href={lang === 'en' ? matchedTool.pathEn : matchedTool.pathZh}
+                  class="hero-related-pill"
+                >
+                  {lang === 'en' ? '⬅️ Full Workbench' : '⬅️ 返回全功能主工作台'}
+                </a>
+              )}
+              {relatedPresets.map((pr) => {
+                const prHref = lang === 'en' ? `/en/tools/${pr.slug}/` : `/tools/${pr.slug}/`;
+                const isCurrentPreset = Astro.url.pathname.replace(/\/+$/, '') === prHref.replace(/\/+$/, '');
+                return (
+                  <a
+                    href={prHref}
+                    class={`suite-pill ${isCurrentPreset ? 'is-active' : ''}`}
+                    aria-current={isCurrentPreset ? 'page' : undefined}
+                  >
+                    <span>⚡ {lang === 'en' ? pr.shortLabelEn : pr.shortLabelZh}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
         {relatedPosts.length > 0 && (
           <div class="hero-related-posts">
             <span class="hero-related-label">
@@ -263,7 +385,7 @@ function parseFaqAnswer(answer: string): { intro?: string; blocks: ParsedFaqBloc
             </span>
             <div class="suite-switcher-pills">
               {siblingTools.map((st) => {
-                const isCurrent = st.slug === matchedTool?.slug;
+                const isCurrent = !parentToolSlug && st.slug === matchedTool?.slug;
                 return (
                   <a
                     href={lang === 'en' ? st.pathEn : st.pathZh}

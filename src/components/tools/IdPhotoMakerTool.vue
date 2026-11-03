@@ -3,10 +3,18 @@ import { ref, computed, onMounted, watch } from 'vue';
 
 interface Props {
   lang?: 'zh' | 'en';
+  initialPresetId?: string;
+  initialBgId?: string;
+  initialMaxKb?: number;
+  initialMinKb?: number;
 }
 
 const props = withDefaults(defineProps<Readonly<Props>>(), {
   lang: 'zh',
+  initialPresetId: 'exam',
+  initialBgId: 'blue',
+  initialMaxKb: 30,
+  initialMinKb: 15,
 });
 
 const isEn = computed(() => props.lang === 'en');
@@ -102,8 +110,8 @@ const BG_PRESETS: BgPreset[] = [
   { id: 'original', nameZh: '保留原图背景', nameEn: 'Keep Original', topColor: 'transparent', bottomColor: 'transparent' },
 ];
 
-const selectedPresetId = ref<string>('exam');
-const selectedBgId = ref<string>('blue');
+const selectedPresetId = ref<string>(props.initialPresetId);
+const selectedBgId = ref<string>(props.initialBgId);
 const tolerance = ref<number>(36);
 const feather = ref<number>(18);
 const zoomScale = ref<number>(100);
@@ -114,8 +122,8 @@ const showGuideLines = ref<boolean>(true);
 const suitOverlay = ref<'none' | 'navy' | 'black'>('none');
 
 // Exact KB Target Sizer controls
-const targetMaxKb = ref<number>(30);
-const targetMinKb = ref<number>(15);
+const targetMaxKb = ref<number>(props.initialMaxKb);
+const targetMinKb = ref<number>(props.initialMinKb);
 
 // Source image & canvases
 const fileInputRef = ref<HTMLInputElement | null>(null);

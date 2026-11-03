@@ -27,6 +27,7 @@ CACHE_REVALIDATE_304 = "no-cache"
 # 补充常见静态资源的标准 MIME 类型
 CUSTOM_MIME_TYPES = {
     ".html": "text/html; charset=utf-8",
+    ".txt": "text/plain; charset=utf-8",
     ".css": "text/css; charset=utf-8",
     ".js": "application/javascript; charset=utf-8",
     ".mjs": "application/javascript; charset=utf-8",

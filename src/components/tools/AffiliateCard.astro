@@ -143,6 +143,10 @@ if (displayOffers.length > 0 && displayOffers.length < 3) {
 )}
 
 <style lang="less">
+  :global(html[data-clean-mode='1']) .affiliate-section {
+    display: none !important;
+  }
+
   .affiliate-section {
     margin: 24px 0;
     padding: 20px 22px;

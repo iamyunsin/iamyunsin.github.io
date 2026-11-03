@@ -2,17 +2,23 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import "/node_modules/katex/dist/katex.min.css";
-import '@/styles/iconfont.css'
+import '@/styles/iconfont.css';
 import '@/styles/global.less';
 import '@/styles/pagefind.less';
 import '@/styles/toc.less';
 import { ClientRouter } from 'astro:transitions';
-import { ANALYTICS, SITE } from '@/consts';
+import { ANALYTICS, AUTHOR, SEO_CONFIG, SITE } from '@/consts';
 
 interface Props {
-	title: string;
-	description: string;
-	image?: string;
+  title: string;
+  description: string;
+  image?: string;
+  keywords?: string[];
+  lang?: 'zh' | 'en';
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
   alternateZh?: string;
   alternateEn?: string;
   jsonLd?: Record<string, any> | Record<string, any>[];
@@ -24,11 +30,21 @@ const canonicalURL = new URL(Astro.url.pathname, baseSite);
 const {
   title,
   description,
-  image = '/blog-placeholder-1.jpg',
+  lang = 'zh',
+  image = lang === 'en' ? SITE.toolsOgImageEn : SITE.defaultOgImage,
+  keywords = [],
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  noindex = false,
   alternateZh,
   alternateEn,
   jsonLd,
 } = Astro.props;
+
+const ogImageUrl = new URL(image, baseSite);
+const dedupedKeywords = Array.from(new Set(keywords.map((k) => k.trim()).filter(Boolean)));
+const siteBrandName = lang === 'en' ? SITE.titleEn : SITE.title;
 ---
 
 <!-- Global Metadata -->
@@ -36,6 +52,26 @@ const {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="/favicon.ico" />
 <meta name="generator" content={Astro.generator} />
+<meta name="author" content={AUTHOR.name} />
+<meta
+  name="robots"
+  content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
+
+<!-- Search Engine Webmaster Verification Slots (Configure via env or src/consts.ts) -->
+{SEO_CONFIG.googleSiteVerification && (
+  <meta name="google-site-verification" content={SEO_CONFIG.googleSiteVerification} />
+)}
+{SEO_CONFIG.bingSiteVerification && (
+  <meta name="msvalidate.01" content={SEO_CONFIG.bingSiteVerification} />
+)}
+{SEO_CONFIG.baiduSiteVerification && (
+  <meta name="baidu-site-verification" content={SEO_CONFIG.baiduSiteVerification} />
+)}
+
+<!-- Sitemap & RSS Discovery for Crawlers -->
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href={new URL('/rss.xml', baseSite)} />
 
 <!-- Prevent Theme Flash (FOUC) -->
 <script is:inline>
@@ -50,16 +86,37 @@ const {
       return 'daylight';
     }
     document.documentElement.setAttribute('data-theme', getSavedTheme());
+
+    // Community Clean Mode (?clean=1, ?ref=v2ex, ?source=hn, ?ref=ruanyifeng)
+    const CLEAN_KEY = 'yunsin-clean-mode';
+    function isCleanMode() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const ref = (params.get('ref') || params.get('source') || '').toLowerCase();
+        if (params.get('clean') === '1' || ['v2ex', 'hn', 'hackernews', 'ruanyifeng', 'github'].includes(ref)) {
+          sessionStorage.setItem(CLEAN_KEY, '1');
+          return true;
+        }
+        return sessionStorage.getItem(CLEAN_KEY) === '1';
+      } catch (e) {
+        return false;
+      }
+    }
+    if (isCleanMode()) {
+      document.documentElement.setAttribute('data-clean-mode', '1');
+    }
+
     document.addEventListener('astro:before-swap', (ev) => {
       ev.newDocument.documentElement.setAttribute('data-theme', getSavedTheme());
+      if (isCleanMode()) {
+        ev.newDocument.documentElement.setAttribute('data-clean-mode', '1');
+      }
     });
   })();
 </script>
 
-<!-- Font preloads -->
+<!-- Font preloads (only modern woff2 + title font to save crawl & mobile bandwidth) -->
 <link rel="prefetch" href="/fonts/MyTitle.ttf" as="font" crossorigin />
-<link rel="prefetch" href="/fonts/iconfont.ttf" as="font" crossorigin />
-<link rel="prefetch" href="/fonts/iconfont.woff" as="font" crossorigin />
 <link rel="prefetch" href="/fonts/iconfont.woff2" as="font" crossorigin />
 
 <!-- Canonical & Multilingual Hreflang -->
@@ -73,20 +130,31 @@ const {
 <ClientRouter />
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+{dedupedKeywords.length > 0 && <meta name="keywords" content={dedupedKeywords.join(', ')} />}
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<!-- Open Graph / Facebook / WeChat -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteBrandName} />
+<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_CN'} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{ogType === 'article' && publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{ogType === 'article' && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
 
 <!-- Structured Data (JSON-LD) for Rich Snippets & Tool SEO -->
 {jsonLd && (
