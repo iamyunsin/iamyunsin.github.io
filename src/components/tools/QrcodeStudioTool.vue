@@ -598,7 +598,13 @@ function renderPosterCanvas() {
     ctx.font = '600 18px system-ui, sans-serif';
     ctx.fillText(`📱 ${vcardPhone.value || '-'}`, 60, 240);
     ctx.fillText(`✉️ ${vcardEmail.value || '-'}`, 60, 282);
-    ctx.fillText(`🌐 ${vcardWebsite.value || '-'}`, 60, 324);
+    const trimmedSite = vcardWebsite.value.trim();
+    const displaySite = trimmedSite
+      ? /^https?:\/\//i.test(trimmedSite)
+        ? trimmedSite
+        : `https://${trimmedSite}`
+      : '-';
+    ctx.fillText(`🌐 ${displaySite}`, 60, 324);
 
     ctx.fillStyle = '#64748b';
     ctx.font = '600 14px system-ui, sans-serif';
