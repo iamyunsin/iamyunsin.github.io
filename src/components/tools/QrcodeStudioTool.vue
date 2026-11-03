@@ -48,7 +48,7 @@ const vcardTitle = ref('全栈独立开发者');
 const vcardCompany = ref('Yunsin Studio');
 const vcardPhone = ref('13800138000');
 const vcardEmail = ref('yunsin@vip.qq.com');
-const vcardWebsite = ref('https://yunsin.top');
+const vcardWebsite = ref('yunsin.top');
 const vcardCompact = ref(true);
 
 // ==========================================
@@ -172,18 +172,22 @@ const rawPayload = computed<string>(() => {
     return `tel:${phone}`;
   }
   if (activeScene.value === 'vcard') {
+    const rawSite = vcardWebsite.value.trim();
     if (vcardCompact.value) {
-      // MECARD is natively supported by iOS & Android cameras and reduces QR module count by ~50%!
+      // MECARD is natively supported by iOS & Android cameras and reduces QR module count by ~50%.
+      // Strip http(s):// prefix so iOS Contacts doesn't turn escaped colons into "http://https://..."
+      const mecardDomain = rawSite.replace(/^https?:\/\//i, '');
       const parts = [
         vcardName.value.trim() ? `N:${escapeWifiField(vcardName.value.trim())}` : '',
         vcardPhone.value.trim() ? `TEL:${escapeWifiField(vcardPhone.value.trim())}` : '',
         vcardCompany.value.trim() ? `ORG:${escapeWifiField(vcardCompany.value.trim())}` : '',
         vcardEmail.value.trim() ? `EMAIL:${escapeWifiField(vcardEmail.value.trim())}` : '',
-        vcardWebsite.value.trim() ? `URL:${escapeWifiField(vcardWebsite.value.trim())}` : '',
+        mecardDomain ? `URL:${escapeWifiField(mecardDomain)}` : '',
         vcardTitle.value.trim() ? `NOTE:${escapeWifiField(vcardTitle.value.trim())}` : '',
       ].filter(Boolean);
       return `MECARD:${parts.join(';')};;`;
     }
+    const fullVcardUrl = rawSite ? (/^https?:\/\//i.test(rawSite) ? rawSite : `https://${rawSite}`) : '';
     const lines = [
       'BEGIN:VCARD',
       'VERSION:3.0',
@@ -192,7 +196,7 @@ const rawPayload = computed<string>(() => {
       vcardCompany.value.trim() ? `ORG:${vcardCompany.value.trim()}` : '',
       vcardPhone.value.trim() ? `TEL:${vcardPhone.value.trim()}` : '',
       vcardEmail.value.trim() ? `EMAIL:${vcardEmail.value.trim()}` : '',
-      vcardWebsite.value.trim() ? `URL:${vcardWebsite.value.trim()}` : '',
+      fullVcardUrl ? `URL:${fullVcardUrl}` : '',
       'END:VCARD',
     ].filter(Boolean);
     return lines.join('\n');
@@ -1132,8 +1136,15 @@ onUnmounted(() => {
                 <input v-model="vcardEmail" type="email" class="text-input" />
               </div>
               <div>
-                <label class="field-label">{{ isEn ? 'Website' : '个人主页 / 官网' }}</label>
-                <input v-model="vcardWebsite" type="url" class="text-input" />
+                <label class="field-label">{{
+                  isEn ? 'Website (No https:// needed)' : '个人主页 / 官网（无需填 https://）'
+                }}</label>
+                <input
+                  v-model="vcardWebsite"
+                  type="text"
+                  class="text-input"
+                  placeholder="yunsin.top"
+                />
               </div>
             </div>
             <label class="checkbox-line">
