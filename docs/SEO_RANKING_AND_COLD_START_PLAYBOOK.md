@@ -10,21 +10,21 @@
 
 站内代码推送到 GitHub `main` 分支部署完成后，只需在浏览器后台完成以下两件云端配置，即可彻底打通「境内外极速抓取 + 三大搜索引擎主动收录」。
 
-### 第 1 步：腾讯云 DNSPod「境内外双栈智能分流」（✅ 已在控制台配置并拨测生效）
+### 第 1 步：腾讯云 DNSPod「境内外双栈智能分流」（✅ 已在控制台配置并消除 GitHub Pages 报错）
 
-已在腾讯云 DNSPod 免费版配额上限内完成全部 **7 条境内外双栈分流解析**，实网拨测确认生效：
+已在腾讯云 DNSPod 免费版配额上限内完成全部 **7 条境内外双栈分流解析**（采用**「默认走 GitHub Pages + 境内锁死成都 COS + IPv6 锁死境外」**反客为主架构，彻底根除 GitHub Pages 体检时的 `CNAME` 穿透报错 `NotServedByPagesError`，确保 Let's Encrypt 证书永久自动续签）：
 
 | 主机记录 | 记录类型 | 线路类型 | 记录值 | TTL | 生效核验与架构作用 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `@` | `CNAME` | **默认** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 国内访客、**百度蜘蛛**与腾讯云备案核查直连成都 COS（<30ms 合规极速） |
-| `www` | `CNAME` | **默认** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 保障国内 `https://www.yunsin.top` 443 证书正常与腾讯云 ICP 备案接入核查合规，由全站 `<link rel="canonical">` 归集权重（切勿改成不支持 HTTPS 的 DNSPod 显性URL） |
-| `www` | `CNAME` | **境外** | `iamyunsin.github.io.` | 600 | 海外访问 `https://www.yunsin.top/*` 时，GitHub Pages 原生返回 `301 Moved Permanently` 跳回主域名对应路径 |
-| `@` | `A` | **境外** | `185.199.108.153` | 600 | 海外访客与 **Googlebot / Bingbot (IPv4)** 走 GitHub Pages 全球 Fastly CDN 节点 1 |
-| `@` | `A` | **境外** | `185.199.109.153` | 600 | GitHub Pages 全球 IPv4 任播节点 2（跑满免费版单线路 2 条负载均衡上限） |
-| `@` | `AAAA` | **境外** | `2606:50c0:8000::153` | 600 | 海外 **Googlebot (IPv6)** 走 GitHub Pages 全球 IPv6 任播节点 1 |
+| `@` | `A` | **默认** | `185.199.108.153` | 600 | 海外访客、**Googlebot / Bingbot (IPv4)** 及无 ECS 云端递归 DNS 走 GitHub Pages 节点 1 |
+| `@` | `A` | **默认** | `185.199.109.153` | 600 | GitHub Pages 全球 IPv4 任播节点 2（跑满免费版单线路 2 条负载均衡上限） |
+| `www` | `CNAME` | **默认** | `iamyunsin.github.io.` | 600 | 海外及 GitHub Pages 体检 `www.yunsin.top` 时通过校验，并原生返回 `301` 跳回主域名对应路径 |
+| `@` | `CNAME` | **境内** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 国内访客、**百度蜘蛛**与腾讯云备案核查 100% 锁定直连成都 COS（<30ms 合规极速，绝不穿透海外） |
+| `www` | `CNAME` | **境内** | `yunsin-top-1251451201.cos-website.ap-chengdu.myqcloud.com.` | 600 | 保障国内 `https://www.yunsin.top` 443 证书正常与腾讯云 ICP 备案接入核查合规；配合 `<head>` 零闪烁 `location.replace` 秒跳主域名 + `<link rel="canonical">` 归集百度权重（切勿改成不支持 HTTPS 的 DNSPod 显性URL） |
+| `@` | `AAAA` | **境外** | `2606:50c0:8000::153` | 600 | 海外 **Googlebot (IPv6)** 走 GitHub Pages 全球 IPv6 节点 1（严禁放「默认」，防止国内 5G 双栈手机误连海外 IPv6） |
 | `@` | `AAAA` | **境外** | `2606:50c0:8001::153` | 600 | GitHub Pages 全球 IPv6 任播节点 2（跑满免费版 IPv6 双节点高可用） |
 
-> **核验状态**：GitHub 仓库 `Settings -> Pages` 已绑定 `yunsin.top` 并勾选 **Enforce HTTPS**；通过 Google DoH 模拟美国 Googlebot 网段（`66.249.66.0/24`）与中国电信网段（`110.185.0.0/24`）双端拨测，境内外已 100% 精准命中各自边缘节点。
+> **核验状态**：GitHub 仓库 `Settings -> Pages` 已绑定 `yunsin.top` 并勾选 **Enforce HTTPS**，DNS 体检已绿灯通过（`DNS check successful`）；通过 Google DoH 模拟无 ECS 默认解析器（`0.0.0.0/0`）、美国 GitHub/Googlebot 网段（`140.82.112.0/24`）与中国电信网段（`110.185.0.0/16`）三端拨测，境内外已 100% 精准命中各自边缘节点且零协议穿透。
 
 ---
 

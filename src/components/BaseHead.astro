@@ -73,9 +73,16 @@ const siteBrandName = lang === 'en' ? SITE.titleEn : SITE.title;
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE.title} href={new URL('/rss.xml', baseSite)} />
 
-<!-- Prevent Theme Flash (FOUC) -->
+<!-- Canonical Host Guard & Prevent Theme Flash (FOUC) -->
 <script is:inline>
   (function () {
+    if (window.location.hostname === 'www.yunsin.top') {
+      window.location.replace(
+        'https://yunsin.top' + window.location.pathname + window.location.search + window.location.hash
+      );
+      return;
+    }
+
     const STORAGE_KEY = 'blog-theme';
     const VALID_THEMES = ['daylight', 'obsidian', 'parchment'];
     function getSavedTheme() {
